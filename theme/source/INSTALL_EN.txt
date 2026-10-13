@@ -1,0 +1,50 @@
+CodeCart PRO Theme 8.7.7 — installation, update and removal
+
+BEFORE YOU START
+Before installation or update, always create a full backup of the website files and database.
+
+INSTALLATION
+1. In admin, open Extensions → Installer.
+2. Upload Theme_CodeCart_Pro_v8.7.7.ocmod.zip.
+3. Open Extensions → Modifications and click Refresh.
+4. Clear the Twig cache and theme cache.
+5. Open Extensions → Extensions → Themes and install CodeCart PRO Theme.
+6. The theme is disabled after installation. Review settings, then enable it manually and save.
+7. In System → Settings → Store, select CodeCart PRO as the active theme when required by your configuration.
+
+UPDATE
+1. Create a full file and database backup.
+2. Upload the new package over the installed version using Extension Installer.
+3. Refresh modifications.
+4. Clear Twig and theme caches.
+5. Open theme settings, confirm version 8.7.7 and save settings.
+6. Test home, category, product, cart, checkout, blog and mobile layouts.
+
+REMOVAL
+1. Export settings and create a backup when required.
+2. Select whether user-data tables should be retained on uninstall.
+3. Uninstall the theme from Extensions.
+4. Remove the installer package/modification using standard OpenCart tools.
+5. Refresh modifications and clear caches.
+6. Confirm another installed theme is selected as active.
+
+NOTE
+Request, blog and enhanced-review tables are retained by default to prevent accidental data loss. They are dropped only when the retain-data option is disabled before uninstalling.
+
+During updates, existing settings, including custom CSS and JavaScript, are preserved. After installation, open the main settings and enable “Information-only mode” when the website must operate without sales.
+
+Emergency recovery after a featured_product.php Parse error
+
+If a previous build already generated an invalid storage/modification/catalog/controller/extension/module/featured_product.php file:
+1. Remove the old modification with code codecart_pro_theme or any duplicates in the admin panel.
+2. Install Theme_CodeCart_Pro_v8.7.7.ocmod.zip.
+3. Refresh modifications.
+4. Clear Twig and modification caches.
+
+If the storefront remains unavailable before the refresh, temporarily delete only the generated storage/modification/catalog/controller/extension/module/featured_product.php file. Do not delete the original catalog/controller/extension/module/featured_product.php file. Refresh modifications immediately afterwards so OpenCart can generate a safe modified copy.
+
+UPGRADE TO 8.7.7
+1. Remove duplicate CodeCart PRO Theme modification entries using code codecart_pro_theme.
+2. Install 8.7.7 and refresh modifications.
+3. Open theme settings once to register route-scoped compatibility Events and run the blog migration.
+4. Save settings and clear Twig/theme cache.

@@ -1,0 +1,32 @@
+{% if reviews %}
+{% for review in reviews %}
+<div class="table-striped table-bordered ccp-review-item">
+  <div class="ccp-review-head">
+    <strong>{{ review.author|escape }}</strong>
+    <span class="ccp-review-date">{{ review.date_added|escape }}</span>
+    <span class="ccp-review-rating">{% for i in 1..5 %}<i class="fa fa-star{% if review.rating < i %}-o{% endif %}"></i>{% endfor %}</span>
+    {% if review.ccp_extra.real_buyer %}<span class="ccp-real-buyer"><i class="fa fa-check-circle"></i> {{ ccp_text_real_buyer }}</span>{% endif %}
+  </div>
+  <div class="ccp-review-text">{{ review.text|escape|nl2br }}</div>
+  {% if review.ccp_extra.plus_text or review.ccp_extra.minus_text %}
+  <div class="ccp-review-pros-cons">
+    {% if review.ccp_extra.plus_text %}<div class="ccp-review-plus"><b>{{ ccp_text_review_plus }}</b><p>{{ review.ccp_extra.plus_text }}</p></div>{% endif %}
+    {% if review.ccp_extra.minus_text %}<div class="ccp-review-minus"><b>{{ ccp_text_review_minus }}</b><p>{{ review.ccp_extra.minus_text }}</p></div>{% endif %}
+  </div>
+  {% endif %}
+  {% if review.ccp_extra.images %}
+  <div class="ccp-review-images">{% for image in review.ccp_extra.images %}<a href="/{{ image.path|escape }}" target="_blank" rel="noopener"><img src="{{ image.thumb|escape }}" alt="{{ review.author|escape }}" loading="lazy" decoding="async" width="120" height="120" /></a>{% endfor %}</div>
+  {% endif %}
+  {% if review.ccp_extra.admin_reply %}<div class="ccp-review-admin-reply"><b>{{ ccp_text_admin_reply }}</b><p>{{ review.ccp_extra.admin_reply }}</p></div>{% endif %}
+  {% if ccp_reviews_votes_status %}
+  <div class="ccp-review-votes" data-review-id="{{ review.ccp_review_id|default(0) }}">
+    <button type="button" class="btn btn-sm btn-default ccp-review-vote-plus" data-ccp-review-vote="plus"><i class="fa fa-thumbs-up"></i> <span>{{ review.ccp_extra.votes_plus }}</span></button>
+    <button type="button" class="btn btn-sm btn-default ccp-review-vote-minus" data-ccp-review-vote="minus"><i class="fa fa-thumbs-down"></i> <span>{{ review.ccp_extra.votes_minus }}</span></button>
+  </div>
+  {% endif %}
+</div>
+{% endfor %}
+<div class="text-right">{{ pagination }}</div>
+{% else %}
+<p>{{ text_no_reviews }}</p>
+{% endif %}

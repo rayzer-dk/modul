@@ -1,0 +1,20 @@
+{{ header }}
+<div class="ccp-breadcrumb-wrap"><div class="container"><ul class="breadcrumb">{% for breadcrumb in breadcrumbs %}<li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>{% endfor %}</ul></div></div>
+<div id="ccp-blog-article" class="container ccp-blog-page ccp-blog-article-page">
+  <div class="row">{{ column_left }}{% if column_left and column_right %}{% set class = 'col-sm-6' %}{% elseif column_left or column_right %}{% set class = 'col-sm-9' %}{% else %}{% set class = 'col-sm-12' %}{% endif %}
+    <div id="content" class="{{ class }}">{{ content_top }}
+      <article class="ccp-blog-article">
+        <div class="ccp-section-head"><h1>{{ heading_title }}</h1><p class="ccp-blog-date">{{ date_added }}</p></div>
+        {% if categories %}<div class="ccp-blog-meta"><span>{{ text_categories }}:</span> {% for category in categories %}<a href="{{ category.href }}">{{ category.name }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</div>{% endif %}
+        {% if image %}<div class="ccp-blog-article-image"><img src="{{ image }}" alt="{{ heading_title }}" loading="eager" decoding="async" width="1200" height="675" /></div>{% endif %}
+        <div class="ccp-blog-article-body">{{ description }}</div>
+        {% if tags %}<div class="ccp-blog-tags"><span>{{ text_tags }}:</span> {% for tag in tags %}<a href="{{ tag.href }}">{{ tag.text }}</a>{% endfor %}</div>{% endif %}
+        {% if related_products %}<section class="ccp-blog-related-products"><h2>{{ text_related_products }}</h2><div class="ccp-mini-product-grid ccp-standard-card-grid">{% for product in related_products %}<a href="{{ product.href }}" class="ccp-mini-product-card">{% if product.thumb %}<img src="{{ product.thumb }}" alt="{{ product.name }}" loading="lazy" decoding="async" width="300" height="191" />{% endif %}<span>{{ product.name }}</span>{% if product.price and not ccp_information_mode|default(0) %}<strong>{{ product.price }}</strong>{% endif %}</a>{% endfor %}</div></section>{% endif %}
+        {% if related_articles %}<section class="ccp-related-articles"><h2>{{ text_related_articles }}</h2><div class="ccp-standard-card-grid ccp-related-articles-grid">{% for article in related_articles %}<a class="ccp-related-article" href="{{ article.href }}">{% if article.thumb %}<img src="{{ article.thumb }}" alt="{{ article.title }}" loading="lazy" decoding="async" width="640" height="360" />{% endif %}<strong>{{ article.title }}</strong><span>{{ article.description }}</span></a>{% endfor %}</div></section>{% endif %}
+        {% if seo_text %}<div class="ccp-blog-seo-text">{{ seo_text }}</div>{% endif %}
+      </article>
+      {{ content_bottom }}
+    </div>{{ column_right }}
+  </div>
+</div>
+{{ footer }}

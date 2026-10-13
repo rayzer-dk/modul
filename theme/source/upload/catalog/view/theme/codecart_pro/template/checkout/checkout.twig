@@ -1,0 +1,279 @@
+{{ header }}
+<div id="checkout-checkout" class="container ccp-simple-checkout-page">
+  <ul class="breadcrumb ccp-checkout-breadcrumb">
+    {% for breadcrumb in breadcrumbs %}
+    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+    {% endfor %}
+  </ul>
+  {% if error_warning %}
+  <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}<button type="button" class="close" data-dismiss="alert">&times;</button></div>
+  {% endif %}
+  <div class="row">{{ column_left }}
+    {% if column_left and column_right %}
+    {% set class = 'col-sm-6' %}
+    {% elseif column_left or column_right %}
+    {% set class = 'col-sm-9' %}
+    {% else %}
+    {% set class = 'col-sm-12' %}
+    {% endif %}
+    <div id="content" class="{{ class }}">{{ content_top }}
+      <div class="ccp-simple-checkout" data-customer-save-url="{{ ccp_checkout_customer_save }}">
+        {% set checkout_trust_raw = ccp_checkout_trust_text[ccp_language_id]|default('') %}
+{% if (ccp_checkout_style_status is defined ? ccp_checkout_style_status : 1) and checkout_trust_raw %}
+<div class="ccp-checkout-trust-panel">
+  {% for item in checkout_trust_raw|replace({'|':'\n'})|split('\n') %}
+    {% if item|trim %}<span><i class="fa fa-check-circle"></i> {{ item|trim }}</span>{% endif %}
+  {% endfor %}
+</div>
+{% endif %}
+
+
+        <div class="ccp-simple-checkout-head">
+          <div>
+            <h1>{{ ccp_checkout_heading }}</h1>
+          </div>
+        </div>
+        <div class="ccp-simple-checkout-grid">
+          <aside class="ccp-simple-checkout-side">
+            <div class="ccp-simple-summary">
+              <div class="ccp-simple-summary-head"><h3>{{ ccp_checkout_order_summary }}</h3><a href="{{ ccp_cart_url|default('index.php?route=checkout/cart') }}" class="ccp-simple-edit-cart"><i class="fa fa-shopping-cart"></i> {{ ccp_checkout_edit_cart|default('Cart') }}</a></div>
+              {% if ccp_checkout_products %}
+              <div class="ccp-simple-summary-products">
+                {% for product in ccp_checkout_products %}
+                <div class="ccp-simple-summary-product">
+                  {% if product.thumb %}<img src="{{ product.thumb }}" alt="{{ product.name }}" width="70" height="70" loading="lazy" decoding="async" />{% endif %}
+                  <div><strong>{{ product.name }}</strong><span>{{ product.quantity }} x {{ product.price }}</span></div>
+                  <b>{{ product.total }}</b>
+                  {% if product.key is defined and product.key %}<button type="button" class="ccp-simple-summary-remove" data-ccp-checkout-remove="{{ product.key }}" title="{{ ccp_checkout_remove|default('Remove') }}" aria-label="{{ ccp_checkout_remove|default('Remove') }}"><i class="fa fa-trash"></i></button>{% endif %}
+                </div>
+                {% endfor %}
+              </div>
+              {% endif %}
+              {% if ccp_checkout_totals %}
+              <div class="ccp-simple-summary-totals">
+                {% for total in ccp_checkout_totals %}
+                <div><span>{{ total.title }}</span><strong>{{ total.text }}</strong></div>
+                {% endfor %}
+              </div>
+              {% endif %}
+              {% if ccp_checkout_digital_mode %}
+              <div class="ccp-simple-no-shipping"><i class="fa fa-check-circle"></i> {{ ccp_checkout_no_shipping }}</div>
+              {% if ccp_checkout_digital_instruction_status and ccp_checkout_digital_instruction %}
+              <div class="ccp-simple-digital-note"><i class="fa fa-info-circle"></i> <span>{{ ccp_checkout_digital_instruction }}</span></div>
+              {% endif %}
+              {% endif %}
+            </div>
+          </aside>
+          <div class="ccp-simple-checkout-main">
+            <section class="ccp-simple-step is-active" id="ccp-step-contact">
+              <div class="ccp-simple-step-title"><span>1</span><strong>{{ ccp_checkout_contact_title }}</strong></div>
+              <div class="alert alert-danger ccp-simple-error" style="display:none;"></div>
+              <form id="ccp-simple-customer-form" autocomplete="on">
+                <div class="row ccp-simple-fields">
+                  <div class="col-sm-12">
+                    <label for="ccp-input-customer-name">{{ ccp_entry_customer_name }}</label>
+                    <input type="text" name="customer_name" value="{{ ccp_customer_name }}" placeholder="{{ ccp_placeholder_customer_name }}" id="ccp-input-customer-name" class="form-control" maxlength="128" />
+                    <div class="text-danger ccp-field-error" data-error-for="customer_name"></div>
+                  </div>
+                  <div class="col-sm-6">
+                    <label for="ccp-input-email">{{ ccp_entry_email }}</label>
+                    <input type="email" name="email" value="{{ ccp_customer_email }}" placeholder="{{ ccp_placeholder_email }}" id="ccp-input-email" class="form-control" maxlength="96" />
+                    <div class="text-danger ccp-field-error" data-error-for="email"></div>
+                  </div>
+                  <div class="col-sm-6">
+                    <label for="ccp-input-telephone">{{ ccp_entry_telephone }}</label>
+                    <input type="tel" name="telephone" value="{{ ccp_customer_telephone }}" placeholder="{{ ccp_placeholder_telephone }}" id="ccp-input-telephone" class="form-control" maxlength="32" />
+                    <div class="text-danger ccp-field-error" data-error-for="telephone"></div>
+                  </div>
+                  <div class="col-sm-12">
+                    <label for="ccp-input-comment">{{ ccp_entry_comment }}</label>
+                    <textarea name="comment" rows="2" placeholder="{{ ccp_placeholder_comment }}" id="ccp-input-comment" class="form-control" maxlength="1000"></textarea>
+                    <div class="text-danger ccp-field-error" data-error-for="comment"></div>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary ccp-simple-primary"><i class="fa fa-credit-card"></i> {{ ccp_checkout_next_payment }}</button>
+              </form>
+            </section>
+            <section class="ccp-simple-step" id="ccp-step-payment">
+              <div class="ccp-simple-step-title"><span>2</span><strong>{{ ccp_checkout_payment_title }}</strong></div>
+              <div class="ccp-simple-payment-body"><div class="ccp-simple-placeholder ccp-simple-placeholder-wait"><i class="fa fa-info-circle"></i> {{ ccp_checkout_payment_wait|default(ccp_checkout_loading|default('Loading...')) }}</div></div>
+            </section>
+            <section class="ccp-simple-step" id="ccp-step-confirm">
+              <div class="ccp-simple-step-title"><span>3</span><strong>{{ ccp_checkout_confirm_title }}</strong></div>
+              <div class="ccp-simple-confirm-body"><div class="ccp-simple-placeholder ccp-simple-placeholder-wait"><i class="fa fa-info-circle"></i> {{ ccp_checkout_confirm_wait|default(ccp_checkout_loading|default('Loading...')) }}</div></div>
+            </section>
+          </div>
+
+        </div>
+      </div>
+      {{ content_bottom }}</div>
+    {{ column_right }}</div>
+</div>
+<script>
+(function($){
+  'use strict';
+
+  var $checkout = $('.ccp-simple-checkout');
+  var saveUrl = $checkout.data('customer-save-url');
+  var paymentUrl = '';
+
+  function setLoading($target) {
+    $target.html('<div class="ccp-simple-placeholder"><i class="fa fa-spinner fa-spin"></i> {{ ccp_checkout_loading|e('js') }}</div>');
+  }
+
+  function showMainError(message) {
+    $('#ccp-step-contact .ccp-simple-error').html('<i class="fa fa-exclamation-circle"></i> ' + message).show();
+  }
+
+  function clearErrors() {
+    $('.ccp-simple-error').hide().empty();
+    $('.ccp-field-error').empty();
+    $('.ccp-simple-fields .has-error').removeClass('has-error');
+  }
+
+  function activateStep(selector) {
+    $(selector).addClass('is-active');
+    var top = $(selector).offset() ? $(selector).offset().top - 90 : 0;
+    if (top > 0) {
+      $('html, body').animate({scrollTop: top}, 180);
+    }
+  }
+
+  function loadPayment(url) {
+    var $body = $('#ccp-step-payment .ccp-simple-payment-body');
+    setLoading($body);
+    activateStep('#ccp-step-payment');
+    $.ajax({
+      url: url,
+      dataType: 'html',
+      success: function(html) {
+        $body.html(html);
+      },
+      error: function() {
+        $body.html('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ ccp_error_payment_load|e('js') }}</div>');
+      }
+    });
+  }
+
+  function loadConfirm() {
+    var $body = $('#ccp-step-confirm .ccp-simple-confirm-body');
+    setLoading($body);
+    activateStep('#ccp-step-confirm');
+    $.ajax({
+      url: 'index.php?route=checkout/confirm',
+      dataType: 'html',
+      success: function(html) {
+        $body.html(html);
+      },
+      error: function() {
+        $body.html('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ ccp_error_confirm_load|e('js') }}</div>');
+      }
+    });
+  }
+
+  $('#ccp-simple-customer-form').on('submit', function(e){
+    e.preventDefault();
+    clearErrors();
+    var $button = $(this).find('button[type="submit"]');
+    $button.prop('disabled', true).addClass('is-loading');
+    $.ajax({
+      url: saveUrl,
+      type: 'post',
+      data: $(this).serialize(),
+      dataType: 'json',
+      success: function(json) {
+        if (json.redirect) {
+          location = json.redirect;
+          return;
+        }
+        if (json.error) {
+          if (json.error.warning) {
+            showMainError(json.error.warning);
+          }
+          $.each(json.error, function(key, value){
+            if (key !== 'warning') {
+              var $error = $('[data-error-for="' + key + '"]');
+              $error.text(value);
+              $error.closest('.col-sm-12, .col-sm-6').addClass('has-error');
+            }
+          });
+          return;
+        }
+        if (json.payment_method_url) {
+          paymentUrl = json.payment_method_url;
+          loadPayment(paymentUrl);
+        }
+      },
+      error: function() {
+        showMainError('{{ ccp_error_payment_load|e('js') }}');
+      },
+      complete: function() {
+        $button.prop('disabled', false).removeClass('is-loading');
+      }
+    });
+  });
+
+  $(document).delegate('#button-payment-method', 'click', function(){
+    $.ajax({
+      url: 'index.php?route=checkout/payment_method/save',
+      type: 'post',
+      data: $('#ccp-step-payment input[type=radio]:checked, #ccp-step-payment input[type=checkbox]:checked, #ccp-step-payment input[type=hidden], #ccp-step-payment textarea').serialize(),
+      dataType: 'json',
+      beforeSend: function() {
+        $('#button-payment-method').button('loading');
+      },
+      complete: function() {
+        $('#button-payment-method').button('reset');
+      },
+      success: function(json) {
+        $('.alert-dismissible, .text-danger').remove();
+        if (json.redirect) {
+          location = json.redirect;
+          return;
+        }
+        if (json.error) {
+          if (json.error.warning) {
+            $('#ccp-step-payment .ccp-simple-payment-body').prepend('<div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> ' + json.error.warning + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+          }
+          return;
+        }
+        loadConfirm();
+      },
+      error: function() {
+        $('#ccp-step-payment .ccp-simple-payment-body').prepend('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ ccp_error_confirm_load|e('js') }}</div>');
+      }
+    });
+  });
+
+  $(document).on('click', '[data-ccp-reload-payment]', function(e){
+    e.preventDefault();
+    if (paymentUrl) {
+      loadPayment(paymentUrl);
+    }
+  });
+
+  $(document).on('click', '[data-ccp-checkout-remove]', function(e){
+    e.preventDefault();
+    var key = $(this).attr('data-ccp-checkout-remove');
+    var $button = $(this);
+    if (!key || $button.data('ccp-removing')) {
+      return;
+    }
+    $button.data('ccp-removing', true).prop('disabled', true).addClass('is-loading');
+    $.ajax({
+      url: 'index.php?route=checkout/cart/remove',
+      type: 'post',
+      dataType: 'json',
+      data: {key: key},
+      success: function() {
+        window.location.reload();
+      },
+      error: function() {
+        $button.data('ccp-removing', false).prop('disabled', false).removeClass('is-loading');
+        alert('{{ ccp_error_cart_remove|default('Could not remove product from cart.')|e('js') }}');
+      }
+    });
+  });
+})(jQuery);
+</script>
+{{ footer }}

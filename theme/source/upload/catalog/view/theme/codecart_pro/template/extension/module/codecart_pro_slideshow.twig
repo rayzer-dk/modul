@@ -1,0 +1,77 @@
+<section class="ccp-custom-slideshow ccp-custom-slideshow-fit-{{ fit_mode }}" style="--ccp-custom-slide-height:{{ height_desktop }}px;--ccp-custom-slide-height-tablet:{{ height_tablet }}px;--ccp-custom-slide-height-mobile:{{ height_mobile }}px;">
+  {% if hide_native %}
+  <style>
+    body.ccp-theme #common-home #content > .slideshow.swiper-viewport,
+    body.ccp-theme #common-home #content > .swiper-viewport:has([id^="slideshow"]),
+    body.ccp-theme .ccp-common-home #content > .slideshow.swiper-viewport,
+    body.ccp-theme .ccp-common-home #content > .swiper-viewport:has([id^="slideshow"]){display:none!important;}
+  </style>
+  {% endif %}
+  <style>
+    body.ccp-theme .ccp-custom-slideshow{width:100%;max-width:var(--ccp-container,1240px);margin:16px auto 28px;position:relative;clear:both;}
+    body.ccp-theme .ccp-custom-slideshow__stage{position:relative;height:var(--ccp-custom-slide-height);border-radius:var(--ccp-element-radius,var(--ccp-radius,16px));overflow:hidden;background:#fff;box-shadow:0 12px 32px rgba(15,23,42,.08);}
+    body.ccp-theme .ccp-custom-slideshow__slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .32s ease,visibility .32s ease;text-decoration:none;color:#fff;overflow:hidden;background:#fff;}
+    body.ccp-theme .ccp-custom-slideshow__slide.is-active{opacity:1;visibility:visible;z-index:2;}
+    body.ccp-theme .ccp-custom-slideshow__img{display:block;max-width:none;max-height:none;margin:0;padding:0;border:0;object-position:center center;}
+    body.ccp-theme .ccp-custom-slideshow-fit-height .ccp-custom-slideshow__img{width:auto;height:100%;min-height:100%;}
+    body.ccp-theme .ccp-custom-slideshow-fit-width .ccp-custom-slideshow__img{width:100%;height:auto;min-width:100%;}
+    body.ccp-theme .ccp-custom-slideshow-fit-cover .ccp-custom-slideshow__img{width:100%;height:100%;object-fit:cover;}
+    body.ccp-theme .ccp-custom-slideshow__overlay{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:34px 38px;background:linear-gradient(180deg,rgba(15,23,42,0),rgba(15,23,42,.78));}
+    body.ccp-theme .ccp-custom-slideshow__title{margin:0 0 8px;font-size:30px;line-height:1.2;font-weight:800;color:#fff;}
+    body.ccp-theme .ccp-custom-slideshow__subtitle{margin:0 0 16px;font-size:16px;color:#eaf2ff;max-width:620px;}
+    body.ccp-theme .ccp-custom-slideshow__nav{position:absolute;top:50%;z-index:4;transform:translateY(-50%);width:44px;height:44px;border:0;border-radius:999px;background:rgba(255,255,255,.88);color:#0057b7;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(15,23,42,.12);}
+    body.ccp-theme .ccp-custom-slideshow__prev{left:14px;}body.ccp-theme .ccp-custom-slideshow__next{right:14px;}
+    body.ccp-theme .ccp-custom-slideshow__dots{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;}
+    body.ccp-theme .ccp-custom-slideshow__dot{width:10px;height:10px;border:0;border-radius:999px;background:#cbd5e1;padding:0;}body.ccp-theme .ccp-custom-slideshow__dot.is-active{background:#0057b7;}
+    @media(max-width:991px){body.ccp-theme .ccp-custom-slideshow__stage{height:var(--ccp-custom-slide-height-tablet);}body.ccp-theme .ccp-custom-slideshow__title{font-size:24px;}}
+    @media(max-width:767px){body.ccp-theme .ccp-custom-slideshow{width:calc(100% - 24px);margin:12px 12px 22px;}body.ccp-theme .ccp-custom-slideshow__stage{height:var(--ccp-custom-slide-height-mobile);border-radius:14px;}body.ccp-theme .ccp-custom-slideshow__nav{width:36px;height:36px;}body.ccp-theme .ccp-custom-slideshow__overlay{padding:22px 18px;}body.ccp-theme .ccp-custom-slideshow__title{font-size:20px;}body.ccp-theme .ccp-custom-slideshow__subtitle{display:none;}}
+  </style>
+  <div class="ccp-custom-slideshow__stage" data-ccp-custom-slideshow data-autoplay="{{ autoplay ? 1 : 0 }}" data-delay="{{ delay }}">
+    {% for slide in slides %}
+      {% if slide.link %}<a class="ccp-custom-slideshow__slide{% if loop.first %} is-active{% endif %}" href="{{ slide.link }}" data-ccp-custom-slide>{% else %}<div class="ccp-custom-slideshow__slide{% if loop.first %} is-active{% endif %}" data-ccp-custom-slide>{% endif %}
+        <img class="ccp-custom-slideshow__img" src="{{ slide.image }}" alt="{{ slide.title ? slide.title : store_name }}" loading="{{ loop.first ? 'eager' : 'lazy' }}" decoding="async"{% if loop.first %} fetchpriority="high"{% endif %} />
+        {% if show_text and (slide.title or slide.subtitle or slide.button) %}
+          <span class="ccp-custom-slideshow__overlay">
+            {% if slide.title %}<span class="ccp-custom-slideshow__title">{{ slide.title }}</span>{% endif %}
+            {% if slide.subtitle %}<span class="ccp-custom-slideshow__subtitle">{{ slide.subtitle }}</span>{% endif %}
+            {% if slide.button and slide.link %}<span class="btn ccp-btn">{{ slide.button }}</span>{% endif %}
+          </span>
+        {% endif %}
+      {% if slide.link %}</a>{% else %}</div>{% endif %}
+    {% endfor %}
+    {% if slides|length > 1 %}
+      <button type="button" class="ccp-custom-slideshow__nav ccp-custom-slideshow__prev" data-ccp-custom-prev aria-label="Previous"><i class="fa fa-angle-left"></i></button>
+      <button type="button" class="ccp-custom-slideshow__nav ccp-custom-slideshow__next" data-ccp-custom-next aria-label="Next"><i class="fa fa-angle-right"></i></button>
+    {% endif %}
+  </div>
+  {% if slides|length > 1 %}
+    <div class="ccp-custom-slideshow__dots">
+      {% for slide in slides %}<button type="button" class="ccp-custom-slideshow__dot{% if loop.first %} is-active{% endif %}" data-ccp-custom-dot="{{ loop.index0 }}" aria-label="Slide {{ loop.index }}"></button>{% endfor %}
+    </div>
+  {% endif %}
+  <script>
+    (function(){
+      var roots=document.querySelectorAll('[data-ccp-custom-slideshow]');
+      for(var r=0;r<roots.length;r++){
+        (function(root){
+          if(root.__ccpReady){return;}root.__ccpReady=true;
+          var box=root.closest('.ccp-custom-slideshow');
+          var slides=root.querySelectorAll('[data-ccp-custom-slide]');
+          var dots=box?box.querySelectorAll('[data-ccp-custom-dot]'):[];
+          if(slides.length<2){return;}
+          var index=0,timer=0,startX=0,startY=0,startTime=0;
+          function show(n){index=(n+slides.length)%slides.length;for(var i=0;i<slides.length;i++){slides[i].classList.toggle('is-active',i===index);if(dots[i]){dots[i].classList.toggle('is-active',i===index);}}}
+          function next(){show(index+1);}function prev(){show(index-1);}function stop(){if(timer){clearInterval(timer);timer=0;}}
+          function play(){stop();if(root.getAttribute('data-autoplay')==='1'){var delay=parseInt(root.getAttribute('data-delay')||'4000',10);timer=setInterval(next,delay>1200?delay:4000);}}
+          var bNext=box?box.querySelector('[data-ccp-custom-next]'):null,bPrev=box?box.querySelector('[data-ccp-custom-prev]'):null;
+          if(bNext){bNext.addEventListener('click',function(e){e.preventDefault();next();play();});}
+          if(bPrev){bPrev.addEventListener('click',function(e){e.preventDefault();prev();play();});}
+          for(var d=0;d<dots.length;d++){dots[d].addEventListener('click',function(e){e.preventDefault();show(parseInt(this.getAttribute('data-ccp-custom-dot'),10)||0);play();});}
+          root.addEventListener('touchstart',function(e){var t=e.touches&&e.touches[0];if(!t){return;}startX=t.clientX;startY=t.clientY;startTime=Date.now();stop();},{passive:true});
+          root.addEventListener('touchend',function(e){var t=e.changedTouches&&e.changedTouches[0];if(!t){play();return;}var dx=t.clientX-startX,dy=t.clientY-startY;if(Date.now()-startTime<900&&Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)*1.2){dx<0?next():prev();}play();},{passive:true});
+          root.addEventListener('mouseenter',stop);root.addEventListener('mouseleave',play);play();
+        })(roots[r]);
+      }
+    })();
+  </script>
+</section>

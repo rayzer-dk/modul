@@ -1,0 +1,24 @@
+{% if categories %}
+<section class="ccp-category-wall ccp-category-wall-module ccp-category-wall--{{ style }} ccp-category-wall--{{ display_mode }}" style="--ccp-wall-cols-desktop:{{ columns_desktop }};--ccp-wall-cols-tablet:{{ columns_tablet }};--ccp-wall-cols-mobile:{{ columns_mobile }};--ccp-wall-card-desktop:{{ card_basis_desktop }};--ccp-wall-card-tablet:{{ card_basis_tablet }};--ccp-wall-card-mobile:{{ card_basis_mobile }};">
+  <div class="ccp-category-wall__head">
+    <div>
+      <h2 class="ccp-category-wall__title">{{ heading_title }}</h2>
+      {% if text_subtitle %}<div class="ccp-category-wall__subtitle">{{ text_subtitle }}</div>{% endif %}
+    </div>
+  </div>
+  <div class="ccp-category-wall__grid">
+    {% for category in categories %}
+      <a class="ccp-category-wall__card" href="{{ category.href }}" aria-label="{{ text_open_category }} {{ category.name }}">
+        {% if show_image and category.thumb %}
+          <span class="ccp-category-wall__image"><img src="{{ category.thumb }}" alt="{{ category.name }}" loading="lazy" decoding="async"></span>
+        {% endif %}
+        <span class="ccp-category-wall__body">
+          <span class="ccp-category-wall__name">{{ category.name }}</span>
+          {% if show_description and category.description %}<span class="ccp-category-wall__description">{{ category.description }}</span>{% endif %}
+          {% if show_count and category.total is not same as(null) %}<span class="ccp-category-wall__count">{{ category.total }} {{ text_products }}</span>{% endif %}
+        </span>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}

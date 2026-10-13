@@ -1,0 +1,115 @@
+{% set ccp_information_mode_active = ccp_information_mode|default(0) ? 1 : 0 %}
+{% if ccp_enable_custom_html|default(0) and ccp_custom_html_before_footer|default('') %}{{ ccp_custom_html_before_footer }}{% endif %}
+{% if ccp_seo_footer_text_status|default(0) and ccp_seo_footer_text[ccp_language_id]|default('') %}<section class="ccp-seo-footer-text"><div class="container">{{ ccp_seo_footer_text[ccp_language_id] }}</div></section>{% endif %}
+{% set footer_text = ccp_footer_text[ccp_language_id]|default('') %}
+<footer class="ccp-footer">
+  <div class="container">
+    {% if footer_text %}<div class="ccp-footer-about">{{ footer_text }}</div>{% endif %}
+    {% if (ccp_enable_subscribe is defined ? ccp_enable_subscribe : 1) %}
+    <div class="ccp-subscribe-box ccp-subscribe-box-compact ccp-subscribe-one-line">
+      <div class="ccp-subscribe-info">
+        <div class="ccp-subscribe-icon"><i class="fa fa-envelope-o"></i></div>
+        <div class="ccp-subscribe-copy">
+          <div class="ccp-footer-title">{{ ccp_text_subscribe|default('Subscribe') }}</div>
+          <div class="ccp-subscribe-note">{{ ccp_text_subscribe_note|default('News, promotions and useful updates') }}</div>
+        </div>
+      </div>
+      <form id="ccp-subscribe-form" class="ccp-subscribe-form">
+        <input type="hidden" name="source" value="footer" />
+        <input type="text" name="ccp_website" value="" class="ccp-honeypot" tabindex="-1" autocomplete="off" />
+        <div class="ccp-subscribe-row"><input type="email" name="email" class="form-control" placeholder="{{ ccp_text_subscribe_placeholder|default('Your email') }}" required /><button class="btn ccp-btn" type="submit"><i class="fa fa-paper-plane"></i> {{ ccp_button_send|default('Send') }}</button></div>
+        <div class="ccp-subscribe-message"></div>
+      </form>
+    </div>
+    {% endif %}
+
+    <div class="row">
+      {% if informations %}<div class="col-xs-12 col-sm-6 col-md-3"><div class="ccp-footer-title">{{ text_information }}</div><ul class="list-unstyled">{% for information in informations %}<li><a href="{{ information.href }}">{{ information.title }}</a></li>{% endfor %}</ul></div>{% endif %}
+      <div class="col-xs-12 col-sm-6 col-md-3"><div class="ccp-footer-title">{{ text_service }}</div><ul class="list-unstyled"><li><a href="{{ contact }}">{{ text_contact }}</a></li><li><a href="{{ return }}">{{ text_return }}</a></li><li><a href="{{ sitemap }}">{{ text_sitemap }}</a></li></ul></div>
+      <div class="col-xs-12 col-sm-6 col-md-3"><div class="ccp-footer-title">{{ text_extra }}</div><ul class="list-unstyled"><li><a href="{{ manufacturer }}">{{ text_manufacturer }}</a></li><li><a href="{{ voucher }}">{{ text_voucher }}</a></li><li><a href="{{ affiliate }}">{{ text_affiliate }}</a></li><li><a href="{{ special }}">{{ text_special }}</a></li>{% if ccp_blog_status|default(0) %}<li><a href="{{ ccp_blog_href }}">{{ ccp_blog_menu_title[ccp_language_id]|default('Blog') }}</a></li>{% endif %}</ul></div>
+      <div class="col-xs-12 col-sm-6 col-md-3"><div class="ccp-footer-title">{{ text_account }}</div><ul class="list-unstyled"><li><a href="{{ account }}">{{ text_account }}</a></li><li><a href="{{ order }}">{{ text_order }}</a></li><li><a href="{{ wishlist }}">{{ text_wishlist }}</a></li><li><a href="{{ newsletter }}">{{ text_newsletter }}</a></li></ul>{% if (ccp_footer_show_contacts is defined ? ccp_footer_show_contacts : 1) and ccp_footer_payment_icons|default('') %}<div class="ccp-footer-contacts"><div class="ccp-payments">{{ ccp_footer_payment_icons }}</div></div>{% endif %}</div>
+    </div>
+
+
+    {% set footer_signature = ccp_footer_signature[ccp_language_id]|default('') %}
+    <div class="ccp-footer-bottom"><div class="ccp-footer-signature">{{ footer_signature ? footer_signature : (ccp_store_name|default(name|default('')) ~ ' © ' ~ 'now'|date('Y')) }}</div></div>
+  </div>
+</footer>
+{% set ccp_cart_target = ccp_cart|default('index.php?route=checkout/cart') %}
+{% set ccp_checkout_target = ccp_checkout|default('index.php?route=checkout/checkout') %}
+{% if (ccp_floating_contacts is defined ? ccp_floating_contacts : 1) %}
+<div class="ccp-floating-contacts ccp-floating-collapsed ccp-floating-{{ ccp_floating_position|default('right') }}" aria-label="Floating actions">
+  <button type="button" class="ccp-float-btn ccp-float-toggle" aria-expanded="false" aria-label="{{ ccp_text_floating_contacts|default('Contacts') }}" title="{{ ccp_text_floating_contacts|default('Contacts') }}"><i class="fa fa-comments"></i></button>
+  <div class="ccp-floating-actions" aria-hidden="true">
+    {% if not ccp_information_mode_active and ccp_floating_cart_status|default(0) %}<a class="ccp-float-btn ccp-float-cart" href="{{ ccp_cart_target|default('index.php?route=checkout/cart') }}" aria-label="{{ ccp_text_floating_cart|default('Cart') }}" title="{{ ccp_text_floating_cart|default('Cart') }}"><i class="fa fa-shopping-cart"></i></a>{% endif %}
+    {% if ccp_floating_wishlist_status|default(0) %}<a class="ccp-float-btn ccp-float-wishlist" href="{{ ccp_wishlist|default('index.php?route=account/wishlist') }}" aria-label="{{ ccp_text_floating_wishlist|default('Wishlist') }}" title="{{ ccp_text_floating_wishlist|default('Wishlist') }}"><i class="fa fa-heart"></i></a>{% endif %}
+    {% if ccp_floating_compare_status|default(0) %}<a class="ccp-float-btn ccp-float-compare" href="{{ ccp_compare|default('index.php?route=product/compare') }}" aria-label="{{ ccp_text_floating_compare|default('Compare') }}" title="{{ ccp_text_floating_compare|default('Compare') }}"><i class="fa fa-balance-scale"></i></a>{% endif %}
+    {% if (ccp_enable_callback is defined ? ccp_enable_callback : 1) %}<button type="button" class="ccp-float-btn ccp-float-callback ccp-js-callback-open" aria-label="{{ ccp_text_callback_request|default(ccp_text_callback|default('Request a call')) }}" title="{{ ccp_text_callback_request|default(ccp_text_callback|default('Request a call')) }}"><i class="fa fa-clock-o"></i></button>{% endif %}
+    {% if ccp_floating_phone|default('') %}<a class="ccp-float-btn ccp-float-phone" href="tel:{{ ccp_floating_phone|replace({' ':'','(':'',')':'','-':''}) }}" aria-label="{{ ccp_text_call_now|default('Call now') }}" title="{{ ccp_text_call_now|default('Call now') }}"><i class="fa fa-phone"></i></a>{% endif %}
+    {% if ccp_floating_telegram|default('') %}<a class="ccp-float-btn ccp-float-telegram" href="{{ ccp_floating_telegram|e('html_attr') }}" data-ccp-social-value="{{ ccp_floating_telegram|e('html_attr') }}" target="_blank" rel="noopener" aria-label="Telegram" title="Telegram"><i class="fa fa-paper-plane"></i></a>{% endif %}
+    {% if ccp_floating_viber|default('') %}<a class="ccp-float-btn ccp-float-viber" href="{{ ccp_floating_viber|e('html_attr') }}" data-ccp-social-value="{{ ccp_floating_viber|e('html_attr') }}" target="_blank" rel="noopener" aria-label="Viber" title="Viber"><i class="fa fa-comment"></i></a>{% endif %}
+    {% if ccp_floating_whatsapp|default('') %}<a class="ccp-float-btn ccp-float-whatsapp" href="{{ ccp_floating_whatsapp|e('html_attr') }}" data-ccp-social-value="{{ ccp_floating_whatsapp|e('html_attr') }}" target="_blank" rel="noopener" aria-label="WhatsApp" title="WhatsApp"><i class="fa fa-whatsapp"></i></a>{% endif %}
+  </div>
+  {% if ccp_dark_theme_status|default(0) and ccp_dark_theme_show_toggle|default(1) %}<button type="button" class="ccp-float-btn ccp-dark-theme-toggle" data-ccp-dark-toggle aria-pressed="false" aria-label="{{ ccp_text_dark_theme|default('Theme mode') }}" title="{{ ccp_text_dark_theme|default('Theme mode') }}"><i class="fa fa-moon-o" aria-hidden="true"></i></button>{% endif %}
+  <button type="button" class="ccp-float-btn ccp-scroll-top ccp-float-top ccp-float-top-standalone" aria-label="{{ ccp_text_scroll_top|default('Back to top') }}" title="{{ ccp_text_scroll_top|default('Back to top') }}"><i class="fa fa-angle-up"></i></button>
+</div>
+{% endif %}
+{% if ccp_enable_custom_html|default(0) and ccp_custom_html_footer_bottom|default('') %}{{ ccp_custom_html_footer_bottom }}{% endif %}
+
+{% if (ccp_enable_callback is defined ? ccp_enable_callback : 1) %}
+<div class="modal fade ccp-callback-modal" id="ccp-callback-modal" tabindex="-1" aria-hidden="true"><div class="modal-dialog "><div class="modal-content"><form id="ccp-callback-form"><div class="modal-header"><h5 class="modal-title">{{ ccp_text_callback|default('Callback') }}</h5><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body"><input type="text" name="ccp_website" value="" class="ccp-honeypot" tabindex="-1" autocomplete="off" /><div class="form-group"><label class="control-label">{{ ccp_text_name|default('Name') }}</label><input type="text" name="name" class="form-control" maxlength="128" /></div><div class="form-group required"><label class="control-label">{{ ccp_text_phone|default('Phone') }}</label><input type="text" name="phone" class="form-control" maxlength="64" required /></div><div class="form-group"><label class="control-label">{{ ccp_text_email|default('Email') }}</label><input type="email" name="email" class="form-control" maxlength="128" /></div><div class="form-group"><label class="control-label">{{ ccp_text_comment|default('Comment') }}</label><textarea name="comment" rows="3" class="form-control"></textarea></div><div class="alert ccp-callback-message"></div></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">{{ ccp_button_close|default('Close') }}</button><button type="submit" class="btn ccp-btn">{{ ccp_button_send|default('Send') }}</button></div></form></div></div></div>
+{% endif %}
+<div class="ccp-popup-notification" id="ccp-popup-notification"><button type="button" class="ccp-popup-close" aria-label="{{ ccp_text_popup_close|default('Close') }}">×</button><div class="ccp-popup-text"></div></div>
+
+{% if not ccp_information_mode_active and (ccp_cart_drawer_status is defined ? ccp_cart_drawer_status : 1) %}
+<div class="ccp-cart-drawer ccp-cart-drawer-{{ ccp_cart_drawer_position|default('right') }}" id="ccp-cart-drawer" aria-hidden="true" inert>
+  <div class="ccp-cart-drawer__overlay" data-ccp-cart-close></div>
+  <div class="ccp-cart-drawer__panel" role="dialog" aria-modal="true" aria-label="{{ ccp_text_cart|default(text_shopping_cart|default('Cart')) }}">
+    <div class="ccp-cart-drawer__head"><strong><i class="fa fa-shopping-cart"></i> {{ ccp_text_cart|default(text_shopping_cart|default('Cart')) }}</strong><button type="button" class="close" data-ccp-cart-close aria-label="Close"><span aria-hidden="true">&times;</span></button></div>
+    <div class="ccp-cart-drawer__body" data-ccp-cart-content><div class="ccp-loading-line"></div></div>
+    <div class="ccp-cart-drawer__foot"><button type="button" class="btn btn-default" data-ccp-cart-close>{{ ccp_text_continue_shopping|default('Continue shopping') }}</button><a href="{{ ccp_direct_checkout_after_add_status|default(0) ? ccp_checkout_target : ccp_cart_target }}" class="btn ccp-btn">{{ ccp_direct_checkout_after_add_status|default(0) ? ccp_text_checkout|default('Checkout') : ccp_text_go_to_cart|default('Go to cart') }}</a></div>
+  </div>
+</div>
+{% endif %}
+<div class="ccp-toast-stack ccp-toast-{{ ccp_notification_position|default('top-right') }}" id="ccp-toast-stack" aria-live="polite" aria-atomic="true"></div>
+
+{% if not ccp_information_mode_active and (ccp_enable_quick_order is defined ? ccp_enable_quick_order : 1) %}
+<div class="modal fade ccp-quick-modal ccp-quick-order-modal" id="ccp-quick-order-modal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog "><div class="modal-content"><form id="ccp-quick-order-form">
+    <div class="modal-header"><h5 class="modal-title"><i class="fa fa-bolt"></i> {{ ccp_button_quick_order|default('Buy in 1 click') }}</h5><button type="button" class="close" data-dismiss="modal" aria-label="{{ ccp_button_close|default('Close') }}"><span aria-hidden="true">&times;</span></button></div>
+    <div class="modal-body">
+      <input type="hidden" name="product_id" value="" /><input type="hidden" name="quantity" value="1" /><input type="hidden" name="source" value="" />
+      <input type="text" name="ccp_website" value="" class="ccp-honeypot" tabindex="-1" autocomplete="off" />
+      <div class="ccp-quick-order-product"></div>
+      <div class="ccp-quick-order-options"></div>
+      <div class="ccp-quick-order-hidden"></div>
+      <div class="row"><div class="col-sm-6"><div class="form-group"><label class="control-label">{{ ccp_text_name|default('Name') }}</label><input type="text" name="name" class="form-control" maxlength="128" autocomplete="name" /></div></div><div class="col-sm-6"><div class="form-group required"><label class="control-label">{{ ccp_text_phone|default('Phone') }}</label><input type="text" name="phone" class="form-control" maxlength="64" required autocomplete="tel" /></div></div></div>
+      <div class="form-group{% if ccp_quick_order_required_email|default(0) %} required{% endif %}"><label class="control-label">{{ ccp_text_email|default('Email') }}</label><input type="email" name="email" class="form-control" maxlength="128"{% if ccp_quick_order_required_email|default(0) %} required{% endif %} autocomplete="email" /></div>
+      <div class="form-group"><label class="control-label">{{ ccp_text_comment|default('Comment') }}</label><textarea name="comment" rows="3" class="form-control"></textarea></div>
+      {% if ccp_quick_order_privacy_text[ccp_language_id]|default('') %}<div class="help-block ccp-quick-privacy">{{ ccp_quick_order_privacy_text[ccp_language_id] }}</div>{% else %}<div class="help-block ccp-quick-privacy">{{ ccp_text_quick_order_help|default('By clicking the button, you send a request to the store manager.') }}</div>{% endif %}
+      <div class="alert ccp-quick-message"></div>
+    </div>
+    <div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">{{ ccp_button_close|default('Close') }}</button><button type="submit" class="btn ccp-btn"><i class="fa fa-paper-plane"></i> {{ ccp_button_send|default('Send') }}</button></div>
+  </form></div></div>
+</div>
+{% endif %}
+
+
+
+{% if (ccp_mobile_bottom_bar is defined ? ccp_mobile_bottom_bar : 1) %}
+<nav class="ccp-mobile-bar{% if ccp_information_mode_active %} ccp-mobile-bar-information{% endif %}">
+  <a href="{{ ccp_home|default('') }}"><i class="fa fa-home"></i>{{ ccp_text_home|default('Home') }}</a>
+  <a href="#ccp-mobile-menu" data-ccp-mobile-menu-toggle aria-controls="ccp-mobile-menu" aria-expanded="false"><i class="fa fa-bars"></i>{{ ccp_text_catalog_short|default('Catalog') }}</a>
+  <a href="{{ ccp_search|default('') }}"><i class="fa fa-search"></i>{{ ccp_text_search|default('Search') }}</a>
+  <a href="{{ ccp_account|default('') }}"><i class="fa fa-user-o"></i>{{ ccp_text_account_short|default('Account') }}</a>
+  {% if not ccp_information_mode_active %}<a href="{{ ccp_cart_target }}"><i class="fa fa-shopping-basket"></i>{{ ccp_text_cart_short|default('Cart') }}</a>{% endif %}
+</nav>
+{% endif %}
+
+
+<script src="catalog/view/javascript/common.js"></script>
+<script src="catalog/view/javascript/bootstrap/js/bootstrap.min.js"></script>
+<script src="catalog/view/theme/codecart_pro/javascript/codecart_pro.js?v=8.7.7"></script>
+{% if ccp_enable_custom_js|default(0) %}{% if ccp_custom_js_footer|default('') %}<script>{{ ccp_custom_js_footer }}</script>{% endif %}{% if ccp_custom_js|default('') %}<script>{{ ccp_custom_js }}</script>{% endif %}{% if ccp_custom_js_after_load|default('') %}<script>window.addEventListener('load', function(){ {{ ccp_custom_js_after_load }} });</script>{% endif %}{% endif %}
+
+</body></html>

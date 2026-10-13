@@ -1,0 +1,11 @@
+CodeCart PRO Theme 8.7.7 — release validation, 2026-10-13
+Status: not ready for unconditional production deployment; staging archive.
+Current archive: static syntax/structure checks are re-run after metadata synchronization.
+Recorded earlier native checks: foundation 8 lifecycle tests; storefront 7 public HTTP tests (including login-only price privacy); admin 7 public/static tests PASS. Admin responsive screenshots/DOM measurements: settings/blog/reviews at 360/390/768/1024/1440 pixels; zero measured overflow for these 15 cases.
+Storefront: 18 measured browser cases. Mobile cart popup reported fractional 1–2px document rounding overflow; label fits. Strict zero overflow not yet confirmed.
+71 supplied module ZIPs: static contract matrix only; licensed active integrations are NOT RUN, not PASS.
+Current root browser checks PASS at desktop1280: checkout summary sticks at109px, stops before footer; no trust row below footer; full Ukrainian popup CTA clientWidth=scrollWidth364px; Escape closes modal/restores cart button focus; dark mode toggles to rgb(15,23,42) without overflow. Root evidence: root-ui-final.json.
+NOT RUN: final full native runtime suite after packaging; completed order database proof; final gallery/video module interactions; current full backup/restore; actual target-store PHP 8.1–8.3 runtime matrix; final compact mobile admin-navigation browser check after the earlier15case measurements.
+SKIPPED: hanging browser inventory/interaction processes, per explicit user request. No tests were altered to turn these cases green.
+Earlier checks are contextual evidence, not proof that every final-package workflow passes.
+Use a full files+database backup and staging store before deployment. No live store settings, production content or licensing were changed by this release.

@@ -1,0 +1,114 @@
+{{ header }}
+<div class="ccp-breadcrumb-wrap"><div class="container"><ul class="breadcrumb">{% for breadcrumb in breadcrumbs %}{% set ccp_breadcrumb_label = breadcrumb.text|striptags|trim %}<li><a href="{{ breadcrumb.href }}"{% if not ccp_breadcrumb_label %} aria-label="{{ ccp_text_home|default(text_home|default('Home')) }}" title="{{ ccp_text_home|default(text_home|default('Home')) }}"{% endif %}>{{ breadcrumb.text }}</a></li>{% endfor %}</ul></div></div>
+<div id="product-search" class="container ccp-search-page ccp-search-page-pro">
+  <div class="row">{{ column_left }}{% if column_left and column_right %}{% set class = 'col-sm-6' %}{% elseif column_left or column_right %}{% set class = 'col-sm-9' %}{% else %}{% set class = 'col-sm-12' %}{% endif %}
+    <div id="content" class="{{ class }}">{{ content_top }}
+      <div class="ccp-search-hero">
+        <div class="ccp-search-hero__decor ccp-search-hero__decor--one"></div>
+        <div class="ccp-search-hero__decor ccp-search-hero__decor--two"></div>
+        <div class="ccp-search-hero__head">
+          <span class="ccp-search-hero__icon"><i class="fa fa-search"></i></span>
+          <div class="ccp-search-hero__titlebox">
+            <h1 class="ccp-search-hero__title">{{ heading_title }}</h1>
+            <div class="ccp-search-hero__subtitle">{{ text_search }}</div>
+          </div>
+        </div>
+        <div class="ccp-search-hero__form">
+          <div class="ccp-search-field ccp-search-keyword">
+            <label class="control-label" for="input-search">{{ entry_search }}</label>
+            <div class="ccp-search-input-wrap">
+              <i class="fa fa-keyboard-o"></i>
+              <input type="text" name="search" value="{{ search }}" placeholder="{{ text_keyword }}" id="input-search" class="form-control" />
+            </div>
+          </div>
+          <div class="ccp-search-field ccp-search-category">
+            <label class="control-label" for="input-category">{{ text_category }}</label>
+            <div class="ccp-search-select-wrap">
+              <i class="fa fa-folder-open-o"></i>
+              <select name="category_id" id="input-category" class="form-control">
+                <option value="0">{{ text_category }}</option>
+                {% for category_1 in categories %}
+                  {% if category_1.category_id == category_id %}
+                    <option value="{{ category_1.category_id }}" selected="selected">{{ category_1.name }}</option>
+                  {% else %}
+                    <option value="{{ category_1.category_id }}">{{ category_1.name }}</option>
+                  {% endif %}
+                  {% for category_2 in category_1.children %}
+                    {% if category_2.category_id == category_id %}
+                      <option value="{{ category_2.category_id }}" selected="selected">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ category_2.name }}</option>
+                    {% else %}
+                      <option value="{{ category_2.category_id }}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ category_2.name }}</option>
+                    {% endif %}
+                    {% for category_3 in category_2.children %}
+                      {% if category_3.category_id == category_id %}
+                        <option value="{{ category_3.category_id }}" selected="selected">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ category_3.name }}</option>
+                      {% else %}
+                        <option value="{{ category_3.category_id }}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ category_3.name }}</option>
+                      {% endif %}
+                    {% endfor %}
+                  {% endfor %}
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <button type="button" id="button-search" class="btn ccp-btn ccp-search-submit"><i class="fa fa-search"></i><span>{{ button_search }}</span></button>
+          <div class="ccp-search-checks">
+            <label class="ccp-search-check">{% if sub_category %}<input type="checkbox" name="sub_category" value="1" checked="checked" />{% else %}<input type="checkbox" name="sub_category" value="1" />{% endif %}<span>{{ text_sub_category }}</span></label>
+            <label class="ccp-search-check">{% if description %}<input type="checkbox" name="description" value="1" id="description" checked="checked" />{% else %}<input type="checkbox" name="description" value="1" id="description" />{% endif %}<span>{{ entry_description }}</span></label>
+          </div>
+        </div>
+      </div>
+      <div class="ccp-search-results-head">
+        <h2 class="ccp-search-results-title">{{ text_search }}</h2>
+        {% if products %}<span class="ccp-search-results-badge"><i class="fa fa-check-circle"></i> {{ results }}</span>{% endif %}
+      </div>
+      {% if products %}
+      <div class="ccp-toolbar{% if ccp_category_sticky_toolbar|default(1) %} ccp-toolbar-sticky{% endif %}"><div class="ccp-toolbar-left"><a href="{{ compare }}" id="compare-total" class="btn btn-link">{{ text_compare }}</a><div class="ccp-view-switch" role="group" aria-label="View"><button type="button" class="btn btn-light ccp-view-btn active" data-ccp-view="grid" aria-label="{{ ccp_text_grid|default('Grid') }}" title="{{ ccp_text_grid|default('Grid') }}"><i class="fa fa-th" aria-hidden="true"></i></button><button type="button" class="btn btn-light ccp-view-btn" data-ccp-view="list" aria-label="{{ ccp_text_list|default('List') }}" title="{{ ccp_text_list|default('List') }}"><i class="fa fa-list" aria-hidden="true"></i></button></div></div><div class="form-inline ccp-toolbar-selects"><div class="form-group"><label class="control-label" for="input-sort">{{ text_sort }}</label> <select id="input-sort" class="form-control" onchange="location = this.value;">{% for sorts in sorts %}<option value="{{ sorts.href }}"{% if sorts.value == '%s-%s'|format(sort, order) %} selected="selected"{% endif %}>{{ sorts.text }}</option>{% endfor %}</select></div> <div class="form-group"><label class="control-label" for="input-limit">{{ text_limit }}</label> <select id="input-limit" class="form-control" onchange="location = this.value;">{% for limits in limits %}<option value="{{ limits.href }}"{% if limits.value == limit %} selected="selected"{% endif %}>{{ limits.text }}</option>{% endfor %}</select></div></div></div>
+      {% set ccp_has_search_sidebar = column_left or column_right %}<div class="ccp-product-grid ccp-product-grid--search{% if ccp_has_search_sidebar %} ccp-product-grid--with-sidebar{% endif %}" style="--ccp-cols-desktop:{{ ccp_has_search_sidebar ? 4 : 5 }};--ccp-cols-tablet:3;--ccp-cols-mobile:2">
+        {% for product in products %}
+        <div class="ccp-card ccp-product-card ccp-card-full-click" data-product-id="{{ product.product_id }}" data-href="{{ product.href }}">
+          <a class="ccp-card-link" href="{{ product.href }}" aria-label="{{ product.name|e('html_attr') }}"></a>
+          <div class="ccp-product-card__image"><a href="{{ product.href }}" class="ccp-product-image-link"><img class="ccp-img-main" src="{{ product.thumb }}" alt="{{ product.name }}" loading="lazy" decoding="async" width="640" height="360" /></a></div>
+          <div class="ccp-product-card__body">
+            <div class="ccp-product-card__name"><a href="{{ product.href }}">{{ product.name }}</a></div>
+            {% if product.description %}<div class="ccp-product-card__desc">{{ product.description }}</div>{% endif %}
+            {% if product.rating %}<div class="ccp-product-card__rating" aria-label="{{ product.rating }}/5">{% for i in 1..5 %}{% if product.rating < i %}<i class="fa fa-star-o"></i>{% else %}<i class="fa fa-star"></i>{% endif %}{% endfor %}</div>{% endif %}
+            {% if product.price %}<div class="ccp-product-card__price">{% if not product.special %}{{ product.price }}{% else %}<span class="price-new">{{ product.special }}</span><span class="price-old">{{ product.price }}</span>{% endif %}{% if product.tax %}<span class="price-tax">{{ text_tax }} {{ product.tax }}</span>{% endif %}</div>{% endif %}
+            <div class="ccp-product-card__actions">
+              <button type="button" class="btn ccp-btn ccp-card-cart" data-product-id="{{ product.product_id }}"><i class="fa fa-shopping-cart"></i> <span>{{ button_cart }}</span></button>
+              <button type="button" class="ccp-mini-btn" onclick="wishlist.add('{{ product.product_id }}');" title="{{ button_wishlist }}"><i class="fa fa-heart"></i></button>
+              <button type="button" class="ccp-mini-btn" onclick="compare.add('{{ product.product_id }}');" title="{{ button_compare }}"><i class="fa fa-exchange"></i></button>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="row ccp-pagination-row"><div class="col-sm-6 text-left">{{ pagination }}</div><div class="col-sm-6 text-right">{{ results }}</div></div>
+      {% else %}
+      <div class="ccp-search-empty"><span class="ccp-search-empty__icon"><i class="fa fa-search"></i></span><div class="ccp-search-empty__text">{{ text_empty }}</div></div>
+      {% endif %}
+      {{ content_bottom }}</div>{{ column_right }}</div>
+</div>
+<script>
+$('#button-search').on('click', function() {
+  var url = 'index.php?route=product/search';
+  var search = $('#content input[name=\'search\']').val();
+  if (search) { url += '&search=' + encodeURIComponent(search); }
+  var category_id = $('#content select[name=\'category_id\']').val();
+  if (category_id > 0) { url += '&category_id=' + encodeURIComponent(category_id); }
+  if ($('#content input[name=\'sub_category\']').prop('checked')) { url += '&sub_category=true'; }
+  if ($('#content input[name=\'description\']').prop('checked')) { url += '&description=true'; }
+  location = url;
+});
+$('#content input[name=\'search\']').on('keydown', function(e) {
+  if (e.keyCode == 13) { $('#button-search').trigger('click'); }
+});
+$('select[name=\'category_id\']').on('change', function() {
+  if (this.value == '0') {
+    $('input[name=\'sub_category\']').prop('disabled', true);
+  } else {
+    $('input[name=\'sub_category\']').prop('disabled', false);
+  }
+}).trigger('change');
+</script>
+{{ footer }}

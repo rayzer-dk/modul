@@ -1,0 +1,96 @@
+{{ header }}{{ column_left }}
+<div id="content" class="ccp-admin-module ccp-admin-blog ccp-admin-blog-v861">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        {% if view %}<a href="{{ view }}" target="_blank" rel="noopener" class="btn btn-info"><i class="fa fa-external-link"></i> <span>{{ button_open_article }}</span></a>{% endif %}
+        <button type="submit" form="form-codecart-blog" class="btn btn-primary"><i class="fa fa-save"></i> <span>{{ button_save }}</span></button>
+        <a href="{{ cancel }}" class="btn btn-default"><i class="fa fa-reply"></i> <span>{{ button_cancel }}</span></a>
+      </div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">{% for breadcrumb in breadcrumbs %}<li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>{% endfor %}</ul>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    {% if error_warning %}<div class="alert alert-danger alert-dismissible" role="alert"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}<button type="button" class="close" data-dismiss="alert">&times;</button></div>{% endif %}
+
+    <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-codecart-blog" class="form-horizontal">
+      <div class="panel panel-default ccp-blog-editor-panel">
+        <div class="panel-heading"><h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_form }}</h3></div>
+        <div class="panel-body">
+          <ul class="nav nav-tabs ccp-blog-editor-tabs">
+            <li class="active"><a href="#tab-blog-content" data-toggle="tab"><i class="fa fa-align-left"></i> {{ text_content }}</a></li>
+            <li><a href="#tab-blog-seo" data-toggle="tab"><i class="fa fa-search"></i> {{ text_seo }}</a></li>
+            <li><a href="#tab-blog-publication" data-toggle="tab"><i class="fa fa-calendar-check-o"></i> {{ text_publication }}</a></li>
+            <li><a href="#tab-blog-relations" data-toggle="tab"><i class="fa fa-link"></i> {{ text_relations }}</a></li>
+          </ul>
+
+          <div class="tab-content ccp-blog-editor-content">
+            <div class="tab-pane active" id="tab-blog-content">
+              <div class="ccp-tab-intro"><i class="fa fa-info-circle"></i> {{ text_content_help }}</div>
+              <ul class="nav nav-tabs ccp-language-tabs">{% for language in languages %}<li{% if loop.first %} class="active"{% endif %}><a href="#blog-content-language-{{ language.language_id }}" data-toggle="tab"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" onerror="this.style.display='none'" /> {{ language.name }}</a></li>{% endfor %}</ul>
+              <div class="tab-content ccp-language-content">{% for language in languages %}<div class="tab-pane{% if loop.first %} active{% endif %}" id="blog-content-language-{{ language.language_id }}">
+                <div class="form-group required"><label class="col-sm-2 control-label" for="input-title-{{ language.language_id }}">{{ entry_title }}</label><div class="col-sm-10"><input type="text" name="description[{{ language.language_id }}][title]" value="{{ descriptions[language.language_id].title is defined ? descriptions[language.language_id].title : '' }}" id="input-title-{{ language.language_id }}" class="form-control" maxlength="255" /></div></div>
+                <div class="form-group ccp-editor-field"><label class="col-sm-2 control-label" for="input-description-{{ language.language_id }}">{{ entry_description }}</label><div class="col-sm-10"><textarea name="description[{{ language.language_id }}][description]" rows="18" id="input-description-{{ language.language_id }}" class="form-control ccp-blog-content-textarea" data-toggle="summernote" data-lang="{{ summernote }}">{{ descriptions[language.language_id].description is defined ? descriptions[language.language_id].description : '' }}</textarea></div></div>
+                <div class="form-group ccp-editor-field"><label class="col-sm-2 control-label" for="input-seo-text-{{ language.language_id }}">{{ entry_seo_text }}</label><div class="col-sm-10"><textarea name="description[{{ language.language_id }}][seo_text]" rows="7" id="input-seo-text-{{ language.language_id }}" class="form-control">{{ descriptions[language.language_id].seo_text is defined ? descriptions[language.language_id].seo_text : '' }}</textarea></div></div>
+              </div>{% endfor %}</div>
+            </div>
+
+            <div class="tab-pane" id="tab-blog-seo">
+              <div class="ccp-tab-intro"><i class="fa fa-info-circle"></i> {{ text_seo_help }}</div>
+              <ul class="nav nav-tabs ccp-language-tabs">{% for language in languages %}<li{% if loop.first %} class="active"{% endif %}><a href="#blog-seo-language-{{ language.language_id }}" data-toggle="tab"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" onerror="this.style.display='none'" /> {{ language.name }}</a></li>{% endfor %}</ul>
+              <div class="tab-content ccp-language-content">{% for language in languages %}<div class="tab-pane{% if loop.first %} active{% endif %}" id="blog-seo-language-{{ language.language_id }}">
+                <div class="ccp-two-column-fields">
+                  <div class="form-group"><label class="control-label" for="input-meta-title-{{ language.language_id }}">{{ entry_meta_title }}</label><input type="text" name="description[{{ language.language_id }}][meta_title]" value="{{ descriptions[language.language_id].meta_title is defined ? descriptions[language.language_id].meta_title : '' }}" id="input-meta-title-{{ language.language_id }}" class="form-control" maxlength="255" /></div>
+                  <div class="form-group"><label class="control-label" for="input-language-keyword-{{ language.language_id }}">{{ entry_language_keyword }}</label><input type="text" name="description[{{ language.language_id }}][keyword]" value="{{ descriptions[language.language_id].keyword is defined ? descriptions[language.language_id].keyword : '' }}" id="input-language-keyword-{{ language.language_id }}" class="form-control" placeholder="article-seo-url" /></div>
+                </div>
+                <div class="form-group"><label class="col-sm-2 control-label" for="input-meta-description-{{ language.language_id }}">{{ entry_meta_description }}</label><div class="col-sm-10"><textarea name="description[{{ language.language_id }}][meta_description]" rows="4" id="input-meta-description-{{ language.language_id }}" class="form-control" maxlength="500">{{ descriptions[language.language_id].meta_description is defined ? descriptions[language.language_id].meta_description : '' }}</textarea></div></div>
+                <div class="ccp-two-column-fields">
+                  <div class="form-group"><label class="control-label" for="input-meta-keyword-{{ language.language_id }}">{{ entry_meta_keyword }}</label><input type="text" name="description[{{ language.language_id }}][meta_keyword]" value="{{ descriptions[language.language_id].meta_keyword is defined ? descriptions[language.language_id].meta_keyword : '' }}" id="input-meta-keyword-{{ language.language_id }}" class="form-control" /></div>
+                  <div class="form-group"><label class="control-label" for="input-tags-{{ language.language_id }}">{{ entry_tags }}</label><input type="text" name="description[{{ language.language_id }}][tags]" value="{{ descriptions[language.language_id].tags is defined ? descriptions[language.language_id].tags : '' }}" id="input-tags-{{ language.language_id }}" class="form-control" /></div>
+                </div>
+              </div>{% endfor %}</div>
+              <div class="form-group"><label class="col-sm-2 control-label"><span data-toggle="tooltip" title="{{ help_keyword }}">{{ entry_keyword }}</span></label><div class="col-sm-10"><input type="text" name="article[keyword]" value="{{ article.keyword }}" class="form-control" /></div></div>
+            </div>
+
+            <div class="tab-pane" id="tab-blog-publication">
+              <div class="ccp-tab-intro"><i class="fa fa-info-circle"></i> {{ text_publication_help }}</div>
+              <div class="ccp-publication-grid">
+                <div class="ccp-publication-main">
+                  <div class="form-group ccp-image-field"><label class="col-sm-2 control-label">{{ entry_image }}</label><div class="col-sm-10"><div class="ccp-standard-image-picker"><a href="" id="thumb-image" data-toggle="image" class="img-thumbnail"><img src="{{ thumb }}" alt="" title="" data-placeholder="{{ placeholder }}" /></a><div class="ccp-image-picker-controls"><input type="text" name="article[image]" value="{{ article.image }}" id="input-image" class="form-control" placeholder="catalog/example.jpg" /><div class="ccp-image-picker-buttons"><button type="button" class="btn btn-primary" onclick="$('#thumb-image').trigger('click');"><i class="fa fa-image"></i> <span>{{ button_select_image }}</span></button><button type="button" class="btn btn-default" onclick="$('#thumb-image img').attr('src', '{{ placeholder|escape('js') }}'); $('#input-image').val('');"><i class="fa fa-times"></i> <span>{{ button_clear_image }}</span></button></div></div></div></div></div>
+                  <div class="form-group"><label class="col-sm-2 control-label">{{ entry_categories }}</label><div class="col-sm-10"><div class="ccp-category-checkbox-grid">{% for category in categories_all %}<label class="ccp-check-card"><input type="checkbox" name="article_category[]" value="{{ category.category_id }}"{% if category.category_id in article_categories %} checked{% endif %} /><span>{{ category.name }}</span></label>{% endfor %}</div></div></div>
+                </div>
+                <div class="ccp-publication-side">
+                  <div class="form-group"><label class="control-label">{{ entry_status }}</label><select name="article[status]" class="form-control"><option value="1"{% if article.status %} selected{% endif %}>{{ text_enabled }}</option><option value="0"{% if not article.status %} selected{% endif %}>{{ text_disabled }}</option></select></div>
+                  <div class="form-group"><label class="control-label">{{ entry_date_available }}</label><div class="input-group date"><input type="text" name="article[date_available]" value="{{ article.date_available }}" data-date-format="YYYY-MM-DD" class="form-control" /><span class="input-group-btn"><button type="button" class="btn btn-default" aria-label="{{ entry_date_available }}" title="{{ entry_date_available }}"><i class="fa fa-calendar" aria-hidden="true"></i></button></span></div></div>
+                  <div class="form-group"><label class="control-label">{{ entry_sort_order }}</label><input type="number" name="article[sort_order]" value="{{ article.sort_order }}" class="form-control" /></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="tab-pane" id="tab-blog-relations">
+              <div class="ccp-tab-intro"><i class="fa fa-info-circle"></i> {{ text_relations_help }}</div>
+              <div class="ccp-two-column-fields">
+                <div class="form-group ccp-relation-field"><label class="control-label"><span data-toggle="tooltip" title="{{ help_related_products }}">{{ entry_related_products }}</span></label><input type="text" id="input-related-product" value="" class="form-control" placeholder="{{ entry_related_products }}" /><input type="hidden" name="related_product_ids" value="{{ related_product_ids }}" id="input-related-product-ids" /><div id="related-product-list" class="ccp-selected-list">{% for product in related_products %}<div id="related-product{{ product.product_id }}"><button type="button" class="btn btn-danger btn-xs" aria-label="{{ button_remove }}" title="{{ button_remove }}"><i class="fa fa-minus" aria-hidden="true"></i></button><span>{{ product.name }}</span><input type="hidden" value="{{ product.product_id }}" /></div>{% endfor %}</div></div>
+                <div class="form-group ccp-relation-field"><label class="control-label"><span data-toggle="tooltip" title="{{ help_related_articles }}">{{ entry_related_articles }}</span></label><input type="text" id="input-related-article" value="" class="form-control" placeholder="{{ entry_related_articles }}" /><input type="hidden" name="related_article_ids" value="{{ related_article_ids }}" id="input-related-article-ids" /><div id="related-article-list" class="ccp-selected-list">{% for article_item in related_articles %}<div id="related-article{{ article_item.article_id }}"><button type="button" class="btn btn-danger btn-xs" aria-label="{{ button_remove }}" title="{{ button_remove }}"><i class="fa fa-minus" aria-hidden="true"></i></button><span>{{ article_item.name }}</span><input type="hidden" value="{{ article_item.article_id }}" /></div>{% endfor %}</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<script type="text/javascript"><!--
+$('.date').datetimepicker({language: 'en-gb', pickTime: false});
+function ccpEscapeHtml(value) { return $('<div>').text(value == null ? '' : String(value)).html(); }
+function ccpSyncIds(container, input) { var ids=[]; $(container+' input[type="hidden"]').each(function(){ids.push($(this).val());}); $(input).val(ids.join(',')); }
+function ccpInitAutocomplete(inputSelector, url, idKey, rowPrefix, listSelector, hiddenSelector) {
+  $(inputSelector).autocomplete({source:function(request,response){$.ajax({url:url+'&filter_name='+encodeURIComponent(request),dataType:'json',success:function(json){response($.map(json,function(item){return {label:item.name,value:item[idKey]};}));}});},select:function(item){$(inputSelector).val('');$('#'+rowPrefix+item.value).remove();$(listSelector).append('<div id="'+rowPrefix+item.value+'"><button type="button" class="btn btn-danger btn-xs" aria-label="{{ button_remove }}" title="{{ button_remove }}"><i class="fa fa-minus" aria-hidden="true"></i></button><span>'+ccpEscapeHtml(item.label)+'</span><input type="hidden" value="'+item.value+'" /></div>');ccpSyncIds(listSelector,hiddenSelector);}});
+}
+ccpInitAutocomplete('#input-related-product','index.php?route=extension/module/codecart_pro_blog/autocompleteProduct&user_token={{ user_token }}','product_id','related-product','#related-product-list','#input-related-product-ids');
+ccpInitAutocomplete('#input-related-article','index.php?route=extension/module/codecart_pro_blog/autocompleteArticle&user_token={{ user_token }}&article_id={{ article_id }}','article_id','related-article','#related-article-list','#input-related-article-ids');
+$('#related-product-list,#related-article-list').on('click','.btn-danger',function(){$(this).closest('div[id]').remove();ccpSyncIds('#related-product-list','#input-related-product-ids');ccpSyncIds('#related-article-list','#input-related-article-ids');});
+//--></script>
+{{ footer }}

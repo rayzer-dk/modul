@@ -1,0 +1,27 @@
+{% if reviews %}
+<section class="ccp-latest-reviews">
+  <div class="ccp-section-head"><h2>{{ heading_title }}</h2></div>
+  <div class="ccp-review-grid">
+    {% for review in reviews %}
+      <article class="ccp-review-card">
+        <div class="ccp-review-card-head">
+          {% if review.thumb %}
+            <a href="{{ review.href|escape }}" aria-label="{{ review.product|escape }}">
+              <img src="{{ review.thumb|escape }}" alt="{{ review.product|escape }}" loading="lazy" decoding="async" width="56" height="56" />
+            </a>
+          {% endif %}
+          <div>
+            <div class="ccp-review-author">{{ review.author|escape }}</div>
+            <div class="ccp-review-date">{{ review.date_added|escape }}</div>
+          </div>
+        </div>
+        <div class="ccp-review-rating" aria-label="{{ review.rating }} / 5">
+          {% for i in 1..5 %}<i class="fa fa-star{% if review.rating < i %}-o{% endif %}" aria-hidden="true"></i>{% endfor %}
+        </div>
+        <p class="ccp-review-card-text">{{ review.text|escape|nl2br }}</p>
+        <a href="{{ review.href|escape }}" class="ccp-review-product">{{ review.product|escape }}</a>
+      </article>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}

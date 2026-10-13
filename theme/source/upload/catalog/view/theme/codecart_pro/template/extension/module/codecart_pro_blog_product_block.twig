@@ -1,0 +1,21 @@
+{% if articles %}
+<section class="ccp-product-module ccp-product-module-blog ccp-product-articles" data-ccp-product-module-key="blog_articles">
+  <div class="ccp-section-head ccp-section-head-pro">
+    <h2><span class="ccp-section-icon"><i class="fa fa-newspaper-o"></i></span>{{ heading_title }}</h2>
+  </div>
+  <div class="ccp-product-module__items ccp-standard-card-grid ccp-blog-standard-grid">
+    {% for article in articles %}
+      <article class="ccp-card ccp-blog-card ccp-article-card">
+        <a href="{{ article.href }}" class="ccp-blog-thumb ccp-article-card__image">
+          {% if article.thumb %}<img src="{{ article.thumb }}" alt="{{ article.title }}" loading="lazy" decoding="async" width="640" height="360" />{% endif %}
+        </a>
+        <div class="ccp-blog-body ccp-article-card__body">
+          <h3 class="ccp-article-card__title"><a href="{{ article.href }}">{{ article.title }}</a></h3>
+          {% if article.description %}<p class="ccp-article-card__desc">{{ article.description }}</p>{% endif %}
+          <a href="{{ article.href }}" class="btn ccp-btn ccp-blog-more">{{ text_read_more }}</a>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}

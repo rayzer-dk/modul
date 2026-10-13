@@ -1,0 +1,1446 @@
+{{ header }}{{ column_left }}
+{% import _self as ccp %}
+<div id="content" class="ccp-admin ccp-admin-v626" data-ccp-native-collapse-text="{{ text_native_collapse_to_icons|e('html_attr') }}" data-ccp-native-hide-text="{{ text_native_hide_menu|e('html_attr') }}" data-ccp-native-show-text="{{ text_native_show_menu|e('html_attr') }}" data-ccp-opencart-menu-text="{{ text_open_cart_menu|e('html_attr') }}" data-ccp-settings-label="{{ text_inner_settings|e('html_attr') }}">
+  <div class="page-header">
+    <div class="container-fluid">
+    {% if ccp_sys_input_vars is defined and ccp_sys_input_vars and ccp_sys_input_vars < 3000 %}<div class="alert alert-warning ccp-server-warning"><i class="fa fa-exclamation-triangle"></i> {{ text_max_input_vars_warning|format(ccp_sys_input_vars) }}</div>{% endif %}
+      <div class="pull-right ccp-page-actions">
+        <button type="submit" form="form-codecart-pro" class="btn btn-primary ccp-save-primary"><i class="fa fa-save"></i> <span>{{ button_save }}</span></button>
+        <a href="{{ cancel }}" class="btn btn-default"><i class="fa fa-reply"></i> <span>{{ button_cancel }}</span></a>
+      </div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}<li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>{% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}<div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}<button type="button" class="close" data-dismiss="alert">&times;</button></div>{% endif %}
+    {% if success %}<div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> {{ success }}<button type="button" class="close" data-dismiss="alert">&times;</button></div>{% endif %}
+    <div class="panel panel-default ccp-panel">
+      <div class="panel-heading ccp-admin-panel-heading"><h3 class="panel-title"><i class="fa fa-paint-brush"></i> {{ text_edit }}</h3><span class="ccp-meta">{{ text_version }} {{ version }} · {{ text_author }} <a href="{{ author_url }}" target="_blank">CodeCart PRO</a></span></div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-codecart-pro" class="form-horizontal" data-ccp-settings-form>
+          <input type="hidden" name="ccp_active_tab" id="ccp-active-tab" value="{{ ccp_active_tab|default('') }}" />
+          <input type="hidden" name="ccp_scroll_top" id="ccp-scroll-top" value="{{ ccp_scroll_top|default(0) }}" />
+          <div class="ccp-admin-shell">
+            <aside class="ccp-admin-sidebar">
+              <div class="ccp-sidebar-title"><i class="fa fa-sliders"></i> <span>{{ text_theme_dashboard }}</span></div>
+              <div class="ccp-sidebar-tools">
+                <div class="ccp-tab-search-wrap"><i class="fa fa-search"></i><input type="text" class="form-control input-sm" data-ccp-tab-search placeholder="{{ text_tab_search }}" autocomplete="off" /><div class="ccp-admin-search-results" data-ccp-search-results></div></div>
+                <button type="button" class="btn btn-default btn-xs ccp-collapse-theme-menu" data-ccp-theme-menu-toggle title="{{ text_compact_menu }}" aria-label="{{ text_compact_menu }}"><i class="fa fa-angle-left"></i></button>
+              </div>
+          <div id="ccp-theme-navigation" class="ccp-tab-groups" data-ccp-tab-menu>
+            <div class="ccp-tab-group is-open" data-ccp-admin-group="base">
+              <button type="button" class="ccp-tab-group-title"><span><i class="fa fa-paint-brush"></i> {{ text_group_base }}</span><i class="fa fa-chevron-down"></i></button>
+              <ul class="nav nav-tabs ccp-tabs">
+                <li class="active" data-ccp-tab-group="base"><a href="#tab-general" data-toggle="tab"><i class="fa fa-cog"></i> {{ text_general }}</a></li>
+                <li data-ccp-tab-group="base"><a href="#tab-header" data-toggle="tab"><i class="fa fa-window-maximize"></i> {{ text_header }}</a></li>
+                <li data-ccp-tab-group="base"><a href="#tab-home-builder" data-toggle="tab"><i class="fa fa-home"></i> {{ text_home_builder }}</a></li>
+              </ul>
+            </div>
+            <div class="ccp-tab-group is-open" data-ccp-admin-group="catalog">
+              <button type="button" class="ccp-tab-group-title"><span><i class="fa fa-cubes"></i> {{ text_group_catalog }}</span><i class="fa fa-chevron-down"></i></button>
+              <ul class="nav nav-tabs ccp-tabs">
+                <li data-ccp-tab-group="catalog"><a href="#tab-cards" data-toggle="tab"><i class="fa fa-th"></i> {{ text_cards }}</a></li>
+                <li data-ccp-tab-group="catalog"><a href="#tab-category" data-toggle="tab"><i class="fa fa-folder-open"></i> {{ text_category }}</a></li>
+                <li data-ccp-tab-group="catalog"><a href="#tab-product" data-toggle="tab"><i class="fa fa-cube"></i> {{ text_product }}</a></li>
+                <li data-ccp-tab-group="catalog"><a href="#tab-product-ux" data-toggle="tab"><i class="fa fa-magic"></i> {{ text_product_ux }}</a></li>
+                <li data-ccp-tab-group="catalog"><a href="#tab-product-modules" data-toggle="tab"><i class="fa fa-cubes"></i> {{ text_product_modules }}</a></li>
+                <li data-ccp-tab-group="catalog"><a href="#tab-storefront-depth" data-toggle="tab"><i class="fa fa-line-chart"></i> {{ text_storefront_depth }}</a></li>
+              </ul>
+            </div>
+            <div class="ccp-tab-group" data-ccp-admin-group="sales">
+              <button type="button" class="ccp-tab-group-title"><span><i class="fa fa-shopping-bag"></i> {{ text_group_sales }}</span><i class="fa fa-chevron-down"></i></button>
+              <ul class="nav nav-tabs ccp-tabs">
+                <li data-ccp-tab-group="sales"><a href="#tab-mobile" data-toggle="tab"><i class="fa fa-mobile"></i> {{ text_mobile }}</a></li>
+                <li data-ccp-tab-group="sales"><a href="#tab-commerce" data-toggle="tab"><i class="fa fa-shopping-bag"></i> {{ text_commerce_ux }}</a></li>
+                <li data-ccp-tab-group="sales"><a href="#tab-mega-menu" data-toggle="tab"><i class="fa fa-bars"></i> {{ text_mega_menu }}</a></li>
+                <li data-ccp-tab-group="sales"><a href="#tab-interactions" data-toggle="tab"><i class="fa fa-comments"></i> {{ text_interactions }}</a></li>
+                <li data-ccp-tab-group="sales"><a href="#tab-requests" data-toggle="tab"><i class="fa fa-list"></i> {{ text_requests }}</a></li>
+              </ul>
+            </div>
+            <div class="ccp-tab-group" data-ccp-admin-group="seo">
+              <button type="button" class="ccp-tab-group-title"><span><i class="fa fa-search"></i> {{ text_group_seo }}</span><i class="fa fa-chevron-down"></i></button>
+              <ul class="nav nav-tabs ccp-tabs">
+                <li data-ccp-tab-group="seo"><a href="#tab-seo-content" data-toggle="tab"><i class="fa fa-search"></i> {{ text_seo_content }}</a></li>
+              </ul>
+            </div>
+            <div class="ccp-tab-group" data-ccp-admin-group="service">
+              <button type="button" class="ccp-tab-group-title"><span><i class="fa fa-wrench"></i> {{ text_group_service }}</span><i class="fa fa-chevron-down"></i></button>
+              <ul class="nav nav-tabs ccp-tabs">
+                <li data-ccp-tab-group="service"><a href="#tab-performance" data-toggle="tab"><i class="fa fa-bolt"></i> {{ text_performance }}</a></li>
+                <li data-ccp-tab-group="service"><a href="#tab-code" data-toggle="tab"><i class="fa fa-code"></i> {{ text_custom_code }}</a></li>
+                <li data-ccp-tab-group="service"><a href="#tab-release-tools" data-toggle="tab"><i class="fa fa-wrench"></i> {{ text_release_tools }}</a></li>
+                <li data-ccp-tab-group="service"><a href="#tab-diagnostics" data-toggle="tab"><i class="fa fa-stethoscope"></i> {{ text_diagnostics }}</a></li>
+                <li data-ccp-tab-group="service"><a href="#tab-about" data-toggle="tab"><i class="fa fa-info-circle"></i> {{ text_about }}</a></li>
+              </ul>
+            </div>
+          </div>
+            </aside>
+            <section class="ccp-admin-main">
+          <div class="tab-content ccp-tab-content">
+            <div class="tab-pane active" id="tab-general">
+              <section class="ccp-overview" aria-label="{{ text_admin_overview }}">
+                <div class="ccp-overview-head">
+                  <div>
+                    <span class="ccp-overview-kicker"><i class="fa fa-sliders"></i> CodeCart PRO</span>
+                    <h2>{{ text_admin_overview }}</h2>
+                    <p>{{ text_admin_overview_help }}</p>
+                  </div>
+                  <div class="ccp-overview-version"><span>PRO</span><strong>v{{ version }}</strong></div>
+                </div>
+                <div class="ccp-overview-grid">
+                  <div class="ccp-overview-card {{ theme_enabled ? 'is-good' : 'is-danger' }}">
+                    <i class="fa {{ theme_enabled ? 'fa-check-circle' : 'fa-power-off' }}"></i>
+                    <div><small>{{ text_status_theme }}</small><strong>{{ theme_enabled ? text_theme_enabled : text_theme_disabled }}</strong></div>
+                  </div>
+                  <div class="ccp-overview-card {{ theme_selected ? 'is-good' : 'is-warning' }}">
+                    <i class="fa {{ theme_selected ? 'fa-check-circle' : 'fa-exclamation-triangle' }}"></i>
+                    <div><small>{{ text_status_selected }}</small><strong>{{ theme_selected ? text_theme_selected : text_theme_not_selected }}</strong></div>
+                  </div>
+                  <div class="ccp-overview-card {{ theme_codecart_pro_information_mode ? 'is-info' : 'is-neutral' }}">
+                    <i class="fa {{ theme_codecart_pro_information_mode ? 'fa-info-circle' : 'fa-shopping-cart' }}"></i>
+                    <div><small>{{ text_status_information_mode }}</small><strong>{{ theme_codecart_pro_information_mode ? text_enabled : text_disabled }}</strong></div>
+                  </div>
+                  <div class="ccp-overview-card {{ diagnostic_summary.bad > 0 ? 'is-danger' : (diagnostic_summary.warning > 0 ? 'is-warning' : 'is-good') }}">
+                    <i class="fa fa-stethoscope"></i>
+                    <div><small>{{ text_status_diagnostics }}</small><strong>{{ diagnostic_summary.good }} / {{ diagnostic_summary.total }}</strong><span>{{ diagnostic_summary.warning }} {{ text_diag_warning_short }}, {{ diagnostic_summary.bad }} {{ text_diag_bad_short }}</span></div>
+                  </div>
+                </div>
+                {% if not theme_selected %}<div class="ccp-overview-notice is-warning"><i class="fa fa-exclamation-triangle"></i><div><strong>{{ text_theme_not_selected }}</strong><span>{{ text_theme_not_selected_help }}</span></div><a href="{{ store_settings_url }}" class="btn btn-warning btn-sm">{{ text_store_settings }}</a></div>{% endif %}
+                {% if not theme_enabled %}<div class="ccp-overview-notice is-danger"><i class="fa fa-power-off"></i><div><strong>{{ text_theme_disabled }}</strong><span>{{ text_theme_disabled_help }}</span></div></div>{% endif %}
+                <div class="ccp-quick-actions">
+                  <span class="ccp-quick-actions-title">{{ text_quick_actions }}</span>
+                  <a href="{{ catalog_home_url }}" target="_blank" rel="noopener"><i class="fa fa-external-link"></i> {{ text_open_storefront }}</a>
+                  <a href="{{ blog_manager }}"><i class="fa fa-newspaper-o"></i> {{ button_blog_manager }}</a>
+                  <a href="{{ review_manager }}"><i class="fa fa-star"></i> {{ button_review_manager }}</a>
+                  <a href="{{ store_settings_url }}"><i class="fa fa-cogs"></i> {{ text_store_settings }}</a>
+                </div>
+              </section>
+              <div class="row">
+                <div class="col-sm-6">
+                  <fieldset><legend>{{ text_general }}</legend>
+                    {{ ccp.select(entry_status, 'theme_codecart_pro_status', theme_codecart_pro_status, help_status, text_enabled, text_disabled) }}
+                    {{ ccp.select(entry_information_mode, 'theme_codecart_pro_information_mode', theme_codecart_pro_information_mode, help_information_mode, text_yes, text_no) }}
+                    {{ ccp.select(entry_uninstall_keep_data, 'theme_codecart_pro_uninstall_keep_data', theme_codecart_pro_uninstall_keep_data, help_uninstall_keep_data, text_yes, text_no) }}
+                    {{ ccp.number(entry_product_limit, 'theme_codecart_pro_product_limit', theme_codecart_pro_product_limit, help_product_limit) }}
+                    {{ ccp.number(entry_product_description_length, 'theme_codecart_pro_product_description_length', theme_codecart_pro_product_description_length, help_product_description_length) }}
+                  </fieldset>
+                </div>
+                <div class="col-sm-6">
+                  <fieldset><legend>{{ text_design }}</legend>
+                    {{ ccp.color(entry_primary_color, 'theme_codecart_pro_primary_color', theme_codecart_pro_primary_color, help_color) }}
+                    {{ ccp.color(entry_accent_color, 'theme_codecart_pro_accent_color', theme_codecart_pro_accent_color, help_color) }}
+                    {{ ccp.color(entry_success_color, 'theme_codecart_pro_success_color', theme_codecart_pro_success_color, help_color) }}
+                    {{ ccp.color(entry_danger_color, 'theme_codecart_pro_danger_color', theme_codecart_pro_danger_color, help_color) }}
+                    {{ ccp.color(entry_background_color, 'theme_codecart_pro_background_color', theme_codecart_pro_background_color, help_color) }}
+                    {{ ccp.color(entry_page_side_background_color, 'theme_codecart_pro_page_side_background_color', theme_codecart_pro_page_side_background_color, help_color) }}
+                    <div class="form-group"><label class="col-sm-2 control-label">{{ entry_page_side_background_image }}</label><div class="col-sm-10"><div class="input-group ccp-media-picker"><input type="text" id="theme_codecart_pro_page_side_background_image" name="theme_codecart_pro_page_side_background_image" value="{{ theme_codecart_pro_page_side_background_image|escape }}" class="form-control" placeholder="catalog/backgrounds/site-bg.jpg" readonly /><span class="input-group-btn"><button type="button" class="btn btn-primary" data-ccp-filemanager data-target="theme_codecart_pro_page_side_background_image"><i class="fa fa-picture-o"></i> {{ text_choose_image }}</button><button type="button" class="btn btn-default" data-ccp-clear-target="theme_codecart_pro_page_side_background_image"><i class="fa fa-times"></i> {{ text_clear_image }}</button></span></div>{% if help_page_side_background_image %}<p class="help-block">{{ help_page_side_background_image }}</p>{% endif %}</div></div>
+                    {{ ccp.color(entry_text_color, 'theme_codecart_pro_text_color', theme_codecart_pro_text_color, help_color) }}
+                  </fieldset>
+                  <fieldset><legend><i class="fa fa-moon-o"></i> {{ text_dark_theme }}</legend>
+                    {{ ccp.select(entry_dark_theme_status, 'theme_codecart_pro_dark_theme_status', theme_codecart_pro_dark_theme_status, help_dark_theme, text_yes, text_no) }}
+                    {{ ccp.select(entry_dark_theme_default, 'theme_codecart_pro_dark_theme_default', theme_codecart_pro_dark_theme_default, '', text_yes, text_no) }}
+                    {{ ccp.select(entry_dark_theme_show_toggle, 'theme_codecart_pro_dark_theme_show_toggle', theme_codecart_pro_dark_theme_show_toggle, '', text_yes, text_no) }}
+                    {{ ccp.color(entry_dark_theme_background, 'theme_codecart_pro_dark_theme_background', theme_codecart_pro_dark_theme_background, help_color) }}
+                    {{ ccp.color(entry_dark_theme_surface, 'theme_codecart_pro_dark_theme_surface', theme_codecart_pro_dark_theme_surface, help_color) }}
+                    {{ ccp.color(entry_dark_theme_card, 'theme_codecart_pro_dark_theme_card', theme_codecart_pro_dark_theme_card, help_color) }}
+                    {{ ccp.color(entry_dark_theme_text, 'theme_codecart_pro_dark_theme_text', theme_codecart_pro_dark_theme_text, help_color) }}
+                    {{ ccp.color(entry_dark_theme_muted, 'theme_codecart_pro_dark_theme_muted', theme_codecart_pro_dark_theme_muted, help_color) }}
+                    {{ ccp.color(entry_dark_theme_border, 'theme_codecart_pro_dark_theme_border', theme_codecart_pro_dark_theme_border, help_color) }}
+                  </fieldset>
+                  <fieldset><legend>{{ text_design }}</legend>
+                    {{ ccp.number(entry_container_width, 'theme_codecart_pro_container_width', theme_codecart_pro_container_width, '', text_px) }}
+                    {{ ccp.number(entry_element_radius, 'theme_codecart_pro_element_radius', theme_codecart_pro_element_radius, '', text_px) }}
+                    {{ ccp.number(entry_card_radius, 'theme_codecart_pro_card_radius', theme_codecart_pro_card_radius, '', text_px) }}
+                    {{ ccp.number(entry_button_radius, 'theme_codecart_pro_button_radius', theme_codecart_pro_button_radius, '', text_px) }}
+                    {{ ccp.select(entry_card_shadow, 'theme_codecart_pro_card_shadow', theme_codecart_pro_card_shadow, '', text_yes, text_no) }}
+                  </fieldset>
+                </div>
+              </div>
+              <fieldset class="ccp-fieldset-images"><legend>{{ text_images }}</legend><div class="ccp-size-grid">
+                {{ ccp.size(entry_image_category, 'theme_codecart_pro_image_category', theme_codecart_pro_image_category_width, theme_codecart_pro_image_category_height, text_width, text_height) }}
+                {{ ccp.size(entry_image_thumb, 'theme_codecart_pro_image_thumb', theme_codecart_pro_image_thumb_width, theme_codecart_pro_image_thumb_height, text_width, text_height) }}
+                {{ ccp.size(entry_image_popup, 'theme_codecart_pro_image_popup', theme_codecart_pro_image_popup_width, theme_codecart_pro_image_popup_height, text_width, text_height) }}
+                {{ ccp.size(entry_image_product, 'theme_codecart_pro_image_product', theme_codecart_pro_image_product_width, theme_codecart_pro_image_product_height, text_width, text_height) }}
+                {{ ccp.size(entry_image_additional, 'theme_codecart_pro_image_additional', theme_codecart_pro_image_additional_width, theme_codecart_pro_image_additional_height, text_width, text_height) }}
+                {{ ccp.size(entry_image_related, 'theme_codecart_pro_image_related', theme_codecart_pro_image_related_width, theme_codecart_pro_image_related_height, text_width, text_height) }}
+                {{ ccp.size(entry_image_compare, 'theme_codecart_pro_image_compare', theme_codecart_pro_image_compare_width, theme_codecart_pro_image_compare_height, text_width, text_height) }}
+                {{ ccp.size(entry_image_wishlist, 'theme_codecart_pro_image_wishlist', theme_codecart_pro_image_wishlist_width, theme_codecart_pro_image_wishlist_height, text_width, text_height) }}
+                {{ ccp.size(entry_image_cart, 'theme_codecart_pro_image_cart', theme_codecart_pro_image_cart_width, theme_codecart_pro_image_cart_height, text_width, text_height) }}
+                {{ ccp.size(entry_image_location, 'theme_codecart_pro_image_location', theme_codecart_pro_image_location_width, theme_codecart_pro_image_location_height, text_width, text_height) }}
+              </div></fieldset>
+            </div>
+            <div class="tab-pane" id="tab-header">
+              {{ ccp.select(entry_show_top_bar, 'theme_codecart_pro_show_top_bar', theme_codecart_pro_show_top_bar, '', text_yes, text_no) }}
+              {{ ccp.select(entry_sticky_header, 'theme_codecart_pro_sticky_header', theme_codecart_pro_sticky_header, '', text_yes, text_no) }}
+              {{ ccp.select(entry_compact_header, 'theme_codecart_pro_compact_header', theme_codecart_pro_compact_header, '', text_yes, text_no) }}
+              <div class="form-group"><label class="col-sm-2 control-label">{{ entry_header_notice }}</label><div class="col-sm-10">
+                <ul class="nav nav-tabs" id="ccp-notice-lang">{% for language in languages %}<li{% if loop.first %} class="active"{% endif %}><a href="#notice-lang-{{ language.language_id }}" data-toggle="tab"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" onerror="this.style.display='none'" /> {{ language.name }}</a></li>{% endfor %}</ul>
+                <div class="tab-content">{% for language in languages %}<div class="tab-pane{% if loop.first %} active{% endif %}" id="notice-lang-{{ language.language_id }}"><input type="text" name="theme_codecart_pro_header_notice[{{ language.language_id }}]" value="{{ theme_codecart_pro_header_notice[language.language_id] is defined ? theme_codecart_pro_header_notice[language.language_id] : '' }}" class="form-control" placeholder="{{ help_header_notice }}" /></div>{% endfor %}</div>
+                <p class="help-block">{{ help_header_notice }}</p>
+              </div></div>
+            </div>
+
+            <div class="tab-pane" id="tab-home-builder">
+              <fieldset><legend>{{ text_home_builder }}</legend>
+                {{ ccp.select(entry_home_builder_status, 'theme_codecart_pro_home_builder_status', theme_codecart_pro_home_builder_status, '', text_yes, text_no) }}
+                {{ ccp.select(entry_home_slider_status, 'theme_codecart_pro_home_slider_status', theme_codecart_pro_home_slider_status, '', text_yes, text_no) }}
+                {{ ccp.select(entry_home_slider_autoplay, 'theme_codecart_pro_home_slider_autoplay', theme_codecart_pro_home_slider_autoplay, '', text_yes, text_no) }}
+                {{ ccp.number(entry_home_slider_height, 'theme_codecart_pro_home_slider_height', theme_codecart_pro_home_slider_height, '', text_px) }}
+                <div class="ccp-admin-subtitle"><i class="fa fa-picture-o"></i> {{ text_custom_slideshow }}</div>
+                {{ ccp.select(entry_custom_slideshow_status, 'theme_codecart_pro_custom_slideshow_status', theme_codecart_pro_custom_slideshow_status, help_custom_slideshow_status, text_yes, text_no) }}
+                {{ ccp.select(entry_custom_slideshow_hide_native, 'theme_codecart_pro_custom_slideshow_hide_native', theme_codecart_pro_custom_slideshow_hide_native, help_custom_slideshow_hide_native, text_yes, text_no) }}
+                {{ ccp.select(entry_custom_slideshow_show_text, 'theme_codecart_pro_custom_slideshow_show_text', theme_codecart_pro_custom_slideshow_show_text, '', text_yes, text_no) }}
+                {{ ccp.number(entry_custom_slideshow_autoplay_delay, 'theme_codecart_pro_custom_slideshow_autoplay_delay', theme_codecart_pro_custom_slideshow_autoplay_delay, '', 'ms') }}
+                {{ ccp.number(entry_custom_slideshow_height_desktop, 'theme_codecart_pro_custom_slideshow_height_desktop', theme_codecart_pro_custom_slideshow_height_desktop, '', text_px) }}
+                {{ ccp.number(entry_custom_slideshow_height_tablet, 'theme_codecart_pro_custom_slideshow_height_tablet', theme_codecart_pro_custom_slideshow_height_tablet, '', text_px) }}
+                {{ ccp.number(entry_custom_slideshow_height_mobile, 'theme_codecart_pro_custom_slideshow_height_mobile', theme_codecart_pro_custom_slideshow_height_mobile, '', text_px) }}
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_custom_slideshow_fit_mode }}</label><div class="col-sm-10"><select name="theme_codecart_pro_custom_slideshow_fit_mode" class="form-control"><option value="height"{% if theme_codecart_pro_custom_slideshow_fit_mode == 'height' %} selected{% endif %}>{{ text_fit_height }}</option><option value="width"{% if theme_codecart_pro_custom_slideshow_fit_mode == 'width' %} selected{% endif %}>{{ text_fit_width }}</option><option value="cover"{% if theme_codecart_pro_custom_slideshow_fit_mode == 'cover' %} selected{% endif %}>{{ text_fit_cover }}</option></select></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_custom_slideshow_image_source }}</label><div class="col-sm-10"><select name="theme_codecart_pro_custom_slideshow_image_source" class="form-control"><option value="direct"{% if theme_codecart_pro_custom_slideshow_image_source == 'direct' %} selected{% endif %}>{{ text_image_source_direct }}</option><option value="cache"{% if theme_codecart_pro_custom_slideshow_image_source == 'cache' %} selected{% endif %}>{{ text_image_source_cache }}</option></select><p class="help-block">{{ help_custom_slideshow_image_source }}</p></div></div>
+                {{ ccp.select(entry_mobile_hide_home_slider_status, 'theme_codecart_pro_mobile_hide_home_slider_status', theme_codecart_pro_mobile_hide_home_slider_status, help_mobile_hide_home_slider, text_yes, text_no) }}
+                {{ ccp.select(entry_mobile_hide_native_slideshow_status, 'theme_codecart_pro_mobile_hide_native_slideshow_status', theme_codecart_pro_mobile_hide_native_slideshow_status, help_mobile_hide_native_slideshow, text_yes, text_no) }}
+                {{ ccp.number(entry_mobile_hide_banner_breakpoint, 'theme_codecart_pro_mobile_hide_banner_breakpoint', theme_codecart_pro_mobile_hide_banner_breakpoint, help_mobile_hide_banner_breakpoint, text_px) }}
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_native_banner_fit_mode }}</label><div class="col-sm-10"><select name="theme_codecart_pro_native_banner_fit_mode" class="form-control"><option value="height"{% if theme_codecart_pro_native_banner_fit_mode == 'height' %} selected{% endif %}>{{ text_fit_height }}</option><option value="width"{% if theme_codecart_pro_native_banner_fit_mode == 'width' %} selected{% endif %}>{{ text_fit_width }}</option><option value="cover"{% if theme_codecart_pro_native_banner_fit_mode == 'cover' %} selected{% endif %}>{{ text_fit_cover }}</option></select><p class="help-block">{{ help_native_banner_fit_mode }}</p></div></div>
+              </fieldset>
+              <fieldset><legend>{{ text_hero_slider }}</legend>
+                {% for i in 1..5 %}
+                  {% set title_key = 'theme_codecart_pro_home_slide' ~ i ~ '_title' %}
+                  {% set subtitle_key = 'theme_codecart_pro_home_slide' ~ i ~ '_subtitle' %}
+                  {% set button_key = 'theme_codecart_pro_home_slide' ~ i ~ '_button' %}
+                  {% set link_key = 'theme_codecart_pro_home_slide' ~ i ~ '_link' %}
+                  {% set image_key = 'theme_codecart_pro_home_slide' ~ i ~ '_image' %}
+                  <div class="well well-sm ccp-repeater-card"><strong>{{ text_hero_slider }} {{ i }}</strong>
+                    <div class="form-group"><label class="col-sm-2 control-label">{{ entry_home_slide_image }}</label><div class="col-sm-10"><div class="input-group ccp-media-picker"><input type="text" id="{{ image_key }}" name="{{ image_key }}" value="{{ attribute(_context, image_key)|escape }}" class="form-control" placeholder="catalog/demo/banner.jpg" readonly /><span class="input-group-btn"><button type="button" class="btn btn-primary" data-ccp-filemanager data-target="{{ image_key }}"><i class="fa fa-picture-o"></i> {{ text_choose_image }}</button><button type="button" class="btn btn-default" data-ccp-clear-target="{{ image_key }}" aria-label="{{ text_clear_image }}" title="{{ text_clear_image }}"><i class="fa fa-times" aria-hidden="true"></i></button></span></div></div></div>
+                    <div class="form-group"><label class="col-sm-2 control-label">{{ entry_home_slide_link }}</label><div class="col-sm-10"><input type="text" name="{{ link_key }}" value="{{ attribute(_context, link_key) }}" class="form-control ccp-link-input" placeholder="index.php?route=product/category&path=20" /><p class="help-block">{{ help_home_link }}</p><div class="ccp-link-helper"><div class="btn-group ccp-link-presets"><button type="button" class="btn btn-default btn-sm" data-ccp-link-preset="index.php?route=common/home">{{ text_link_preset_home }}</button><button type="button" class="btn btn-default btn-sm" data-ccp-link-preset="index.php?route=product/category">{{ text_link_preset_catalog }}</button><button type="button" class="btn btn-default btn-sm" data-ccp-link-preset="index.php?route=information/contact">{{ text_link_preset_contact }}</button><button type="button" class="btn btn-default btn-sm" data-ccp-link-preset="index.php?route=extension/module/codecart_pro_blog">{{ text_link_preset_blog }}</button></div><div class="ccp-link-search-row"><select class="form-control input-sm ccp-link-type"><option value="category">{{ text_link_type_category }}</option><option value="product">{{ text_link_type_product }}</option><option value="information">{{ text_link_type_information }}</option></select><input type="text" class="form-control input-sm ccp-link-search" placeholder="{{ text_link_search_placeholder }}" autocomplete="off" /><div class="ccp-link-results"></div></div></div></div></div>
+                    <ul class="nav nav-tabs">{% for language in languages %}<li{% if loop.first %} class="active"{% endif %}><a href="#ccp-slide-{{ i }}-{{ language.language_id }}" data-toggle="tab">{{ language.name }}</a></li>{% endfor %}</ul>
+                    <div class="tab-content">{% for language in languages %}<div class="tab-pane{% if loop.first %} active{% endif %}" id="ccp-slide-{{ i }}-{{ language.language_id }}"><input type="text" name="{{ title_key }}[{{ language.language_id }}]" value="{{ attribute(_context, title_key)[language.language_id] is defined ? attribute(_context, title_key)[language.language_id] : '' }}" class="form-control" placeholder="{{ entry_home_slide_title }}" /><input type="text" name="{{ subtitle_key }}[{{ language.language_id }}]" value="{{ attribute(_context, subtitle_key)[language.language_id] is defined ? attribute(_context, subtitle_key)[language.language_id] : '' }}" class="form-control" placeholder="{{ entry_home_slide_subtitle }}" style="margin-top:8px" /><input type="text" name="{{ button_key }}[{{ language.language_id }}]" value="{{ attribute(_context, button_key)[language.language_id] is defined ? attribute(_context, button_key)[language.language_id] : '' }}" class="form-control" placeholder="{{ entry_home_slide_button }}" style="margin-top:8px" /></div>{% endfor %}</div>
+                  </div>
+                {% endfor %}
+              </fieldset>
+              <fieldset><legend>{{ text_promo_banners }}</legend>
+                {{ ccp.select(text_promo_banners, 'theme_codecart_pro_home_banners_status', theme_codecart_pro_home_banners_status, '', text_yes, text_no) }}
+                {{ ccp.select(entry_mobile_hide_home_banners_status, 'theme_codecart_pro_mobile_hide_home_banners_status', theme_codecart_pro_mobile_hide_home_banners_status, help_mobile_hide_home_banners, text_yes, text_no) }}
+                {{ ccp.select(entry_mobile_hide_native_banners_status, 'theme_codecart_pro_mobile_hide_native_banners_status', theme_codecart_pro_mobile_hide_native_banners_status, help_mobile_hide_native_banners, text_yes, text_no) }}
+                {% for i in 1..4 %}
+                  {% set title_key = 'theme_codecart_pro_home_banner' ~ i ~ '_title' %}
+                  {% set text_key = 'theme_codecart_pro_home_banner' ~ i ~ '_text' %}
+                  {% set link_key = 'theme_codecart_pro_home_banner' ~ i ~ '_link' %}
+                  {% set image_key = 'theme_codecart_pro_home_banner' ~ i ~ '_image' %}
+                  {% set icon_key = 'theme_codecart_pro_home_banner' ~ i ~ '_icon' %}
+                  <div class="well well-sm ccp-repeater-card"><strong>{{ text_promo_banners }} {{ i }}</strong>
+                    <div class="form-group"><label class="col-sm-2 control-label">{{ entry_home_banner_image }}</label><div class="col-sm-10"><div class="input-group ccp-media-picker"><input type="text" id="{{ image_key }}" name="{{ image_key }}" value="{{ attribute(_context, image_key)|escape }}" class="form-control" placeholder="catalog/demo/banner.jpg" readonly /><span class="input-group-btn"><button type="button" class="btn btn-primary" data-ccp-filemanager data-target="{{ image_key }}"><i class="fa fa-picture-o"></i> {{ text_choose_image }}</button><button type="button" class="btn btn-default" data-ccp-clear-target="{{ image_key }}" aria-label="{{ text_clear_image }}" title="{{ text_clear_image }}"><i class="fa fa-times" aria-hidden="true"></i></button></span></div></div></div>
+                    <div class="form-group"><label class="col-sm-2 control-label">{{ entry_home_banner_icon }}</label><div class="col-sm-10"><div class="input-group"><span class="input-group-addon"><i class="fa {{ attribute(_context, icon_key)|default('fa-star') }}" data-ccp-icon-preview="{{ icon_key }}"></i></span><input type="text" name="{{ icon_key }}" value="{{ attribute(_context, icon_key)|default('fa-star') }}" class="form-control" placeholder="fa-truck" data-ccp-icon-input="{{ icon_key }}" /></div><div class="ccp-icon-picker"><div class="ccp-icon-picker-title">{{ text_banner_icon_quick }}</div><div class="ccp-icon-picker-grid">{% for icon in ['fa-truck','fa-shield','fa-comments','fa-credit-card','fa-bolt','fa-gift','fa-star','fa-percent','fa-tags','fa-cubes','fa-rocket','fa-lock','fa-phone','fa-envelope','fa-check-circle'] %}<button type="button" class="btn btn-default btn-xs" data-ccp-icon-value="{{ icon }}" data-ccp-icon-target="{{ icon_key }}"><i class="fa {{ icon }}"></i> {{ icon }}</button>{% endfor %}</div><p class="help-block">{{ help_banner_icon_quick }}</p></div></div></div>
+                    <div class="form-group"><label class="col-sm-2 control-label">{{ entry_home_banner_link }}</label><div class="col-sm-10"><input type="text" name="{{ link_key }}" value="{{ attribute(_context, link_key) }}" class="form-control ccp-link-input" /><p class="help-block">{{ help_home_link }}</p><div class="ccp-link-helper"><div class="btn-group ccp-link-presets"><button type="button" class="btn btn-default btn-sm" data-ccp-link-preset="index.php?route=common/home">{{ text_link_preset_home }}</button><button type="button" class="btn btn-default btn-sm" data-ccp-link-preset="index.php?route=product/category">{{ text_link_preset_catalog }}</button><button type="button" class="btn btn-default btn-sm" data-ccp-link-preset="index.php?route=information/contact">{{ text_link_preset_contact }}</button><button type="button" class="btn btn-default btn-sm" data-ccp-link-preset="index.php?route=extension/module/codecart_pro_blog">{{ text_link_preset_blog }}</button></div><div class="ccp-link-search-row"><select class="form-control input-sm ccp-link-type"><option value="category">{{ text_link_type_category }}</option><option value="product">{{ text_link_type_product }}</option><option value="information">{{ text_link_type_information }}</option></select><input type="text" class="form-control input-sm ccp-link-search" placeholder="{{ text_link_search_placeholder }}" autocomplete="off" /><div class="ccp-link-results"></div></div></div></div></div>
+                    <ul class="nav nav-tabs">{% for language in languages %}<li{% if loop.first %} class="active"{% endif %}><a href="#ccp-banner-{{ i }}-{{ language.language_id }}" data-toggle="tab">{{ language.name }}</a></li>{% endfor %}</ul>
+                    <div class="tab-content">{% for language in languages %}<div class="tab-pane{% if loop.first %} active{% endif %}" id="ccp-banner-{{ i }}-{{ language.language_id }}"><input type="text" name="{{ title_key }}[{{ language.language_id }}]" value="{{ attribute(_context, title_key)[language.language_id] is defined ? attribute(_context, title_key)[language.language_id] : '' }}" class="form-control" placeholder="{{ entry_home_banner_title }}" /><input type="text" name="{{ text_key }}[{{ language.language_id }}]" value="{{ attribute(_context, text_key)[language.language_id] is defined ? attribute(_context, text_key)[language.language_id] : '' }}" class="form-control" placeholder="{{ entry_home_banner_text }}" style="margin-top:8px" /></div>{% endfor %}</div>
+                  </div>
+                {% endfor %}
+              </fieldset>
+              <fieldset><legend>{{ text_categories_products_brands }}</legend>
+                {{ ccp.select(entry_home_category_wall_status, 'theme_codecart_pro_home_category_wall_status', theme_codecart_pro_home_category_wall_status, '', text_yes, text_no) }}
+                <div class="form-group"><label class="col-sm-2 control-label"><span data-toggle="tooltip" title="{{ help_home_category_wall_category_ids }}">{{ entry_home_category_wall_category_ids }}</span></label><div class="col-sm-10"><input type="text" name="theme_codecart_pro_home_category_wall_category_ids" value="{{ theme_codecart_pro_home_category_wall_category_ids }}" class="form-control" placeholder="1, 2, 5" /><p class="help-block">{{ help_home_category_wall_category_ids }}</p></div></div>
+                {{ ccp.number(entry_home_category_wall_limit, 'theme_codecart_pro_home_category_wall_limit', theme_codecart_pro_home_category_wall_limit, '') }}
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_home_category_wall_style }}</label><div class="col-sm-10"><select name="theme_codecart_pro_home_category_wall_style" class="form-control"><option value="cards"{% if theme_codecart_pro_home_category_wall_style == 'cards' %} selected{% endif %}>{{ text_cards }}</option><option value="compact"{% if theme_codecart_pro_home_category_wall_style == 'compact' %} selected{% endif %}>{{ text_compact }}</option><option value="overlay"{% if theme_codecart_pro_home_category_wall_style == 'overlay' %} selected{% endif %}>{{ text_overlay }}</option></select></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label"><span data-toggle="tooltip" title="{{ help_home_category_wall_display_mode }}">{{ entry_home_category_wall_display_mode }}</span></label><div class="col-sm-10"><select name="theme_codecart_pro_home_category_wall_display_mode" class="form-control"><option value="grid"{% if theme_codecart_pro_home_category_wall_display_mode == 'grid' %} selected{% endif %}>{{ text_grid }}</option><option value="carousel"{% if theme_codecart_pro_home_category_wall_display_mode == 'carousel' %} selected{% endif %}>{{ text_carousel_horizontal }}</option></select><p class="help-block">{{ help_home_category_wall_display_mode }}</p></div></div>
+                {{ ccp.number(entry_home_category_wall_columns_desktop, 'theme_codecart_pro_home_category_wall_columns_desktop', theme_codecart_pro_home_category_wall_columns_desktop, '') }}
+                {{ ccp.number(entry_home_category_wall_columns_tablet, 'theme_codecart_pro_home_category_wall_columns_tablet', theme_codecart_pro_home_category_wall_columns_tablet, '') }}
+                {{ ccp.number(entry_home_category_wall_columns_mobile, 'theme_codecart_pro_home_category_wall_columns_mobile', theme_codecart_pro_home_category_wall_columns_mobile, '') }}
+                {{ ccp.number(entry_home_category_wall_image_width, 'theme_codecart_pro_home_category_wall_image_width', theme_codecart_pro_home_category_wall_image_width, '', text_px) }}
+                {{ ccp.number(entry_home_category_wall_image_height, 'theme_codecart_pro_home_category_wall_image_height', theme_codecart_pro_home_category_wall_image_height, '', text_px) }}
+                {{ ccp.select(entry_home_category_wall_show_image, 'theme_codecart_pro_home_category_wall_show_image', theme_codecart_pro_home_category_wall_show_image, '', text_yes, text_no) }}
+                {{ ccp.select(entry_home_category_wall_show_description, 'theme_codecart_pro_home_category_wall_show_description', theme_codecart_pro_home_category_wall_show_description, '', text_yes, text_no) }}
+                {{ ccp.select(entry_home_category_wall_show_count, 'theme_codecart_pro_home_category_wall_show_count', theme_codecart_pro_home_category_wall_show_count, '', text_yes, text_no) }}
+                {{ ccp.select(entry_home_product_sections_status, 'theme_codecart_pro_home_product_sections_status', theme_codecart_pro_home_product_sections_status, '', text_yes, text_no) }}
+                {{ ccp.number(entry_home_product_section_limit, 'theme_codecart_pro_home_product_section_limit', theme_codecart_pro_home_product_section_limit, '') }}
+                {{ ccp.select(entry_home_latest_status, 'theme_codecart_pro_home_latest_status', theme_codecart_pro_home_latest_status, '', text_yes, text_no) }}
+                {{ ccp.select(entry_home_special_status, 'theme_codecart_pro_home_special_status', theme_codecart_pro_home_special_status, '', text_yes, text_no) }}
+                {{ ccp.select(entry_home_bestseller_status, 'theme_codecart_pro_home_bestseller_status', theme_codecart_pro_home_bestseller_status, '', text_yes, text_no) }}
+                {{ ccp.select(entry_home_manufacturer_status, 'theme_codecart_pro_home_manufacturer_status', theme_codecart_pro_home_manufacturer_status, '', text_yes, text_no) }}
+                {{ ccp.number(entry_home_manufacturer_limit, 'theme_codecart_pro_home_manufacturer_limit', theme_codecart_pro_home_manufacturer_limit, '') }}
+              </fieldset>
+              <fieldset><legend>{{ entry_home_benefits_status }}</legend>
+                {{ ccp.select(entry_home_benefits_status, 'theme_codecart_pro_home_benefits_status', theme_codecart_pro_home_benefits_status, '', text_yes, text_no) }}
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_home_benefits_text }}</label><div class="col-sm-10"><div class="alert alert-info">{{ help_home_benefits_icons }}</div><ul class="nav nav-tabs">{% for language in languages %}<li{% if loop.first %} class="active"{% endif %}><a href="#ccp-home-benefits-{{ language.language_id }}" data-toggle="tab">{{ language.name }}</a></li>{% endfor %}</ul><div class="tab-content">{% for language in languages %}<div class="tab-pane{% if loop.first %} active{% endif %}" id="ccp-home-benefits-{{ language.language_id }}"><textarea name="theme_codecart_pro_home_benefits_text[{{ language.language_id }}]" rows="6" class="form-control">{{ theme_codecart_pro_home_benefits_text[language.language_id] is defined ? theme_codecart_pro_home_benefits_text[language.language_id] : '' }}</textarea></div>{% endfor %}</div></div></div>
+              </fieldset>
+            </div>
+            <div class="tab-pane" id="tab-cards">
+              {{ ccp.select(entry_card_show_description, 'theme_codecart_pro_card_show_description', theme_codecart_pro_card_show_description, '', text_yes, text_no) }}
+              {{ ccp.select(entry_card_show_rating, 'theme_codecart_pro_card_show_rating', theme_codecart_pro_card_show_rating, '', text_yes, text_no) }}
+              {{ ccp.select(entry_card_show_stock, 'theme_codecart_pro_card_show_stock', theme_codecart_pro_card_show_stock, '', text_yes, text_no) }}
+              {{ ccp.select(entry_card_show_quick_actions, 'theme_codecart_pro_card_show_quick_actions', theme_codecart_pro_card_show_quick_actions, help_card_actions, text_yes, text_no) }}
+              <div class="form-group"><label class="col-sm-2 control-label">{{ entry_card_image_ratio }}</label><div class="col-sm-10"><select name="theme_codecart_pro_card_image_ratio" class="form-control"><option value="1x1"{% if theme_codecart_pro_card_image_ratio == '1x1' %} selected{% endif %}>1:1</option><option value="4x3"{% if theme_codecart_pro_card_image_ratio == '4x3' %} selected{% endif %}>4:3</option><option value="3x4"{% if theme_codecart_pro_card_image_ratio == '3x4' %} selected{% endif %}>3:4</option></select></div></div>
+            </div>
+            <div class="tab-pane" id="tab-category">
+              <div class="form-group"><label class="col-sm-2 control-label">{{ entry_category_layout }}</label><div class="col-sm-10"><select name="theme_codecart_pro_category_layout" class="form-control"><option value="grid"{% if theme_codecart_pro_category_layout == 'grid' %} selected{% endif %}>{{ text_grid }}</option><option value="list"{% if theme_codecart_pro_category_layout == 'list' %} selected{% endif %}>{{ text_list }}</option></select></div></div>
+              {{ ccp.select(entry_category_show_subcategories, 'theme_codecart_pro_category_show_subcategories', theme_codecart_pro_category_show_subcategories, '', text_yes, text_no) }}
+              {{ ccp.select(entry_ajax_catalog_status, 'theme_codecart_pro_ajax_catalog_status', theme_codecart_pro_ajax_catalog_status, help_ajax_catalog, text_yes, text_no) }}
+            </div>
+            <div class="tab-pane" id="tab-product">
+              {{ ccp.select(entry_product_sticky_buy, 'theme_codecart_pro_product_sticky_buy', theme_codecart_pro_product_sticky_buy, '', text_yes, text_no) }}
+              {{ ccp.select(entry_product_bottom_sticky_buy, 'theme_codecart_pro_product_bottom_sticky_buy', theme_codecart_pro_product_bottom_sticky_buy, help_product_bottom_sticky_buy, text_yes, text_no) }}
+              {{ ccp.select(entry_product_bottom_sticky_buy_desktop, 'theme_codecart_pro_product_bottom_sticky_buy_desktop', theme_codecart_pro_product_bottom_sticky_buy_desktop, '', text_yes, text_no) }}
+              {{ ccp.select(entry_product_bottom_sticky_buy_mobile, 'theme_codecart_pro_product_bottom_sticky_buy_mobile', theme_codecart_pro_product_bottom_sticky_buy_mobile, '', text_yes, text_no) }}
+              {{ ccp.select(entry_product_show_benefits, 'theme_codecart_pro_product_show_benefits', theme_codecart_pro_product_show_benefits, '', text_yes, text_no) }}
+              {{ ccp.select(entry_product_show_delivery_block, 'theme_codecart_pro_product_show_delivery_block', theme_codecart_pro_product_show_delivery_block, '', text_yes, text_no) }}
+              <div class="form-group"><label class="col-sm-2 control-label">{{ entry_product_benefits }}</label><div class="col-sm-10">
+                <ul class="nav nav-tabs" id="ccp-benefit-lang">{% for language in languages %}<li{% if loop.first %} class="active"{% endif %}><a href="#benefit-lang-{{ language.language_id }}" data-toggle="tab">{{ language.name }}</a></li>{% endfor %}</ul>
+                <div class="tab-content">{% for language in languages %}<div class="tab-pane{% if loop.first %} active{% endif %}" id="benefit-lang-{{ language.language_id }}"><textarea name="theme_codecart_pro_product_benefits[{{ language.language_id }}]" rows="4" class="form-control" placeholder="{{ placeholder_product_benefits }}">{{ theme_codecart_pro_product_benefits[language.language_id] is defined ? theme_codecart_pro_product_benefits[language.language_id] : '' }}</textarea></div>{% endfor %}</div>
+              </div></div>
+            </div>
+
+            <div class="tab-pane" id="tab-product-ux">
+              <fieldset><legend>{{ text_product_ux }}</legend>
+                {{ ccp.select(entry_enable_stickers, 'theme_codecart_pro_enable_stickers', theme_codecart_pro_enable_stickers, '', text_yes, text_no) }}
+                {{ ccp.select(entry_enable_quick_view, 'theme_codecart_pro_enable_quick_view', theme_codecart_pro_enable_quick_view, help_enable_quick_view, text_yes, text_no) }}
+                {{ ccp.select(entry_enable_quick_order, 'theme_codecart_pro_enable_quick_order', theme_codecart_pro_enable_quick_order, '', text_yes, text_no) }}
+                {{ ccp.select(entry_enable_stock_indicator, 'theme_codecart_pro_enable_stock_indicator', theme_codecart_pro_enable_stock_indicator, '', text_yes, text_no) }}
+                {{ ccp.select(entry_enable_live_price, 'theme_codecart_pro_enable_live_price', theme_codecart_pro_enable_live_price, '', text_yes, text_no) }}
+              </fieldset>
+              <fieldset><legend>{{ text_stickers }}</legend>
+                {{ ccp.color(entry_sticker_sale_color, 'theme_codecart_pro_sticker_sale_color', theme_codecart_pro_sticker_sale_color, help_color) }}
+                {{ ccp.color(entry_sticker_new_color, 'theme_codecart_pro_sticker_new_color', theme_codecart_pro_sticker_new_color, help_color) }}
+                {{ ccp.color(entry_sticker_hit_color, 'theme_codecart_pro_sticker_hit_color', theme_codecart_pro_sticker_hit_color, help_color) }}
+              </fieldset>
+              <fieldset><legend>{{ text_quick_order }}</legend>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_quick_order_email }}</label><div class="col-sm-10"><input type="text" name="theme_codecart_pro_quick_order_email" value="{{ theme_codecart_pro_quick_order_email }}" class="form-control" placeholder="sales@example.com" /><p class="help-block">{{ help_quick_order_email }}</p></div></div>
+                {{ ccp.select(entry_quick_order_required_email, 'theme_codecart_pro_quick_order_required_email', theme_codecart_pro_quick_order_required_email, '', text_yes, text_no) }}
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_quick_order_success_text }}</label><div class="col-sm-10"><ul class="nav nav-tabs">{% for language in languages %}<li{% if loop.first %} class="active"{% endif %}><a href="#ccp-qo-success-{{ language.language_id }}" data-toggle="tab">{{ language.name }}</a></li>{% endfor %}</ul><div class="tab-content">{% for language in languages %}<div class="tab-pane{% if loop.first %} active{% endif %}" id="ccp-qo-success-{{ language.language_id }}"><input type="text" name="theme_codecart_pro_quick_order_success_text[{{ language.language_id }}]" value="{{ theme_codecart_pro_quick_order_success_text[language.language_id] is defined ? theme_codecart_pro_quick_order_success_text[language.language_id] : '' }}" class="form-control" placeholder="{{ placeholder_quick_order_success }}" /></div>{% endfor %}</div></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_quick_order_privacy_text }}</label><div class="col-sm-10"><ul class="nav nav-tabs">{% for language in languages %}<li{% if loop.first %} class="active"{% endif %}><a href="#ccp-qo-privacy-{{ language.language_id }}" data-toggle="tab">{{ language.name }}</a></li>{% endfor %}</ul><div class="tab-content">{% for language in languages %}<div class="tab-pane{% if loop.first %} active{% endif %}" id="ccp-qo-privacy-{{ language.language_id }}"><textarea name="theme_codecart_pro_quick_order_privacy_text[{{ language.language_id }}]" rows="3" class="form-control">{{ theme_codecart_pro_quick_order_privacy_text[language.language_id] is defined ? theme_codecart_pro_quick_order_privacy_text[language.language_id] : '' }}</textarea></div>{% endfor %}</div></div></div>
+              </fieldset>
+            </div>
+
+            <div class="tab-pane" id="tab-product-modules">
+              <fieldset><legend>{{ text_product_modules }}</legend>
+                <div class="alert alert-info">{{ help_product_modules_light }}<br>{{ help_product_category_related }}</div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_product_modules_status }}</label><div class="col-sm-10"><select name="theme_codecart_pro_product_modules_status" class="form-control"><option value="1"{% if theme_codecart_pro_product_modules_status %} selected{% endif %}>{{ text_enabled }}</option><option value="0"{% if not theme_codecart_pro_product_modules_status %} selected{% endif %}>{{ text_disabled }}</option></select></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_product_module_layout }}</label><div class="col-sm-10"><select name="theme_codecart_pro_product_module_layout" class="form-control"><option value="carousel"{% if theme_codecart_pro_product_module_layout == 'carousel' %} selected{% endif %}>{{ text_carousel_horizontal }}</option><option value="grid"{% if theme_codecart_pro_product_module_layout == 'grid' %} selected{% endif %}>{{ text_grid }}</option><option value="compact"{% if theme_codecart_pro_product_module_layout == 'compact' %} selected{% endif %}>{{ text_compact }}</option></select></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_product_module_limit }}</label><div class="col-sm-10"><input type="number" name="theme_codecart_pro_product_module_limit" value="{{ theme_codecart_pro_product_module_limit }}" min="1" max="24" class="form-control" /></div></div>
+                <div class="row">
+                  <div class="col-sm-6"><div class="well">
+                    <h4>{{ text_where_show }}</h4>
+                    <label class="checkbox-inline"><input type="checkbox" name="theme_codecart_pro_product_module_home_status" value="1"{% if theme_codecart_pro_product_module_home_status %} checked{% endif %}> {{ entry_product_module_home_status }}</label><br>
+                    <label class="checkbox-inline"><input type="checkbox" name="theme_codecart_pro_product_module_category_status" value="1"{% if theme_codecart_pro_product_module_category_status %} checked{% endif %}> {{ entry_product_module_category_status }}</label><br>
+                    <label class="checkbox-inline"><input type="checkbox" name="theme_codecart_pro_product_module_product_status" value="1"{% if theme_codecart_pro_product_module_product_status %} checked{% endif %}> {{ entry_product_module_product_status }}</label>
+                  </div></div>
+                  <div class="col-sm-6"><div class="well">
+                    <h4>{{ text_block_types }}</h4>
+                    <label class="checkbox-inline"><input type="checkbox" name="theme_codecart_pro_product_module_latest_status" value="1"{% if theme_codecart_pro_product_module_latest_status %} checked{% endif %}> {{ entry_product_module_latest_status }}</label><br>
+                    <label class="checkbox-inline"><input type="checkbox" name="theme_codecart_pro_product_module_special_status" value="1"{% if theme_codecart_pro_product_module_special_status %} checked{% endif %}> {{ entry_product_module_special_status }}</label><br>
+                    <label class="checkbox-inline"><input type="checkbox" name="theme_codecart_pro_product_module_bestseller_status" value="1"{% if theme_codecart_pro_product_module_bestseller_status %} checked{% endif %}> {{ entry_product_module_bestseller_status }}</label><br>
+                    <label class="checkbox-inline"><input type="checkbox" name="theme_codecart_pro_product_module_viewed_status" value="1"{% if theme_codecart_pro_product_module_viewed_status %} checked{% endif %}> {{ entry_product_module_viewed_status }}</label><br>
+                    <label class="checkbox-inline"><input type="checkbox" name="theme_codecart_pro_product_module_related_status" value="1"{% if theme_codecart_pro_product_module_related_status %} checked{% endif %}> {{ entry_product_module_related_status }}</label><br>
+                    <label class="checkbox-inline"><input type="checkbox" name="theme_codecart_pro_product_module_auto_related_status" value="1"{% if theme_codecart_pro_product_module_auto_related_status %} checked{% endif %}> {{ entry_product_module_auto_related_status }}</label><br>
+                    <label class="checkbox-inline"><input type="checkbox" name="theme_codecart_pro_product_module_category_related_status" value="1"{% if theme_codecart_pro_product_module_category_related_status %} checked{% endif %}> {{ entry_product_module_category_related_status }}</label>
+                  </div></div>
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="tab-pane" id="tab-mobile">
+              {{ ccp.select(entry_mobile_bottom_bar, 'theme_codecart_pro_mobile_bottom_bar', theme_codecart_pro_mobile_bottom_bar, help_mobile_bottom_bar, text_yes, text_no) }}
+            </div>
+
+            <div class="tab-pane" id="tab-commerce">
+              <fieldset><legend>{{ text_header_contacts }}</legend>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_header_layout }}</label><div class="col-sm-10"><select name="theme_codecart_pro_header_layout" class="form-control"><option value="classic"{% if theme_codecart_pro_header_layout == 'classic' %} selected{% endif %}>{{ text_classic }}</option><option value="centered"{% if theme_codecart_pro_header_layout == 'centered' %} selected{% endif %}>{{ text_centered }}</option><option value="compact"{% if theme_codecart_pro_header_layout == 'compact' %} selected{% endif %}>{{ text_compact }}</option></select></div></div>
+                {{ ccp.select(entry_header_show_phone, 'theme_codecart_pro_header_show_phone', theme_codecart_pro_header_show_phone, '', text_yes, text_no) }}
+                {{ ccp.select(entry_header_show_email, 'theme_codecart_pro_header_show_email', theme_codecart_pro_header_show_email, '', text_yes, text_no) }}
+                {{ ccp.select(entry_header_show_worktime, 'theme_codecart_pro_header_show_worktime', theme_codecart_pro_header_show_worktime, '', text_yes, text_no) }}
+                <div class="form-group"><label class="col-sm-2 control-label">{{ text_phone }}</label><div class="col-sm-10"><input type="text" name="theme_codecart_pro_header_phone" value="{{ theme_codecart_pro_header_phone }}" class="form-control" placeholder="+380..." /></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ text_email }}</label><div class="col-sm-10"><input type="text" name="theme_codecart_pro_header_email" value="{{ theme_codecart_pro_header_email }}" class="form-control" placeholder="info@example.com" /></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ text_worktime }}</label><div class="col-sm-10"><ul class="nav nav-tabs">{% for language in languages %}<li{% if loop.first %} class="active"{% endif %}><a href="#ccp-worktime-{{ language.language_id }}" data-toggle="tab">{{ language.name }}</a></li>{% endfor %}</ul><div class="tab-content">{% for language in languages %}<div class="tab-pane{% if loop.first %} active{% endif %}" id="ccp-worktime-{{ language.language_id }}"><input type="text" name="theme_codecart_pro_header_worktime[{{ language.language_id }}]" value="{{ theme_codecart_pro_header_worktime[language.language_id] is defined ? theme_codecart_pro_header_worktime[language.language_id] : '' }}" class="form-control" placeholder="{{ placeholder_worktime }}" /></div>{% endfor %}</div></div></div>
+              </fieldset>
+              <fieldset><legend>{{ text_menu }}</legend>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_menu_style }}</label><div class="col-sm-10"><select name="theme_codecart_pro_menu_style" class="form-control"><option value="horizontal"{% if theme_codecart_pro_menu_style == 'horizontal' %} selected{% endif %}>{{ text_horizontal }}</option><option value="boxed"{% if theme_codecart_pro_menu_style == 'boxed' %} selected{% endif %}>{{ text_boxed }}</option><option value="minimal"{% if theme_codecart_pro_menu_style == 'minimal' %} selected{% endif %}>{{ text_minimal }}</option></select></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_menu_width }}</label><div class="col-sm-10"><select name="theme_codecart_pro_menu_width" class="form-control"><option value="short"{% if theme_codecart_pro_menu_width == 'short' %} selected{% endif %}>{{ text_menu_width_short }}</option><option value="full"{% if theme_codecart_pro_menu_width == 'full' %} selected{% endif %}>{{ text_menu_width_full }}</option></select><p class="help-block">{{ help_menu_width }}</p></div></div>
+                {{ ccp.select(entry_menu_show_home, 'theme_codecart_pro_menu_show_home', theme_codecart_pro_menu_show_home, '', text_yes, text_no) }}
+                {{ ccp.select(entry_menu_show_categories, 'theme_codecart_pro_menu_show_categories', theme_codecart_pro_menu_show_categories, '', text_yes, text_no) }}
+                {{ ccp.select(entry_menu_sticky, 'theme_codecart_pro_menu_sticky', theme_codecart_pro_menu_sticky, '', text_yes, text_no) }}
+                {{ ccp.color(entry_menu_bg_color, 'theme_codecart_pro_menu_bg_color', theme_codecart_pro_menu_bg_color, help_color) }}
+                {{ ccp.color(entry_menu_text_color, 'theme_codecart_pro_menu_text_color', theme_codecart_pro_menu_text_color, help_color) }}
+              </fieldset>
+              <fieldset><legend>{{ text_footer_contacts }}</legend>
+                {{ ccp.select(entry_footer_show_contacts, 'theme_codecart_pro_footer_show_contacts', theme_codecart_pro_footer_show_contacts, '', text_yes, text_no) }}
+                {{ ccp.select(entry_footer_subscribe_status, 'theme_codecart_pro_enable_subscribe', theme_codecart_pro_enable_subscribe, help_footer_subscribe_status, text_yes, text_no) }}
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_footer_text }}</label><div class="col-sm-10"><ul class="nav nav-tabs">{% for language in languages %}<li{% if loop.first %} class="active"{% endif %}><a href="#ccp-footer-text-{{ language.language_id }}" data-toggle="tab">{{ language.name }}</a></li>{% endfor %}</ul><div class="tab-content">{% for language in languages %}<div class="tab-pane{% if loop.first %} active{% endif %}" id="ccp-footer-text-{{ language.language_id }}"><textarea name="theme_codecart_pro_footer_text[{{ language.language_id }}]" rows="3" class="form-control">{{ theme_codecart_pro_footer_text[language.language_id] is defined ? theme_codecart_pro_footer_text[language.language_id] : '' }}</textarea></div>{% endfor %}</div></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_footer_signature }}</label><div class="col-sm-10"><ul class="nav nav-tabs">{% for language in languages %}<li{% if loop.first %} class="active"{% endif %}><a href="#ccp-footer-signature-{{ language.language_id }}" data-toggle="tab">{{ language.name }}</a></li>{% endfor %}</ul><div class="tab-content">{% for language in languages %}<div class="tab-pane{% if loop.first %} active{% endif %}" id="ccp-footer-signature-{{ language.language_id }}"><input type="text" name="theme_codecart_pro_footer_signature[{{ language.language_id }}]" value="{{ theme_codecart_pro_footer_signature[language.language_id] is defined ? theme_codecart_pro_footer_signature[language.language_id] : '' }}" class="form-control" placeholder="© {{ 'now'|date('Y') }} {{ heading_title_text }}" /><p class="help-block">{{ help_footer_signature }}</p></div>{% endfor %}</div></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_payment_icons }}</label><div class="col-sm-10"><textarea name="theme_codecart_pro_footer_payment_icons" rows="3" class="form-control code">{{ theme_codecart_pro_footer_payment_icons }}</textarea></div></div>
+                {{ ccp.color(entry_footer_bg_color, 'theme_codecart_pro_footer_bg_color', theme_codecart_pro_footer_bg_color, help_color) }}
+                {{ ccp.color('{{ entry_footer_text }}', 'theme_codecart_pro_footer_text_color', theme_codecart_pro_footer_text_color, help_color) }}
+                {{ ccp.select(entry_floating_contacts, 'theme_codecart_pro_floating_contacts', theme_codecart_pro_floating_contacts, '', text_yes, text_no) }}
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_floating_position }}</label><div class="col-sm-10"><select name="theme_codecart_pro_floating_position" class="form-control"><option value="right"{% if theme_codecart_pro_floating_position == 'right' %} selected{% endif %}>{{ text_right }}</option><option value="left"{% if theme_codecart_pro_floating_position == 'left' %} selected{% endif %}>{{ text_left }}</option></select><p class="help-block">{{ help_floating_position }}</p></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ text_phone }}</label><div class="col-sm-10"><input type="text" name="theme_codecart_pro_floating_phone" value="{{ theme_codecart_pro_floating_phone }}" class="form-control" /></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_telegram_url }}</label><div class="col-sm-10"><input type="text" name="theme_codecart_pro_floating_telegram" value="{{ theme_codecart_pro_floating_telegram }}" class="form-control" /></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_viber_url }}</label><div class="col-sm-10"><input type="text" name="theme_codecart_pro_floating_viber" value="{{ theme_codecart_pro_floating_viber }}" class="form-control" /></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_whatsapp_url }}</label><div class="col-sm-10"><input type="text" name="theme_codecart_pro_floating_whatsapp" value="{{ theme_codecart_pro_floating_whatsapp }}" class="form-control" /></div></div>
+              </fieldset>
+              <fieldset><legend>{{ text_prices_buttons }}</legend>
+                {{ ccp.color(entry_price_color, 'theme_codecart_pro_price_color', theme_codecart_pro_price_color, help_color) }}
+                {{ ccp.color(entry_old_price_color, 'theme_codecart_pro_old_price_color', theme_codecart_pro_old_price_color, help_color) }}
+                <div class="alert alert-info">{{ help_prices_buttons }}</div>
+              </fieldset>
+              <fieldset><legend>{{ text_cart_notifications }}</legend>
+                {{ ccp.select(entry_cart_drawer_status, 'theme_codecart_pro_cart_drawer_status', theme_codecart_pro_cart_drawer_status, help_cart_drawer, text_yes, text_no) }}
+                {{ ccp.select(entry_cart_toast_status, 'theme_codecart_pro_cart_toast_status', theme_codecart_pro_cart_toast_status, help_cart_toast, text_yes, text_no) }}
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_cart_drawer_position }}</label><div class="col-sm-10"><select name="theme_codecart_pro_cart_drawer_position" class="form-control"><option value="right"{% if theme_codecart_pro_cart_drawer_position == 'right' %} selected{% endif %}>{{ text_right }}</option><option value="left"{% if theme_codecart_pro_cart_drawer_position == 'left' %} selected{% endif %}>{{ text_left }}</option></select></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_notification_position }}</label><div class="col-sm-10"><select name="theme_codecart_pro_notification_position" class="form-control"><option value="top-right"{% if theme_codecart_pro_notification_position == 'top-right' %} selected{% endif %}>{{ text_top_right }}</option><option value="top-left"{% if theme_codecart_pro_notification_position == 'top-left' %} selected{% endif %}>{{ text_top_left }}</option><option value="bottom-right"{% if theme_codecart_pro_notification_position == 'bottom-right' %} selected{% endif %}>{{ text_bottom_right }}</option><option value="bottom-left"{% if theme_codecart_pro_notification_position == 'bottom-left' %} selected{% endif %}>{{ text_bottom_left }}</option></select></div></div>
+              </fieldset>
+            </div>
+
+
+
+            <div class="tab-pane" id="tab-storefront-depth">
+              <div class="alert alert-info"><i class="fa fa-info-circle"></i> {{ help_storefront_depth }}</div>
+              <div class="row">
+                <div class="col-sm-6">
+                  <fieldset><legend>{{ text_product_card_list }}</legend>
+                    <div class="form-group"><label class="col-sm-2 control-label">{{ entry_card_style }}</label><div class="col-sm-10"><select name="theme_codecart_pro_card_style" class="form-control"><option value="commerce"{% if theme_codecart_pro_card_style == 'commerce' %} selected{% endif %}>{{ text_commerce }}</option><option value="minimal"{% if theme_codecart_pro_card_style == 'minimal' %} selected{% endif %}>{{ text_minimal }}</option><option value="compact"{% if theme_codecart_pro_card_style == 'compact' %} selected{% endif %}>{{ text_compact }}</option></select></div></div>
+                    <div class="form-group"><label class="col-sm-2 control-label">{{ entry_card_title_lines }}</label><div class="col-sm-10"><input type="number" name="theme_codecart_pro_card_title_lines" value="{{ theme_codecart_pro_card_title_lines }}" min="1" max="4" class="form-control" /><p class="help-block">{{ help_card_title_lines }}</p></div></div>
+                    {{ ccp.select(entry_card_full_click, 'theme_codecart_pro_card_full_click', theme_codecart_pro_card_full_click, help_card_full_click, text_yes, text_no) }}
+                    {{ ccp.select(entry_card_show_buy_button, 'theme_codecart_pro_card_show_buy_button', theme_codecart_pro_card_show_buy_button, '', text_yes, text_no) }}
+                    {{ ccp.select(entry_card_show_quantity, 'theme_codecart_pro_card_show_quantity', theme_codecart_pro_card_show_quantity, help_card_show_quantity, text_yes, text_no) }}
+                    {{ ccp.select(entry_card_show_wishlist, 'theme_codecart_pro_card_show_wishlist', theme_codecart_pro_card_show_wishlist, '', text_yes, text_no) }}
+                    {{ ccp.select(entry_card_show_compare, 'theme_codecart_pro_card_show_compare', theme_codecart_pro_card_show_compare, '', text_yes, text_no) }}
+                    {{ ccp.select(entry_card_show_model, 'theme_codecart_pro_card_show_model', theme_codecart_pro_card_show_model, help_card_show_model, text_yes, text_no) }}
+                    {{ ccp.select(entry_card_show_manufacturer, 'theme_codecart_pro_card_show_manufacturer', theme_codecart_pro_card_show_manufacturer, help_card_show_manufacturer, text_yes, text_no) }}
+                    <div class="form-group"><label class="col-sm-2 control-label">{{ entry_card_meta_position }}</label><div class="col-sm-10"><select name="theme_codecart_pro_card_meta_position" class="form-control"><option value="under_title"{% if theme_codecart_pro_card_meta_position == 'under_title' %} selected{% endif %}>{{ text_under_title }}</option><option value="under_price"{% if theme_codecart_pro_card_meta_position == 'under_price' %} selected{% endif %}>{{ text_under_price }}</option><option value="hide"{% if theme_codecart_pro_card_meta_position == 'hide' %} selected{% endif %}>{{ text_hide }}</option></select><p class="help-block">{{ help_card_meta_position }}</p></div></div>
+                    <div class="form-group"><label class="col-sm-2 control-label">{{ entry_card_stock_mode }}</label><div class="col-sm-10"><select name="theme_codecart_pro_card_stock_mode" class="form-control"><option value="smart"{% if theme_codecart_pro_card_stock_mode == 'smart' %} selected{% endif %}>{{ text_smart_available }}</option><option value="always"{% if theme_codecart_pro_card_stock_mode == 'always' %} selected{% endif %}>{{ text_always_show }}</option><option value="hide"{% if theme_codecart_pro_card_stock_mode == 'hide' %} selected{% endif %}>{{ text_hide }}</option></select></div></div>
+
+                    {{ ccp.select(entry_card_second_image_status, 'theme_codecart_pro_card_second_image_status', theme_codecart_pro_card_second_image_status, help_card_second_image, text_yes, text_no) }}
+                    {{ ccp.select(entry_card_sale_percent_status, 'theme_codecart_pro_card_sale_percent_status', theme_codecart_pro_card_sale_percent_status, help_card_sale_percent, text_yes, text_no) }}
+                    <div class="form-group"><label class="col-sm-2 control-label">{{ entry_card_hover_actions_mode }}</label><div class="col-sm-10"><select name="theme_codecart_pro_card_hover_actions_mode" class="form-control"><option value="smart"{% if theme_codecart_pro_card_hover_actions_mode == 'smart' %} selected{% endif %}>{{ text_smart_hover }}</option><option value="always"{% if theme_codecart_pro_card_hover_actions_mode == 'always' %} selected{% endif %}>{{ text_always_show_short }}</option><option value="hide"{% if theme_codecart_pro_card_hover_actions_mode == 'hide' %} selected{% endif %}>{{ text_hide }}</option></select></div></div>
+                  </fieldset>
+                </div>
+                <div class="col-sm-6">
+                  <fieldset><legend>{{ text_category_mobile_grid }}</legend>
+                    <div class="form-group"><label class="col-sm-2 control-label">{{ entry_category_columns_desktop }}</label><div class="col-sm-10"><input type="number" name="theme_codecart_pro_category_columns_desktop" value="{{ theme_codecart_pro_category_columns_desktop }}" min="2" max="6" class="form-control" /></div></div>
+                    <div class="form-group"><label class="col-sm-2 control-label">{{ entry_category_columns_tablet }}</label><div class="col-sm-10"><input type="number" name="theme_codecart_pro_category_columns_tablet" value="{{ theme_codecart_pro_category_columns_tablet }}" min="2" max="4" class="form-control" /></div></div>
+                    <div class="form-group"><label class="col-sm-2 control-label">{{ entry_category_columns_mobile }}</label><div class="col-sm-10"><input type="number" name="theme_codecart_pro_category_columns_mobile" value="{{ theme_codecart_pro_category_columns_mobile }}" min="1" max="2" class="form-control" /></div></div>
+                    <div class="form-group"><label class="col-sm-2 control-label">{{ entry_category_description_position }}</label><div class="col-sm-10"><select name="theme_codecart_pro_category_description_position" class="form-control"><option value="top"{% if theme_codecart_pro_category_description_position == 'top' %} selected{% endif %}>{{ text_position_top }}</option><option value="bottom"{% if theme_codecart_pro_category_description_position == 'bottom' %} selected{% endif %}>{{ text_position_bottom }}</option><option value="both"{% if theme_codecart_pro_category_description_position == 'both' %} selected{% endif %}>{{ text_position_both }}</option><option value="hide"{% if theme_codecart_pro_category_description_position == 'hide' %} selected{% endif %}>{{ text_hide }}</option></select><p class="help-block">{{ help_category_description_position }}</p></div></div>
+                    {{ ccp.select(entry_category_sticky_toolbar, 'theme_codecart_pro_category_sticky_toolbar', theme_codecart_pro_category_sticky_toolbar, help_category_sticky_toolbar, text_yes, text_no) }}
+                    {{ ccp.select(entry_category_description_collapse, 'theme_codecart_pro_category_description_collapse', theme_codecart_pro_category_description_collapse, help_category_description_collapse, text_yes, text_no) }}
+                    {{ ccp.number(entry_category_description_height, 'theme_codecart_pro_category_description_height', theme_codecart_pro_category_description_height, help_category_description_height, text_px) }}
+                    {{ ccp.number(entry_category_hero_width, 'theme_codecart_pro_category_hero_width', theme_codecart_pro_category_hero_width, help_category_hero_size, text_px) }}
+                    {{ ccp.number(entry_category_hero_height, 'theme_codecart_pro_category_hero_height', theme_codecart_pro_category_hero_height, help_category_hero_size, text_px) }}
+                    {{ ccp.select(entry_breadcrumb_schema, 'theme_codecart_pro_schema_breadcrumbs_status', theme_codecart_pro_schema_breadcrumbs_status, help_breadcrumb_schema, text_yes, text_no) }}
+                    {{ ccp.select(entry_category_itemlist_schema, 'theme_codecart_pro_category_itemlist_schema_status', theme_codecart_pro_category_itemlist_schema_status, help_category_itemlist_schema, text_yes, text_no) }}
+                  </fieldset>
+                </div>
+              </div>
+              <fieldset><legend>{{ text_product_card }}</legend>
+                {{ ccp.select(entry_product_quantity_switch, 'theme_codecart_pro_product_quantity_switch', theme_codecart_pro_product_quantity_switch, help_product_quantity_switch, text_yes, text_no) }}
+                {{ ccp.select(entry_product_show_actions, 'theme_codecart_pro_product_show_actions', theme_codecart_pro_product_show_actions, help_product_show_actions, text_yes, text_no) }}
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_product_gallery_mode }}</label><div class="col-sm-10"><select name="theme_codecart_pro_product_gallery_mode" class="form-control"><option value="clean"{% if theme_codecart_pro_product_gallery_mode == 'clean' %} selected{% endif %}>{{ text_clean }}</option><option value="thumbs_bottom"{% if theme_codecart_pro_product_gallery_mode == 'thumbs_bottom' %} selected{% endif %}>{{ text_thumbs_bottom }}</option><option value="thumbs_left"{% if theme_codecart_pro_product_gallery_mode == 'thumbs_left' %} selected{% endif %}>{{ text_thumbs_left }}</option></select></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_product_gallery_ratio }}</label><div class="col-sm-10"><select name="theme_codecart_pro_product_gallery_ratio" class="form-control"><option value="1x1"{% if theme_codecart_pro_product_gallery_ratio == '1x1' %} selected{% endif %}>1:1</option><option value="4x3"{% if theme_codecart_pro_product_gallery_ratio == '4x3' %} selected{% endif %}>4:3</option><option value="3x4"{% if theme_codecart_pro_product_gallery_ratio == '3x4' %} selected{% endif %}>3:4</option><option value="16x9"{% if theme_codecart_pro_product_gallery_ratio == '16x9' %} selected{% endif %}>16:9</option></select></div></div>
+
+                {{ ccp.select(entry_product_show_attributes_pro, 'theme_codecart_pro_product_show_attributes', theme_codecart_pro_product_show_attributes, help_product_show_attributes, text_yes, text_no) }}
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_product_attributes_style }}</label><div class="col-sm-10"><select name="theme_codecart_pro_product_attributes_style" class="form-control"><option value="table"{% if theme_codecart_pro_product_attributes_style == 'table' %} selected{% endif %}>{{ text_table }}</option><option value="cards"{% if theme_codecart_pro_product_attributes_style == 'cards' %} selected{% endif %}>{{ text_cards_plural }}</option><option value="compact"{% if theme_codecart_pro_product_attributes_style == 'compact' %} selected{% endif %}>{{ text_compactly }}</option></select></div></div>
+                {{ ccp.select(entry_product_sale_timer, 'theme_codecart_pro_product_sale_timer', theme_codecart_pro_product_sale_timer, help_product_sale_timer, text_yes, text_no) }}
+                {{ ccp.select(entry_product_faq_status, 'theme_codecart_pro_product_faq_status', theme_codecart_pro_product_faq_status, help_product_faq_status, text_yes, text_no) }}
+                {{ ccp.select('FAQPage schema.org', 'theme_codecart_pro_product_faq_schema_status', theme_codecart_pro_product_faq_schema_status, help_product_faq_schema, text_yes, text_no) }}
+                {{ ccp.select(entry_product_trust_panel_status, 'theme_codecart_pro_product_trust_panel_status', theme_codecart_pro_product_trust_panel_status, help_product_trust_panel, text_yes, text_no) }}
+                <div class="form-group"><label class="col-sm-2 control-label">{{ text_product_trust_badges }}</label><div class="col-sm-10"><ul class="nav nav-tabs">{% for language in languages %}<li{% if loop.first %} class="active"{% endif %}><a href="#ccp-product-trust-badges-{{ language.language_id }}" data-toggle="tab">{{ language.name }}</a></li>{% endfor %}</ul><div class="tab-content">{% for language in languages %}<div class="tab-pane{% if loop.first %} active{% endif %}" id="ccp-product-trust-badges-{{ language.language_id }}"><textarea name="theme_codecart_pro_product_trust_badges[{{ language.language_id }}]" rows="3" class="form-control" placeholder="{{ placeholder_trust_badges }}">{{ theme_codecart_pro_product_trust_badges[language.language_id] is defined ? theme_codecart_pro_product_trust_badges[language.language_id] : '' }}</textarea><p class="help-block">{{ help_pipe_short_items }}</p></div>{% endfor %}</div></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ text_product_faq }}</label><div class="col-sm-10"><ul class="nav nav-tabs">{% for language in languages %}<li{% if loop.first %} class="active"{% endif %}><a href="#ccp-product-faq-{{ language.language_id }}" data-toggle="tab">{{ language.name }}</a></li>{% endfor %}</ul><div class="tab-content">{% for language in languages %}<div class="tab-pane{% if loop.first %} active{% endif %}" id="ccp-product-faq-{{ language.language_id }}"><textarea name="theme_codecart_pro_product_faq[{{ language.language_id }}]" rows="5" class="form-control" placeholder="{{ placeholder_faq_pair }}">{{ theme_codecart_pro_product_faq[language.language_id] is defined ? theme_codecart_pro_product_faq[language.language_id] : '' }}</textarea></div>{% endfor %}</div></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_product_delivery_text }}</label><div class="col-sm-10"><ul class="nav nav-tabs">{% for language in languages %}<li{% if loop.first %} class="active"{% endif %}><a href="#ccp-delivery-text-{{ language.language_id }}" data-toggle="tab">{{ language.name }}</a></li>{% endfor %}</ul><div class="tab-content">{% for language in languages %}<div class="tab-pane{% if loop.first %} active{% endif %}" id="ccp-delivery-text-{{ language.language_id }}"><textarea name="theme_codecart_pro_product_delivery_text[{{ language.language_id }}]" rows="2" class="form-control">{{ theme_codecart_pro_product_delivery_text[language.language_id] is defined ? theme_codecart_pro_product_delivery_text[language.language_id] : '' }}</textarea></div>{% endfor %}</div></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_product_return_text }}</label><div class="col-sm-10"><ul class="nav nav-tabs">{% for language in languages %}<li{% if loop.first %} class="active"{% endif %}><a href="#ccp-return-text-{{ language.language_id }}" data-toggle="tab">{{ language.name }}</a></li>{% endfor %}</ul><div class="tab-content">{% for language in languages %}<div class="tab-pane{% if loop.first %} active{% endif %}" id="ccp-return-text-{{ language.language_id }}"><textarea name="theme_codecart_pro_product_return_text[{{ language.language_id }}]" rows="2" class="form-control">{{ theme_codecart_pro_product_return_text[language.language_id] is defined ? theme_codecart_pro_product_return_text[language.language_id] : '' }}</textarea></div>{% endfor %}</div></div></div>
+              </fieldset>
+            </div>
+
+
+            <div class="tab-pane" id="tab-mega-menu">
+              <fieldset><legend>{{ text_mega_menu_pro }}</legend>
+                {{ ccp.select(entry_mega_menu_status, 'theme_codecart_pro_mega_menu_status', theme_codecart_pro_mega_menu_status, help_mega_menu_status, text_yes, text_no) }}
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_mega_menu_source }}</label><div class="col-sm-10"><select name="theme_codecart_pro_mega_menu_source" class="form-control"><option value="codecart"{% if theme_codecart_pro_mega_menu_source == 'codecart' %} selected{% endif %}>{{ text_codecart_menu }}</option><option value="native"{% if theme_codecart_pro_mega_menu_source == 'native' %} selected{% endif %}>{{ text_native_menu }}</option><option value="both"{% if theme_codecart_pro_mega_menu_source == 'both' %} selected{% endif %}>{{ text_codecart_native_fallback }}</option></select><p class="help-block">{{ help_mega_menu_source }}</p></div></div>
+                {{ ccp.select(entry_mega_menu_only_top, 'theme_codecart_pro_mega_menu_only_top', theme_codecart_pro_mega_menu_only_top, help_mega_menu_only_top, text_yes, text_no) }}
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_mega_menu_depth }}</label><div class="col-sm-10"><input type="number" name="theme_codecart_pro_mega_menu_depth" value="{{ theme_codecart_pro_mega_menu_depth }}" class="form-control" min="1" max="4" /><p class="help-block">{{ help_mega_menu_depth }}</p></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_mega_menu_columns }}</label><div class="col-sm-10"><input type="number" name="theme_codecart_pro_mega_menu_columns" value="{{ theme_codecart_pro_mega_menu_columns }}" class="form-control" min="2" max="6" /></div></div>
+                {{ ccp.select(entry_mega_menu_show_images, 'theme_codecart_pro_mega_menu_show_images', theme_codecart_pro_mega_menu_show_images, help_mega_menu_show_images, text_yes, text_no) }}
+                {{ ccp.select(entry_mega_menu_show_counts, 'theme_codecart_pro_mega_menu_show_counts', theme_codecart_pro_mega_menu_show_counts, help_mega_menu_show_counts, text_yes, text_no) }}
+                {{ ccp.select(entry_mega_menu_promo_status, 'theme_codecart_pro_mega_menu_promo_status', theme_codecart_pro_mega_menu_promo_status, '', text_yes, text_no) }}
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_promo_title }}</label><div class="col-sm-10"><ul class="nav nav-tabs">{% for language in languages %}<li{% if loop.first %} class="active"{% endif %}><a href="#ccp-mega-promo-title-{{ language.language_id }}" data-toggle="tab">{{ language.name }}</a></li>{% endfor %}</ul><div class="tab-content">{% for language in languages %}<div class="tab-pane{% if loop.first %} active{% endif %}" id="ccp-mega-promo-title-{{ language.language_id }}"><input type="text" name="theme_codecart_pro_mega_menu_promo_title[{{ language.language_id }}]" value="{{ theme_codecart_pro_mega_menu_promo_title[language.language_id] is defined ? theme_codecart_pro_mega_menu_promo_title[language.language_id] : '' }}" class="form-control" /></div>{% endfor %}</div></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_promo_text }}</label><div class="col-sm-10"><ul class="nav nav-tabs">{% for language in languages %}<li{% if loop.first %} class="active"{% endif %}><a href="#ccp-mega-promo-text-{{ language.language_id }}" data-toggle="tab">{{ language.name }}</a></li>{% endfor %}</ul><div class="tab-content">{% for language in languages %}<div class="tab-pane{% if loop.first %} active{% endif %}" id="ccp-mega-promo-text-{{ language.language_id }}"><textarea name="theme_codecart_pro_mega_menu_promo_text[{{ language.language_id }}]" rows="2" class="form-control">{{ theme_codecart_pro_mega_menu_promo_text[language.language_id] is defined ? theme_codecart_pro_mega_menu_promo_text[language.language_id] : '' }}</textarea></div>{% endfor %}</div></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_promo_link }}</label><div class="col-sm-10"><input type="text" name="theme_codecart_pro_mega_menu_promo_link" value="{{ theme_codecart_pro_mega_menu_promo_link }}" class="form-control" placeholder="index.php?route=product/category&path=..." /></div></div>
+              </fieldset>
+              <fieldset><legend>{{ text_custom_menu_links }}</legend>
+                <div class="alert alert-info">{{ help_custom_menu_links }}</div>
+                {% for i in 1..6 %}
+                  {% set title_key = 'theme_codecart_pro_menu_link' ~ i ~ '_title' %}
+                  {% set url_key = 'theme_codecart_pro_menu_link' ~ i ~ '_url' %}
+                  {% set icon_key = 'theme_codecart_pro_menu_link' ~ i ~ '_icon' %}
+                  <div class="well well-sm">
+                    <strong>{{ text_link_number }} {{ i }}</strong>
+                    <div class="form-group"><label class="col-sm-2 control-label">{{ text_name }}</label><div class="col-sm-10"><ul class="nav nav-tabs">{% for language in languages %}<li{% if loop.first %} class="active"{% endif %}><a href="#ccp-menu-link-{{ i }}-{{ language.language_id }}" data-toggle="tab">{{ language.name }}</a></li>{% endfor %}</ul><div class="tab-content">{% for language in languages %}<div class="tab-pane{% if loop.first %} active{% endif %}" id="ccp-menu-link-{{ i }}-{{ language.language_id }}"><input type="text" name="{{ title_key }}[{{ language.language_id }}]" value="{{ attribute(attribute(_context, title_key), language.language_id)|default('') }}" class="form-control" /></div>{% endfor %}</div></div></div>
+                    <div class="form-group"><label class="col-sm-2 control-label">{{ text_url }}</label><div class="col-sm-10"><input type="text" name="{{ url_key }}" value="{{ attribute(_context, url_key) }}" class="form-control" placeholder="index.php?route=..." /></div></div>
+                    <div class="form-group"><label class="col-sm-2 control-label">{{ text_fontawesome_icon }}</label><div class="col-sm-10"><input type="text" name="{{ icon_key }}" value="{{ attribute(_context, icon_key) }}" class="form-control" placeholder="fa fa-truck" /></div></div>
+                  </div>
+                {% endfor %}
+              </fieldset>
+              <fieldset><legend>{{ text_mobile_floating_actions }}</legend>
+                {{ ccp.select(entry_mobile_menu_show_search, 'theme_codecart_pro_mobile_menu_show_search', theme_codecart_pro_mobile_menu_show_search, '', text_yes, text_no) }}
+                {{ ccp.select(entry_mobile_menu_show_categories, 'theme_codecart_pro_mobile_menu_show_categories', theme_codecart_pro_mobile_menu_show_categories, '', text_yes, text_no) }}
+                {{ ccp.select(entry_mobile_menu_show_blog, 'theme_codecart_pro_mobile_menu_show_blog', theme_codecart_pro_mobile_menu_show_blog, '', text_yes, text_no) }}
+                {{ ccp.select(entry_mobile_menu_show_contacts, 'theme_codecart_pro_mobile_menu_show_contacts', theme_codecart_pro_mobile_menu_show_contacts, '', text_yes, text_no) }}
+                {{ ccp.select(entry_mobile_menu_show_account, 'theme_codecart_pro_mobile_menu_show_account', theme_codecart_pro_mobile_menu_show_account, '', text_yes, text_no) }}
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_header_search_mode }}</label><div class="col-sm-10"><select name="theme_codecart_pro_header_search_mode" class="form-control"><option value="wide"{% if theme_codecart_pro_header_search_mode == 'wide' %} selected{% endif %}>{{ text_wide }}</option><option value="compact"{% if theme_codecart_pro_header_search_mode == 'compact' %} selected{% endif %}>{{ text_compact }}</option><option value="minimal"{% if theme_codecart_pro_header_search_mode == 'minimal' %} selected{% endif %}>{{ text_minimal }}</option></select></div></div>
+                {{ ccp.select(entry_floating_cart_status, 'theme_codecart_pro_floating_cart_status', theme_codecart_pro_floating_cart_status, '', text_yes, text_no) }}
+                {{ ccp.select(entry_floating_wishlist_status, 'theme_codecart_pro_floating_wishlist_status', theme_codecart_pro_floating_wishlist_status, '', text_yes, text_no) }}
+                {{ ccp.select(entry_floating_compare_status, 'theme_codecart_pro_floating_compare_status', theme_codecart_pro_floating_compare_status, '', text_yes, text_no) }}
+              </fieldset>
+            </div>
+            <div class="tab-pane" id="tab-interactions">
+              <fieldset><legend>{{ text_interactions }}</legend>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_enable_live_search }}</label><div class="col-sm-10"><select name="theme_codecart_pro_enable_live_search" class="form-control"><option value="1"{% if theme_codecart_pro_enable_live_search %} selected{% endif %}>{{ text_enabled }}</option><option value="0"{% if not theme_codecart_pro_enable_live_search %} selected{% endif %}>{{ text_disabled }}</option></select></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_live_search_limit }}</label><div class="col-sm-10"><input type="number" name="theme_codecart_pro_live_search_limit" value="{{ theme_codecart_pro_live_search_limit }}" min="3" max="20" class="form-control" /></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_live_search_min_chars }}</label><div class="col-sm-10"><input type="number" name="theme_codecart_pro_live_search_min_chars" value="{{ theme_codecart_pro_live_search_min_chars }}" min="1" max="5" class="form-control" /></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_enable_callback }}</label><div class="col-sm-10"><select name="theme_codecart_pro_enable_callback" class="form-control"><option value="1"{% if theme_codecart_pro_enable_callback %} selected{% endif %}>{{ text_enabled }}</option><option value="0"{% if not theme_codecart_pro_enable_callback %} selected{% endif %}>{{ text_disabled }}</option></select></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_callback_required_email }}</label><div class="col-sm-10"><select name="theme_codecart_pro_callback_required_email" class="form-control"><option value="1"{% if theme_codecart_pro_callback_required_email %} selected{% endif %}>{{ text_yes }}</option><option value="0"{% if not theme_codecart_pro_callback_required_email %} selected{% endif %}>{{ text_no }}</option></select></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_callback_success_text }}</label><div class="col-sm-10"><ul class="nav nav-tabs">{% for language in languages %}<li{% if loop.first %} class="active"{% endif %}><a href="#ccp-callback-success-{{ language.language_id }}" data-toggle="tab">{{ language.name }}</a></li>{% endfor %}</ul><div class="tab-content">{% for language in languages %}<div class="tab-pane{% if loop.first %} active{% endif %}" id="ccp-callback-success-{{ language.language_id }}"><input type="text" name="theme_codecart_pro_callback_success_text[{{ language.language_id }}]" value="{{ theme_codecart_pro_callback_success_text[language.language_id] is defined ? theme_codecart_pro_callback_success_text[language.language_id] : '' }}" class="form-control" /></div>{% endfor %}</div></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_enable_subscribe }}</label><div class="col-sm-10"><select name="theme_codecart_pro_enable_subscribe" class="form-control"><option value="1"{% if theme_codecart_pro_enable_subscribe %} selected{% endif %}>{{ text_enabled }}</option><option value="0"{% if not theme_codecart_pro_enable_subscribe %} selected{% endif %}>{{ text_disabled }}</option></select></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_subscribe_success_text }}</label><div class="col-sm-10"><ul class="nav nav-tabs">{% for language in languages %}<li{% if loop.first %} class="active"{% endif %}><a href="#ccp-subscribe-success-{{ language.language_id }}" data-toggle="tab">{{ language.name }}</a></li>{% endfor %}</ul><div class="tab-content">{% for language in languages %}<div class="tab-pane{% if loop.first %} active{% endif %}" id="ccp-subscribe-success-{{ language.language_id }}"><input type="text" name="theme_codecart_pro_subscribe_success_text[{{ language.language_id }}]" value="{{ theme_codecart_pro_subscribe_success_text[language.language_id] is defined ? theme_codecart_pro_subscribe_success_text[language.language_id] : '' }}" class="form-control" /></div>{% endfor %}</div></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_popup_notification_status }}</label><div class="col-sm-10"><select name="theme_codecart_pro_popup_notification_status" class="form-control"><option value="1"{% if theme_codecart_pro_popup_notification_status %} selected{% endif %}>{{ text_enabled }}</option><option value="0"{% if not theme_codecart_pro_popup_notification_status %} selected{% endif %}>{{ text_disabled }}</option></select></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_popup_notification_delay }}</label><div class="col-sm-10"><input type="number" name="theme_codecart_pro_popup_notification_delay" value="{{ theme_codecart_pro_popup_notification_delay }}" min="0" max="20000" class="form-control" /></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_popup_notification_text }}</label><div class="col-sm-10"><ul class="nav nav-tabs">{% for language in languages %}<li{% if loop.first %} class="active"{% endif %}><a href="#ccp-popup-text-{{ language.language_id }}" data-toggle="tab">{{ language.name }}</a></li>{% endfor %}</ul><div class="tab-content">{% for language in languages %}<div class="tab-pane{% if loop.first %} active{% endif %}" id="ccp-popup-text-{{ language.language_id }}"><textarea name="theme_codecart_pro_popup_notification_text[{{ language.language_id }}]" rows="3" class="form-control">{{ theme_codecart_pro_popup_notification_text[language.language_id] is defined ? theme_codecart_pro_popup_notification_text[language.language_id] : '' }}</textarea></div>{% endfor %}</div></div></div>
+              </fieldset>
+            </div>
+
+            <div class="tab-pane" id="tab-requests">
+              <fieldset><legend>{{ text_requests }}</legend>
+                <div class="row">
+                  <div class="col-sm-4"><div class="ccp-stat"><strong>{{ ccp_request_summary.quick_orders }}</strong><span>{{ text_quick_orders }}</span></div></div>
+                  <div class="col-sm-4"><div class="ccp-stat"><strong>{{ ccp_request_summary.callbacks }}</strong><span>{{ text_callbacks }}</span></div></div>
+                  <div class="col-sm-4"><div class="ccp-stat"><strong>{{ ccp_request_summary.subscribers }}</strong><span>{{ text_subscribers }}</span></div></div>
+                </div>
+                <h4>{{ text_recent_quick_orders }}</h4>
+                <div class="table-responsive"><table class="table table-bordered table-hover"><thead><tr><th>{{ text_id }}</th><th>{{ text_product_item }}</th><th>{{ text_quantity }}</th><th>{{ text_options }}</th><th>{{ text_customer }}</th><th>{{ text_phone }}</th><th>{{ text_email }}</th><th>{{ text_date }}</th></tr></thead><tbody>{% for row in ccp_recent_quick_orders %}<tr><td>{{ row.quick_order_id }}</td><td>{{ row.product_name|escape }}</td><td>{{ row.quantity|default(1) }}</td><td><small>{{ row.product_options|default('')|escape|nl2br }}</small></td><td>{{ row.customer_name|escape }}</td><td>{{ row.customer_phone|escape }}</td><td>{{ row.customer_email|escape }}</td><td>{{ row.date_added|escape }}</td></tr>{% else %}<tr><td colspan="8" class="text-center">{{ text_no_data }}</td></tr>{% endfor %}</tbody></table></div>
+                <div class="ccp-table-footer"><div>{{ ccp_quick_results }}</div><div>{{ ccp_quick_pagination }}</div></div>
+                <h4>{{ text_recent_callbacks }}</h4>
+                <div class="table-responsive"><table class="table table-bordered table-hover"><thead><tr><th>{{ text_id }}</th><th>{{ text_customer }}</th><th>{{ text_phone }}</th><th>{{ text_email }}</th><th>{{ text_comment }}</th><th>{{ text_date }}</th></tr></thead><tbody>{% for row in ccp_recent_callbacks %}<tr><td>{{ row.callback_request_id }}</td><td>{{ row.customer_name|escape }}</td><td>{{ row.customer_phone|escape }}</td><td>{{ row.customer_email|escape }}</td><td>{{ row.comment|escape|nl2br }}</td><td>{{ row.date_added|escape }}</td></tr>{% else %}<tr><td colspan="6" class="text-center">{{ text_no_data }}</td></tr>{% endfor %}</tbody></table></div>
+                <div class="ccp-table-footer"><div>{{ ccp_callback_results }}</div><div>{{ ccp_callback_pagination }}</div></div>
+                <h4>{{ text_recent_subscribers }}</h4>
+                <div class="table-responsive"><table class="table table-bordered table-hover"><thead><tr><th>{{ text_id }}</th><th>{{ text_email }}</th><th>{{ text_name }}</th><th>{{ text_source }}</th><th>{{ text_date }}</th></tr></thead><tbody>{% for row in ccp_recent_subscribers %}<tr><td>{{ row.subscriber_id }}</td><td>{{ row.email|escape }}</td><td>{{ row.name|escape }}</td><td>{{ row.source|escape }}</td><td>{{ row.date_added|escape }}</td></tr>{% else %}<tr><td colspan="5" class="text-center">{{ text_no_data }}</td></tr>{% endfor %}</tbody></table></div>
+                <div class="ccp-table-footer"><div>{{ ccp_subscriber_results }}</div><div>{{ ccp_subscriber_pagination }}</div></div>
+              </fieldset>
+            </div>
+
+
+            <div class="tab-pane" id="tab-seo-content">
+              <fieldset><legend>{{ text_seo_content }}</legend>
+                {{ ccp.select(entry_seo_schema_status, 'theme_codecart_pro_seo_schema_status', theme_codecart_pro_seo_schema_status, '', text_yes, text_no) }}
+                {{ ccp.select(entry_seo_opengraph_status, 'theme_codecart_pro_seo_opengraph_status', theme_codecart_pro_seo_opengraph_status, '', text_yes, text_no) }}
+                <div class="well well-sm"><strong><i class="fa fa-shield"></i> {{ text_preset_seo }} Index Guard</strong><p class="help-block">{{ help_seo_index_guard }}</p>
+                  {{ ccp.select(entry_seo_index_guard_status, 'theme_codecart_pro_seo_index_guard_status', theme_codecart_pro_seo_index_guard_status, '', text_yes, text_no) }}
+                  {{ ccp.select(entry_seo_noindex_sort, 'theme_codecart_pro_seo_noindex_sort', theme_codecart_pro_seo_noindex_sort, '', text_yes, text_no) }}
+                  {{ ccp.select(entry_seo_noindex_limit, 'theme_codecart_pro_seo_noindex_limit', theme_codecart_pro_seo_noindex_limit, '', text_yes, text_no) }}
+                  {{ ccp.select(entry_seo_noindex_filter, 'theme_codecart_pro_seo_noindex_filter', theme_codecart_pro_seo_noindex_filter, '', text_yes, text_no) }}
+                  {{ ccp.select(entry_seo_noindex_page, 'theme_codecart_pro_seo_noindex_page', theme_codecart_pro_seo_noindex_page, '', text_yes, text_no) }}
+                  {{ ccp.select(entry_seo_clean_canonical, 'theme_codecart_pro_seo_clean_canonical', theme_codecart_pro_seo_clean_canonical, '', text_yes, text_no) }}
+                </div>
+                {{ ccp.select(entry_merchant_schema_status, 'theme_codecart_pro_merchant_schema_status', theme_codecart_pro_merchant_schema_status, help_merchant_schema, text_yes, text_no) }}
+                {{ ccp.select(entry_product_review_schema_status, 'theme_codecart_pro_product_review_schema_status', theme_codecart_pro_product_review_schema_status, help_product_review_schema, text_yes, text_no) }}
+                {{ ccp.select(entry_website_search_schema_status, 'theme_codecart_pro_website_search_schema_status', theme_codecart_pro_website_search_schema_status, help_website_search_schema, text_yes, text_no) }}
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_seo_organization_name }}</label><div class="col-sm-10"><input type="text" name="theme_codecart_pro_seo_organization_name" value="{{ theme_codecart_pro_seo_organization_name }}" class="form-control" /></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_seo_organization_logo }}</label><div class="col-sm-10"><div class="input-group ccp-media-picker"><input type="text" id="theme_codecart_pro_seo_organization_logo" name="theme_codecart_pro_seo_organization_logo" value="{{ theme_codecart_pro_seo_organization_logo|escape }}" class="form-control" placeholder="catalog/logo.png" readonly /><span class="input-group-btn"><button type="button" class="btn btn-primary" data-ccp-filemanager data-target="theme_codecart_pro_seo_organization_logo"><i class="fa fa-picture-o"></i> {{ text_choose_image }}</button><button type="button" class="btn btn-default" data-ccp-clear-target="theme_codecart_pro_seo_organization_logo"><i class="fa fa-times"></i> {{ text_clear_image }}</button></span></div></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_seo_organization_phone }}</label><div class="col-sm-10"><input type="text" name="theme_codecart_pro_seo_organization_phone" value="{{ theme_codecart_pro_seo_organization_phone }}" class="form-control" /></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_seo_organization_email }}</label><div class="col-sm-10"><input type="text" name="theme_codecart_pro_seo_organization_email" value="{{ theme_codecart_pro_seo_organization_email }}" class="form-control" /></div></div>
+              </fieldset>
+
+              <fieldset><legend>{{ text_merchant_schema_google }}</legend>
+                {{ ccp.select(entry_shipping_schema_status, 'theme_codecart_pro_shipping_schema_status', theme_codecart_pro_shipping_schema_status, help_shipping_schema, text_yes, text_no) }}
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_shipping_country }}</label><div class="col-sm-10"><input type="text" name="theme_codecart_pro_shipping_country" value="{{ theme_codecart_pro_shipping_country }}" class="form-control" placeholder="UA" /><p class="help-block">{{ help_shipping_country }}</p></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_shipping_price }}</label><div class="col-sm-10"><input type="text" name="theme_codecart_pro_shipping_price" value="{{ theme_codecart_pro_shipping_price }}" class="form-control" placeholder="0.00" /><p class="help-block">{{ help_shipping_price }}</p></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_shipping_days_min }}</label><div class="col-sm-10"><input type="number" name="theme_codecart_pro_shipping_days_min" value="{{ theme_codecart_pro_shipping_days_min }}" class="form-control" min="0" max="60" placeholder="1" /><p class="help-block">{{ help_shipping_days_min }}</p></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_shipping_days_max }}</label><div class="col-sm-10"><input type="number" name="theme_codecart_pro_shipping_days_max" value="{{ theme_codecart_pro_shipping_days_max }}" class="form-control" min="0" max="120" placeholder="5" /><p class="help-block">{{ help_shipping_days_max }}</p></div></div>
+                {{ ccp.select(entry_return_schema_status, 'theme_codecart_pro_return_schema_status', theme_codecart_pro_return_schema_status, help_return_schema, text_yes, text_no) }}
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_return_country }}</label><div class="col-sm-10"><input type="text" name="theme_codecart_pro_return_country" value="{{ theme_codecart_pro_return_country }}" class="form-control" placeholder="UA" /></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_return_days }}</label><div class="col-sm-10"><input type="number" name="theme_codecart_pro_return_days" value="{{ theme_codecart_pro_return_days }}" class="form-control" min="0" max="365" placeholder="14" /><p class="help-block">{{ help_return_days }}</p></div></div>
+              </fieldset>
+              <fieldset><legend>{{ text_seo_texts }}</legend>
+                {{ ccp.select(entry_seo_footer_text_status, 'theme_codecart_pro_seo_footer_text_status', theme_codecart_pro_seo_footer_text_status, '', text_yes, text_no) }}
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_seo_footer_text }}</label><div class="col-sm-10"><ul class="nav nav-tabs">{% for language in languages %}<li{% if loop.first %} class="active"{% endif %}><a href="#ccp-seo-footer-{{ language.language_id }}" data-toggle="tab">{{ language.name }}</a></li>{% endfor %}</ul><div class="tab-content">{% for language in languages %}<div class="tab-pane{% if loop.first %} active{% endif %}" id="ccp-seo-footer-{{ language.language_id }}"><textarea name="theme_codecart_pro_seo_footer_text[{{ language.language_id }}]" rows="5" class="form-control">{{ theme_codecart_pro_seo_footer_text[language.language_id] is defined ? theme_codecart_pro_seo_footer_text[language.language_id] : '' }}</textarea></div>{% endfor %}</div><p class="help-block">{{ help_seo_footer_text }}</p></div></div>
+              </fieldset>
+              <fieldset><legend>{{ text_blog_news }} <a href="{{ blog_manager }}" class="btn btn-primary btn-sm pull-right"><i class="fa fa-pencil"></i> {{ button_blog_manager }}</a></legend>
+                {{ ccp.select(entry_blog_status, 'theme_codecart_pro_blog_status', theme_codecart_pro_blog_status, '', text_yes, text_no) }}
+                {{ ccp.number(entry_blog_limit, 'theme_codecart_pro_blog_limit', theme_codecart_pro_blog_limit, '') }}
+                {{ ccp.select(entry_blog_canonical_status, 'theme_codecart_pro_blog_canonical_status', theme_codecart_pro_blog_canonical_status, '', text_yes, text_no) }}
+                {{ ccp.select(entry_blog_sitemap_status, 'theme_codecart_pro_blog_sitemap_status', theme_codecart_pro_blog_sitemap_status, '', text_yes, text_no) }}
+                {{ ccp.select(entry_blog_schema_status, 'theme_codecart_pro_blog_schema_status', theme_codecart_pro_blog_schema_status, '', text_yes, text_no) }}
+                {{ ccp.select(entry_blog_opengraph_image_status, 'theme_codecart_pro_blog_opengraph_image_status', theme_codecart_pro_blog_opengraph_image_status, '', text_yes, text_no) }}
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_blog_sitemap_url }}</label><div class="col-sm-10"><input type="text" value="{{ blog_sitemap_url }}" class="form-control" readonly /><p class="help-block">{{ help_blog_sitemap_url }}</p></div></div>
+                <fieldset><legend>{{ text_langdir_hreflang_seo_url }}</legend>
+                  {{ ccp.select(entry_langdir_status, 'theme_codecart_pro_langdir_status', theme_codecart_pro_langdir_status, '', text_yes, text_no) }}
+                  {{ ccp.select(entry_hreflang_status, 'theme_codecart_pro_hreflang_status', theme_codecart_pro_hreflang_status, '', text_yes, text_no) }}
+                  {{ ccp.select(entry_hreflang_xdefault_status, 'theme_codecart_pro_hreflang_xdefault_status', theme_codecart_pro_hreflang_xdefault_status, '', text_yes, text_no) }}
+                  {{ ccp.select(entry_blog_sitemap_hreflang_status, 'theme_codecart_pro_blog_sitemap_hreflang_status', theme_codecart_pro_blog_sitemap_hreflang_status, '', text_yes, text_no) }}
+                  <div class="form-group"><label class="col-sm-2 control-label">{{ entry_blog_keyword }}</label><div class="col-sm-10"><ul class="nav nav-tabs">{% for language in languages %}<li{% if loop.first %} class="active"{% endif %}><a href="#ccp-blog-keyword-{{ language.language_id }}" data-toggle="tab">{{ language.name }}</a></li>{% endfor %}</ul><div class="tab-content">{% for language in languages %}<div class="tab-pane{% if loop.first %} active{% endif %}" id="ccp-blog-keyword-{{ language.language_id }}"><input type="text" name="theme_codecart_pro_blog_keyword[{{ language.language_id }}]" value="{{ theme_codecart_pro_blog_keyword[language.language_id] is defined ? theme_codecart_pro_blog_keyword[language.language_id] : 'blog' }}" class="form-control" placeholder="blog" /></div>{% endfor %}</div><p class="help-block">{{ help_blog_keyword }}</p></div></div>
+                  <div class="form-group"><label class="col-sm-2 control-label">{{ entry_langdir_prefix }}</label><div class="col-sm-10"><div class="row">{% for language in languages %}<div class="col-sm-4"><label>{{ language.name }}</label><input type="text" name="theme_codecart_pro_langdir_prefix[{{ language.language_id }}]" value="{{ theme_codecart_pro_langdir_prefix[language.language_id] is defined ? theme_codecart_pro_langdir_prefix[language.language_id] : '' }}" class="form-control" placeholder="ua / ru / en" /></div>{% endfor %}</div><p class="help-block">{{ help_langdir_prefix }}</p></div></div>
+                  <div class="alert alert-info">{{ help_blog_seo_v390 }}</div>
+                </fieldset>
+
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_blog_title }}</label><div class="col-sm-10"><ul class="nav nav-tabs">{% for language in languages %}<li{% if loop.first %} class="active"{% endif %}><a href="#ccp-blog-title-{{ language.language_id }}" data-toggle="tab">{{ language.name }}</a></li>{% endfor %}</ul><div class="tab-content">{% for language in languages %}<div class="tab-pane{% if loop.first %} active{% endif %}" id="ccp-blog-title-{{ language.language_id }}"><input type="text" name="theme_codecart_pro_blog_title[{{ language.language_id }}]" value="{{ theme_codecart_pro_blog_title[language.language_id] is defined ? theme_codecart_pro_blog_title[language.language_id] : '' }}" class="form-control" /></div>{% endfor %}</div></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_blog_description }}</label><div class="col-sm-10"><ul class="nav nav-tabs">{% for language in languages %}<li{% if loop.first %} class="active"{% endif %}><a href="#ccp-blog-desc-{{ language.language_id }}" data-toggle="tab">{{ language.name }}</a></li>{% endfor %}</ul><div class="tab-content">{% for language in languages %}<div class="tab-pane{% if loop.first %} active{% endif %}" id="ccp-blog-desc-{{ language.language_id }}"><textarea name="theme_codecart_pro_blog_description[{{ language.language_id }}]" rows="3" class="form-control">{{ theme_codecart_pro_blog_description[language.language_id] is defined ? theme_codecart_pro_blog_description[language.language_id] : '' }}</textarea></div>{% endfor %}</div></div></div>
+                <div class="alert alert-success">{{ help_blog_crud_v390 }}</div>
+              </fieldset>
+              <fieldset><legend>{{ text_reviews }} <a href="{{ review_manager }}" class="btn btn-primary btn-sm pull-right"><i class="fa fa-comments"></i> {{ button_review_manager }}</a></legend>
+                {{ ccp.select(entry_reviews_block_status, 'theme_codecart_pro_reviews_block_status', theme_codecart_pro_reviews_block_status, '', text_yes, text_no) }}
+                {{ ccp.number(entry_reviews_limit, 'theme_codecart_pro_reviews_limit', theme_codecart_pro_reviews_limit, '') }}
+                <div class="row">
+                  <div class="col-sm-6">
+                    {{ ccp.select(entry_reviews_plus_minus_status, 'theme_codecart_pro_reviews_plus_minus_status', theme_codecart_pro_reviews_plus_minus_status, '', text_yes, text_no) }}
+                    {{ ccp.select(entry_reviews_photos_status, 'theme_codecart_pro_reviews_photos_status', theme_codecart_pro_reviews_photos_status, '', text_yes, text_no) }}
+                    {{ ccp.number(entry_reviews_photos_limit, 'theme_codecart_pro_reviews_photos_limit', theme_codecart_pro_reviews_photos_limit, '') }}
+                    {{ ccp.number(entry_reviews_photo_max_size, 'theme_codecart_pro_reviews_photo_max_size', theme_codecart_pro_reviews_photo_max_size, '', 'KB') }}
+                  </div>
+                  <div class="col-sm-6">
+                    {{ ccp.select(entry_reviews_admin_reply_status, 'theme_codecart_pro_reviews_admin_reply_status', theme_codecart_pro_reviews_admin_reply_status, '', text_yes, text_no) }}
+                    {{ ccp.select(entry_reviews_votes_status, 'theme_codecart_pro_reviews_votes_status', theme_codecart_pro_reviews_votes_status, '', text_yes, text_no) }}
+                    {{ ccp.select(entry_reviews_real_buyer_status, 'theme_codecart_pro_reviews_real_buyer_status', theme_codecart_pro_reviews_real_buyer_status, '', text_yes, text_no) }}
+                  </div>
+                </div>
+                <div class="alert alert-info">{{ help_reviews_v480 }}</div>
+              </fieldset>
+            </div>
+
+            <div class="tab-pane" id="tab-performance">
+              {{ ccp.select(entry_performance_lazy_images, 'theme_codecart_pro_performance_lazy_images', theme_codecart_pro_performance_lazy_images, help_performance, text_yes, text_no) }}
+              {{ ccp.number(entry_performance_eager_first_images, 'theme_codecart_pro_performance_eager_first_images', theme_codecart_pro_performance_eager_first_images, help_eager_first_images) }}
+              {{ ccp.select(entry_performance_fetchpriority_status, 'theme_codecart_pro_performance_fetchpriority_status', theme_codecart_pro_performance_fetchpriority_status, '', text_yes, text_no) }}
+              {{ ccp.select(entry_performance_image_decoding_status, 'theme_codecart_pro_performance_image_decoding_status', theme_codecart_pro_performance_image_decoding_status, '', text_yes, text_no) }}
+              <div class="alert alert-info">{{ help_performance }}</div>
+            </div>
+            <div class="tab-pane" id="tab-code">
+              <div class="alert alert-info"><i class="fa fa-info-circle"></i> {{ help_custom_css }} {{ help_custom_js }}</div>
+              <ul class="nav nav-tabs ccp-code-tabs">
+                <li class="active"><a href="#tab-code-css" data-toggle="tab"><i class="fa fa-paint-brush"></i> CSS</a></li>
+                <li><a href="#tab-code-js" data-toggle="tab"><i class="fa fa-code"></i> JS</a></li>
+                <li><a href="#tab-code-html" data-toggle="tab"><i class="fa fa-file-code-o"></i> HTML</a></li>
+                <li><a href="#tab-code-help" data-toggle="tab"><i class="fa fa-life-ring"></i> {{ text_selector }}s</a></li>
+              </ul>
+              <div class="tab-content ccp-code-tab-content">
+                <div class="tab-pane active" id="tab-code-css">
+                  {{ ccp.select(entry_enable_custom_css, 'theme_codecart_pro_enable_custom_css', theme_codecart_pro_enable_custom_css, help_custom_css, text_yes, text_no) }}
+                  {{ ccp.codearea(entry_custom_css_global, 'theme_codecart_pro_custom_css_global', theme_codecart_pro_custom_css_global, 'CSS', text_expand) }}
+                  {{ ccp.codearea(entry_custom_css_header, 'theme_codecart_pro_custom_css_header', theme_codecart_pro_custom_css_header, 'CSS', text_expand) }}
+                  {{ ccp.codearea(entry_custom_css_menu, 'theme_codecart_pro_custom_css_menu', theme_codecart_pro_custom_css_menu, 'CSS', text_expand) }}
+                  {{ ccp.codearea(entry_custom_css_product_card, 'theme_codecart_pro_custom_css_product_card', theme_codecart_pro_custom_css_product_card, 'CSS', text_expand) }}
+                  {{ ccp.codearea(entry_custom_css_category, 'theme_codecart_pro_custom_css_category', theme_codecart_pro_custom_css_category, 'CSS', text_expand) }}
+                  {{ ccp.codearea(entry_custom_css_product, 'theme_codecart_pro_custom_css_product', theme_codecart_pro_custom_css_product, 'CSS', text_expand) }}
+                  {{ ccp.codearea(entry_custom_css_mobile, 'theme_codecart_pro_custom_css_mobile', theme_codecart_pro_custom_css_mobile, 'CSS', text_expand) }}
+                  {{ ccp.codearea(entry_custom_css_checkout, 'theme_codecart_pro_custom_css_checkout', theme_codecart_pro_custom_css_checkout, 'CSS', text_expand) }}
+                  <div class="form-group"><label class="col-sm-2 control-label">{{ entry_custom_css }}</label><div class="col-sm-10"><textarea name="theme_codecart_pro_custom_css" rows="8" class="form-control code" spellcheck="false">{{ theme_codecart_pro_custom_css }}</textarea><p class="help-block">{{ help_legacy_css }}</p></div></div>
+                </div>
+                <div class="tab-pane" id="tab-code-js">
+                  {{ ccp.select(entry_enable_custom_js, 'theme_codecart_pro_enable_custom_js', theme_codecart_pro_enable_custom_js, help_custom_js, text_yes, text_no) }}
+                  {{ ccp.codearea(entry_custom_js_head, 'theme_codecart_pro_custom_js_head', theme_codecart_pro_custom_js_head, 'JavaScript', text_expand) }}
+                  {{ ccp.codearea(entry_custom_js_footer, 'theme_codecart_pro_custom_js_footer', theme_codecart_pro_custom_js_footer, 'JavaScript', text_expand) }}
+                  {{ ccp.codearea(entry_custom_js_after_load, 'theme_codecart_pro_custom_js_after_load', theme_codecart_pro_custom_js_after_load, 'JavaScript', text_expand) }}
+                  <div class="form-group"><label class="col-sm-2 control-label">{{ entry_custom_js }}</label><div class="col-sm-10"><textarea name="theme_codecart_pro_custom_js" rows="8" class="form-control code" spellcheck="false">{{ theme_codecart_pro_custom_js }}</textarea><p class="help-block">{{ help_legacy_js }}</p></div></div>
+                </div>
+                <div class="tab-pane" id="tab-code-html">
+                  {{ ccp.select(entry_enable_custom_html, 'theme_codecart_pro_enable_custom_html', theme_codecart_pro_enable_custom_html, '', text_yes, text_no) }}
+                  {{ ccp.codearea(entry_custom_html_head, 'theme_codecart_pro_custom_html_head', theme_codecart_pro_custom_html_head, 'HTML', text_expand) }}
+                  {{ ccp.codearea(entry_custom_html_after_body, 'theme_codecart_pro_custom_html_after_body', theme_codecart_pro_custom_html_after_body, 'HTML', text_expand) }}
+                  {{ ccp.codearea(entry_custom_html_header_top, 'theme_codecart_pro_custom_html_header_top', theme_codecart_pro_custom_html_header_top, 'HTML', text_expand) }}
+                  {{ ccp.codearea(entry_custom_html_before_footer, 'theme_codecart_pro_custom_html_before_footer', theme_codecart_pro_custom_html_before_footer, 'HTML', text_expand) }}
+                  {{ ccp.codearea(entry_custom_html_footer_bottom, 'theme_codecart_pro_custom_html_footer_bottom', theme_codecart_pro_custom_html_footer_bottom, 'HTML', text_expand) }}
+                </div>
+                <div class="tab-pane" id="tab-code-help">
+                  <div class="table-responsive"><table class="table table-bordered table-striped ccp-selector-table"><thead><tr><th>{{ text_zone }}</th><th>{{ text_selector }}</th><th>{{ text_purpose }}</th></tr></thead><tbody>
+                    <tr><td>{{ text_header }}</td><td><code>.ccp-header</code></td><td>{{ text_selector_header_purpose }}</td></tr>
+                    <tr><td>{{ text_top_bar }}</td><td><code>.ccp-topline</code></td><td>{{ text_selector_topbar_purpose }}</td></tr>
+                    <tr><td>{{ text_menu }}</td><td><code>.ccp-menu-wrap</code></td><td>{{ text_selector_menu_purpose }}</td></tr>
+                    <tr><td>{{ text_product_card_list }}</td><td><code>.ccp-product-card</code></td><td>{{ text_selector_product_card_purpose }}</td></tr>
+                    <tr><td>{{ text_category }}</td><td><code>.ccp-category-page</code></td><td>{{ text_selector_category_purpose }}</td></tr>
+                    <tr><td>{{ text_product_card }}</td><td><code>.ccp-product-page</code></td><td>{{ text_selector_product_page_purpose }}</td></tr>
+                    <tr><td>{{ text_mobile_bar }}</td><td><code>.ccp-mobile-bar</code></td><td>{{ text_selector_mobile_bar_purpose }}</td></tr>
+                    <tr><td>Checkout</td><td><code>.checkout-checkout</code></td><td>{{ text_selector_checkout_purpose }}</td></tr>
+                  </tbody></table></div>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane" id="tab-release-tools">
+              <div class="row">
+                <div class="col-sm-6">
+                  <fieldset><legend><i class="fa fa-download"></i> {{ text_settings_backup }}</legend>
+                    <div class="form-group"><label class="col-sm-3 control-label">{{ text_export }}</label><div class="col-sm-9"><a href="{{ export_settings }}" class="btn btn-default"><i class="fa fa-download"></i> {{ button_export_settings }}</a><p class="help-block">{{ help_export_settings }}</p></div></div>
+                    <div class="form-group"><label class="col-sm-3 control-label">{{ text_import }}</label><div class="col-sm-9"><input type="file" name="ccp_import_file" accept="application/json,.json" class="form-control" /><p class="help-block">{{ help_import_settings }}</p><button type="submit" form="form-codecart-pro" formaction="{{ import_settings }}" formmethod="post" formenctype="multipart/form-data" class="btn btn-warning"><i class="fa fa-upload"></i> {{ button_import_settings }}</button></div></div>
+                  </fieldset>
+                </div>
+                <div class="col-sm-6">
+                  <fieldset><legend><i class="fa fa-magic"></i> {{ text_preset_wizard }}</legend>
+                    <div class="form-group"><label class="col-sm-3 control-label">{{ text_preset }}</label><div class="col-sm-9"><select name="ccp_preset" class="form-control"><option value="balanced">{{ text_preset_balanced }}</option><option value="speed">{{ text_preset_speed }}</option><option value="commerce">{{ text_commerce }}</option><option value="seo">{{ text_preset_seo }}</option></select><p class="help-block">{{ help_preset_wizard }}</p><button type="submit" form="form-codecart-pro" formaction="{{ preset_action }}" formmethod="post" class="btn btn-primary"><i class="fa fa-check"></i> {{ button_apply_preset }}</button></div></div>
+                  </fieldset>
+                </div>
+              </div>
+              <fieldset><legend><i class="fa fa-shopping-cart"></i> {{ text_checkout_style_pack }}</legend>
+                <div class="alert alert-info"><i class="fa fa-info-circle"></i> {{ help_checkout_style_pack }}</div>
+                {{ ccp.select(entry_checkout_style_status, 'theme_codecart_pro_checkout_style_status', theme_codecart_pro_checkout_style_status, help_checkout_style_pack, text_enabled, text_disabled) }}
+                {{ ccp.select(entry_simple_checkout_status, 'theme_codecart_pro_simple_checkout_status', theme_codecart_pro_simple_checkout_status, help_simple_checkout, text_enabled, text_disabled) }}
+                {{ ccp.select(entry_direct_checkout_after_add_status, 'theme_codecart_pro_direct_checkout_after_add_status', theme_codecart_pro_direct_checkout_after_add_status, help_direct_checkout_after_add, text_enabled, text_disabled) }}
+                {{ ccp.select(entry_checkout_digital_mode, 'theme_codecart_pro_checkout_digital_mode', theme_codecart_pro_checkout_digital_mode, help_checkout_digital_mode, text_enabled, text_disabled) }}
+                {{ ccp.select(entry_checkout_digital_instruction_status, 'theme_codecart_pro_checkout_digital_instruction_status', theme_codecart_pro_checkout_digital_instruction_status, help_checkout_digital_instruction, text_enabled, text_disabled) }}
+                {{ ccp.select(entry_checkout_hide_reward_status, 'theme_codecart_pro_checkout_hide_reward_status', theme_codecart_pro_checkout_hide_reward_status, help_checkout_hide_totals, text_yes, text_no) }}
+                {{ ccp.select(entry_checkout_hide_coupon_status, 'theme_codecart_pro_checkout_hide_coupon_status', theme_codecart_pro_checkout_hide_coupon_status, help_checkout_hide_totals, text_yes, text_no) }}
+                {{ ccp.select(entry_checkout_hide_voucher_status, 'theme_codecart_pro_checkout_hide_voucher_status', theme_codecart_pro_checkout_hide_voucher_status, help_checkout_hide_totals, text_yes, text_no) }}
+                {{ ccp.select(entry_checkout_compact_status, 'theme_codecart_pro_checkout_compact_status', theme_codecart_pro_checkout_compact_status, '', text_yes, text_no) }}
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_checkout_digital_instruction_text }}</label><div class="col-sm-10"><ul class="nav nav-tabs">{% for language in languages %}<li{% if loop.first %} class="active"{% endif %}><a href="#ccp-checkout-digital-instruction-{{ language.language_id }}" data-toggle="tab">{{ language.name }}</a></li>{% endfor %}</ul><div class="tab-content">{% for language in languages %}<div class="tab-pane{% if loop.first %} active{% endif %}" id="ccp-checkout-digital-instruction-{{ language.language_id }}"><textarea name="theme_codecart_pro_checkout_digital_instruction_text[{{ language.language_id }}]" rows="3" class="form-control" placeholder="{{ entry_checkout_digital_instruction_text }}">{{ theme_codecart_pro_checkout_digital_instruction_text[language.language_id] is defined ? theme_codecart_pro_checkout_digital_instruction_text[language.language_id] : '' }}</textarea><p class="help-block">{{ help_checkout_digital_instruction }}</p></div>{% endfor %}</div></div></div>
+                <div class="form-group"><label class="col-sm-2 control-label">{{ entry_checkout_trust_text }}</label><div class="col-sm-10"><ul class="nav nav-tabs">{% for language in languages %}<li{% if loop.first %} class="active"{% endif %}><a href="#ccp-checkout-trust-{{ language.language_id }}" data-toggle="tab">{{ language.name }}</a></li>{% endfor %}</ul><div class="tab-content">{% for language in languages %}<div class="tab-pane{% if loop.first %} active{% endif %}" id="ccp-checkout-trust-{{ language.language_id }}"><textarea name="theme_codecart_pro_checkout_trust_text[{{ language.language_id }}]" rows="3" class="form-control" placeholder="Secure checkout|Delivery options|Manager confirmation">{{ theme_codecart_pro_checkout_trust_text[language.language_id] is defined ? theme_codecart_pro_checkout_trust_text[language.language_id] : '' }}</textarea><p class="help-block">{{ help_one_item_per_line }}</p></div>{% endfor %}</div></div></div>
+              </fieldset>
+            </div>
+            <div class="tab-pane" id="tab-diagnostics" data-ccp-diagnostics>
+              <div class="ccp-diagnostics-head">
+                <div><h2><i class="fa fa-stethoscope"></i> {{ text_diagnostics }}</h2><p>{{ help_diagnostics_safe }}</p></div>
+                <div class="ccp-diagnostic-score {{ diagnostic_summary.bad > 0 ? 'is-danger' : (diagnostic_summary.warning > 0 ? 'is-warning' : 'is-good') }}"><strong>{{ diagnostic_summary.good }}</strong><span>/ {{ diagnostic_summary.total }}</span></div>
+              </div>
+              <div class="ccp-diagnostic-filters" role="group" aria-label="{{ text_diagnostics }}">
+                <button type="button" class="btn active" data-ccp-diag-filter="all">{{ text_diag_filter_all }} <b>{{ diagnostic_summary.total }}</b></button>
+                <button type="button" class="btn" data-ccp-diag-filter="good">{{ text_diag_filter_good }} <b>{{ diagnostic_summary.good }}</b></button>
+                <button type="button" class="btn" data-ccp-diag-filter="warning">{{ text_diag_filter_warning }} <b>{{ diagnostic_summary.warning }}</b></button>
+                <button type="button" class="btn" data-ccp-diag-filter="bad">{{ text_diag_filter_bad }} <b>{{ diagnostic_summary.bad }}</b></button>
+              </div>
+              <div class="table-responsive ccp-diagnostics-table"><table class="table table-hover"><thead><tr><th>{{ text_check }}</th><th>{{ text_value }}</th><th>{{ text_status }}</th></tr></thead><tbody>{% for item in diagnostics %}<tr data-ccp-diag-status="{{ item.status }}"><td><strong>{{ item.label }}</strong></td><td>{{ item.value }}</td><td><span class="ccp-diag-badge is-{{ item.status }}"><i class="fa {{ item.status == 'good' ? 'fa-check-circle' : (item.status == 'warning' ? 'fa-exclamation-triangle' : 'fa-times-circle') }}"></i> {{ item.status == 'good' ? text_good : (item.status == 'warning' ? text_warning : text_bad) }}</span></td></tr>{% endfor %}</tbody></table></div>
+            </div>
+            <div class="tab-pane" id="tab-about">
+              <div class="ccp-hero ccp-about-hero">
+            <div class="ccp-hero-preview">
+              <img src="{{ theme_preview }}" alt="{{ text_theme_preview }}" />
+            </div>
+            <div class="ccp-hero-main">
+              <div class="ccp-hero-kicker"><span class="ccp-pro-badge">PRO</span> {{ text_theme_dashboard }}</div>
+              <h2>CodeCart PRO Theme</h2>
+              <p>{{ text_about_description }}</p>
+              <div class="ccp-hero-status">
+                <span class="ccp-status-pill {{ theme_enabled ? 'is-on' : 'is-off' }}"><i class="fa {{ theme_enabled ? 'fa-check-circle' : 'fa-exclamation-circle' }}"></i> {{ theme_enabled ? text_theme_enabled : text_theme_disabled }}</span>
+                <span class="ccp-status-pill {{ theme_selected ? 'is-on' : 'is-warn' }}"><i class="fa {{ theme_selected ? 'fa-check-circle' : 'fa-info-circle' }}"></i> {{ theme_selected ? text_theme_selected : text_theme_not_selected }}</span>
+                <span class="ccp-status-pill"><i class="fa fa-folder-open"></i> {{ text_theme_directory }}: {{ theme_directory }}</span>
+                <span class="ccp-status-pill"><i class="fa fa-code-fork"></i> {{ text_version }} {{ version }}</span>
+              </div>
+              <div class="ccp-hero-actions">
+                <a href="{{ store_settings_url }}" class="btn btn-primary"><i class="fa fa-cogs"></i> {{ text_store_settings }}</a>
+                <a href="{{ extensions_theme_url }}" class="btn btn-default"><i class="fa fa-puzzle-piece"></i> {{ text_extensions_theme }}</a>
+              </div>
+            </div>
+          </div>
+              <div class="well ccp-about-box">
+                <h3><i class="fa fa-info-circle"></i> {{ text_about }}</h3>
+                <p>{{ text_about_description }}</p>
+                <p>{{ text_about_value }}</p>
+                <p><strong>{{ text_version }}:</strong> {{ version }}</p>
+                <p><strong>{{ text_author }}:</strong> <a href="{{ author_url }}" target="_blank" rel="noopener">CodeCart PRO</a></p>
+              </div>
+            </div>
+          </div>
+            </section>
+          </div>
+
+          <div class="ccp-sticky-actions" data-ccp-sticky-actions aria-live="polite">
+            <div class="ccp-sticky-state"><i class="fa fa-circle-o"></i><span data-ccp-form-state-text data-dirty-text="{{ text_unsaved_changes }}">{{ text_no_unsaved_changes }}</span><small data-ccp-current-section>{{ text_general }}</small></div>
+            <div class="ccp-sticky-buttons"><a href="{{ cancel }}" class="btn btn-default"><i class="fa fa-reply"></i> {{ button_cancel }}</a><button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> {{ button_save }}</button></div>
+          </div>
+        <input type="hidden" name="ccp_settings_complete" value="1" />
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% macro select(label, name, value, help, yes, no) %}<div class="form-group"><label class="col-sm-2 control-label">{{ label }}</label><div class="col-sm-10"><select name="{{ name }}" class="form-control"><option value="1"{% if value %} selected{% endif %}>{{ yes }}</option><option value="0"{% if not value %} selected{% endif %}>{{ no }}</option></select>{% if help %}<p class="help-block">{{ help }}</p>{% endif %}</div></div>{% endmacro %}
+{% macro number(label, name, value, help, unit) %}<div class="form-group"><label class="col-sm-2 control-label">{{ label }}</label><div class="col-sm-10">{% if unit %}<div class="input-group"><input type="number" name="{{ name }}" value="{{ value }}" class="form-control" /><span class="input-group-addon">{{ unit }}</span></div>{% else %}<input type="number" name="{{ name }}" value="{{ value }}" class="form-control" />{% endif %}{% if help %}<p class="help-block">{{ help }}</p>{% endif %}</div></div>{% endmacro %}
+{% macro color(label, name, value, help) %}<div class="form-group"><label class="col-sm-2 control-label">{{ label }}</label><div class="col-sm-10"><div class="ccp-color"><input type="color" value="{{ value }}" class="form-control ccp-color-native" data-color-target="{{ name }}" /><input type="text" name="{{ name }}" value="{{ value }}" class="form-control ccp-color-text" id="{{ name }}" /></div>{% if help %}<p class="help-block">{{ help }}</p>{% endif %}</div></div>{% endmacro %}
+{% macro size(label, prefix, width, height, width_label, height_label) %}<div class="ccp-size-card"><div class="ccp-size-title"><i class="fa fa-picture-o"></i><span>{{ label }}</span></div><div class="ccp-size-fields"><label class="ccp-size-field"><span>{{ width_label }}</span><div class="input-group"><input type="number" name="{{ prefix }}_width" value="{{ width }}" class="form-control" min="1" /><span class="input-group-addon">px</span></div></label><label class="ccp-size-field"><span>{{ height_label }}</span><div class="input-group"><input type="number" name="{{ prefix }}_height" value="{{ height }}" class="form-control" min="1" /><span class="input-group-addon">px</span></div></label></div></div>{% endmacro %}
+{% macro codearea(label, name, value, type, expand_label) %}<div class="form-group ccp-codearea-row"><label class="col-sm-2 control-label">{{ label }}</label><div class="col-sm-10"><div class="ccp-codearea-head"><span>{{ type }}</span><button type="button" class="btn btn-default btn-xs ccp-expand-code">{{ expand_label }}</button></div><textarea name="{{ name }}" rows="7" class="form-control code" spellcheck="false">{{ value }}</textarea></div></div>{% endmacro %}
+
+
+
+
+
+<!-- CodeCart PRO Theme v8.7.7: structured, responsive admin interface -->
+
+
+<script>
+(function(){
+  'use strict';
+  if (window.__ccpThemeAdmin856Ready) return;
+  window.__ccpThemeAdmin856Ready = true;
+
+  var root = document.querySelector('.ccp-admin-v626');
+  if (!root) return;
+  var body = document.body;
+
+
+  var textExpand = {{ text_expand|json_encode }};
+  var textCollapse = {{ text_collapse|json_encode }};
+  var textNoMatches = {{ text_no_matches|json_encode }};
+  var filemanagerUrl = {{ ccp_filemanager_url|json_encode }};
+  var categoryAutocompleteUrl = {{ ccp_category_autocomplete_url|json_encode }};
+  var productAutocompleteUrl = {{ ccp_product_autocomplete_url|json_encode }};
+  var informationAutocompleteUrl = {{ ccp_information_autocomplete_url|json_encode }};
+
+  function cleanText(value) {
+    return String(value || '').replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, '');
+  }
+
+  function normalize(value) {
+    value = cleanText(value).toLowerCase();
+    value = value.replace(/@/g, ' mail ');
+    value = value.replace(/[_\-.\/\\]+/g, ' ');
+    value = value.replace(/[ё]/g, 'е').replace(/[і]/g, 'и').replace(/[ї]/g, 'и').replace(/[є]/g, 'е').replace(/[ґ]/g, 'г');
+    value = value.replace(/[^a-z0-9а-яіїєґ]+/g, ' ');
+    return cleanText(value);
+  }
+
+  function escapeHtml(value) {
+    return String(value || '').replace(/[&<>"']/g, function(ch) {
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch];
+    });
+  }
+
+  function closest(el, selector) {
+    return el && el.closest ? el.closest(selector) : null;
+  }
+
+  function showTab(link) {
+    if (!link) return;
+    if (window.jQuery && jQuery.fn && jQuery.fn.tab) {
+      jQuery(link).tab('show');
+    } else {
+      link.click();
+    }
+  }
+
+  function cleanModalState() {
+    window.setTimeout(function(){
+      if (!document.querySelector('.modal.in,.modal.show')) {
+        body.classList.remove('modal-open');
+        body.style.removeProperty('padding-right');
+        Array.prototype.forEach.call(document.querySelectorAll('.modal-backdrop'), function(backdrop){
+          if (backdrop && backdrop.parentNode) backdrop.parentNode.removeChild(backdrop);
+        });
+      }
+    }, 80);
+  }
+
+  function initSettingsMenuToggle() {
+    var toggle = root.querySelector('[data-ccp-theme-menu-toggle]');
+    if (!toggle || toggle.getAttribute('data-ccp-ready') === '1') return;
+    toggle.setAttribute('data-ccp-ready', '1');
+    var mobile = window.matchMedia('(max-width: 767px)');
+    var desktopLabel = toggle.getAttribute('aria-label');
+    root.classList.add('ccp-mobile-navigation-ready');
+    function updateIcon() {
+      var icon = toggle.querySelector('.fa');
+      var collapsed = mobile.matches ? !root.classList.contains('ccp-mobile-navigation-open') : root.classList.contains('ccp-theme-settings-menu-collapsed');
+      if (icon) icon.className = mobile.matches ? (collapsed ? 'fa fa-bars' : 'fa fa-times') : (collapsed ? 'fa fa-angle-right' : 'fa fa-angle-left');
+      toggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+      toggle.setAttribute('aria-controls', 'ccp-theme-navigation');
+      var label = mobile.matches ? root.getAttribute('data-ccp-settings-label') : desktopLabel;
+      toggle.setAttribute('aria-label', label);
+      toggle.setAttribute('title', label);
+    }
+    toggle.addEventListener('click', function(e){
+      e.preventDefault();
+      if (mobile.matches) {
+        root.classList.toggle('ccp-mobile-navigation-open');
+      } else {
+        root.classList.toggle('ccp-theme-settings-menu-collapsed');
+        try { localStorage.setItem('ccp_theme_settings_menu_collapsed', root.classList.contains('ccp-theme-settings-menu-collapsed') ? '1' : '0'); } catch(err) {}
+      }
+      updateIcon();
+    });
+    root.addEventListener('click', function(event){
+      var link = closest(event.target, '.ccp-tabs a');
+      if (link && mobile.matches) {
+        root.classList.remove('ccp-mobile-navigation-open');
+        updateIcon();
+        var pane = root.querySelector(link.getAttribute('href'));
+        if (pane) { pane.setAttribute('tabindex', '-1'); window.setTimeout(function(){ pane.focus({preventScroll:true}); }, 0); }
+      }
+    });
+    root.addEventListener('keydown', function(event){
+      if (event.key === 'Escape' && mobile.matches && root.classList.contains('ccp-mobile-navigation-open')) {
+        root.classList.remove('ccp-mobile-navigation-open'); updateIcon(); toggle.focus();
+      }
+    });
+    if (mobile.addEventListener) mobile.addEventListener('change', updateIcon);
+    try { if (localStorage.getItem('ccp_theme_settings_menu_collapsed') === '1') root.classList.add('ccp-theme-settings-menu-collapsed'); } catch(err) {}
+    updateIcon();
+  }
+
+  function initCodeareas() {
+    Array.prototype.forEach.call(root.querySelectorAll('.ccp-expand-code'), function(button){
+      if (button.getAttribute('data-ccp-ready') === '1') return;
+      button.setAttribute('data-ccp-ready', '1');
+      button.addEventListener('click', function(e){
+        e.preventDefault();
+        var row = closest(button, '.ccp-codearea-row');
+        if (!row) return;
+        row.classList.toggle('ccp-expanded');
+        button.textContent = row.classList.contains('ccp-expanded') ? textCollapse : textExpand;
+      });
+    });
+  }
+
+  function initColors() {
+    Array.prototype.forEach.call(root.querySelectorAll('.ccp-color-native'), function(picker){
+      if (picker.getAttribute('data-ccp-ready') === '1') return;
+      picker.setAttribute('data-ccp-ready', '1');
+      var target = document.getElementById(picker.getAttribute('data-color-target'));
+      if (!target) return;
+      picker.addEventListener('input', function(){ target.value = picker.value; });
+      target.addEventListener('input', function(){ if (/^#[0-9a-fA-F]{6}$/.test(target.value)) picker.value = target.value; });
+    });
+  }
+
+  function buildInnerTabs(selector) {
+    var pane = root.querySelector(selector);
+    if (!pane || pane.getAttribute('data-ccp-inner-tabs') === '1') return;
+    var fieldsets = [];
+    Array.prototype.forEach.call(pane.children, function(child){
+      if (child.tagName && child.tagName.toLowerCase() === 'fieldset') {
+        fieldsets.push(child);
+      } else if (child.classList && child.classList.contains('row')) {
+        Array.prototype.forEach.call(child.children, function(col){
+          Array.prototype.forEach.call(col.children || [], function(grand){
+            if (grand.tagName && grand.tagName.toLowerCase() === 'fieldset') fieldsets.push(grand);
+          });
+        });
+      }
+    });
+    if (fieldsets.length < 2) return;
+    pane.setAttribute('data-ccp-inner-tabs', '1');
+    var icons = ['fa-cog','fa-bars','fa-paint-brush','fa-shopping-cart','fa-mobile','fa-search','fa-bolt','fa-code','fa-info-circle'];
+    var nav = document.createElement('ul');
+    nav.className = 'nav nav-tabs ccp-inner-tabs';
+    var content = document.createElement('div');
+    content.className = 'tab-content ccp-inner-content';
+    fieldsets.forEach(function(fieldset, index){
+      var legend = fieldset.querySelector('legend');
+      var title = legend ? cleanText(legend.textContent) : ('Tab ' + (index + 1));
+      var id = selector.replace('#','') + '-inner-' + index;
+      var li = document.createElement('li');
+      if (index === 0) li.className = 'active';
+      var a = document.createElement('a');
+      a.href = '#' + id;
+      a.setAttribute('data-toggle', 'tab');
+      a.innerHTML = '<i class="fa ' + icons[index % icons.length] + '"></i> ' + escapeHtml(title);
+      li.appendChild(a);
+      nav.appendChild(li);
+      var wrap = document.createElement('div');
+      wrap.className = 'tab-pane' + (index === 0 ? ' active' : '');
+      wrap.id = id;
+      if (legend && legend.parentNode) legend.parentNode.removeChild(legend);
+      wrap.appendChild(fieldset);
+      content.appendChild(wrap);
+    });
+    Array.prototype.forEach.call(pane.children, function(child){
+      if (child.classList && child.classList.contains('row') && !cleanText(child.textContent) && !child.querySelector('input,select,textarea,button,a,img')) {
+        child.parentNode.removeChild(child);
+      }
+    });
+    pane.insertBefore(content, pane.firstChild);
+    pane.insertBefore(nav, content);
+  }
+
+  function initInnerTabs() {
+    ['#tab-home-builder','#tab-storefront-depth','#tab-mega-menu','#tab-commerce','#tab-product-ux','#tab-seo-content','#tab-release-tools'].forEach(buildInnerTabs);
+  }
+
+  function isWideSetting(group, container) {
+    if (!group) return true;
+    if (group.classList.contains('ccp-codearea-row')) return true;
+    if (group.querySelector('textarea,.note-editor,.summernote,.CodeMirror,table,.table,.alert,.ccp-size-grid,.ccp-link-helper,.ccp-icon-picker,.nav-tabs:not(.ccp-tabs),.tab-content,.well,.ccp-repeater-card')) return true;
+    if (group.querySelectorAll('input,select,textarea').length > 2) return true;
+    if (container && container.classList && container.classList.contains('ccp-repeater-card') && group.querySelector('.ccp-media-picker')) return false;
+    return false;
+  }
+
+  function classifySetting(group, container) {
+    group.classList.remove('ccp-form-wide','ccp-setting-card','ccp-setting-wide');
+    group.classList.add('ccp-setting-card');
+    if (isWideSetting(group, container)) group.classList.add('ccp-setting-wide');
+  }
+
+  function wrapSettingRuns(container) {
+    if (!container || container.getAttribute('data-ccp-layout-ready') === '1') return;
+    var directGroups = Array.prototype.filter.call(container.children || [], function(child){
+      return child.classList && child.classList.contains('form-group');
+    });
+    if (!directGroups.length) return;
+
+    directGroups.forEach(function(group){ classifySetting(group, container); });
+
+    var run = [];
+    function flush() {
+      if (!run.length) return;
+      var grid = document.createElement('div');
+      grid.className = 'ccp-settings-grid' + (run.length === 1 ? ' is-single' : '');
+      run[0].parentNode.insertBefore(grid, run[0]);
+      run.forEach(function(group){ grid.appendChild(group); });
+      run = [];
+    }
+
+    directGroups.forEach(function(group){
+      if (group.classList.contains('ccp-setting-wide')) {
+        flush();
+      } else {
+        run.push(group);
+      }
+    });
+    flush();
+    container.setAttribute('data-ccp-layout-ready', '1');
+  }
+
+  function buildStructuredLayout() {
+    Array.prototype.forEach.call(root.querySelectorAll('.ccp-settings-grid'), function(grid){
+      var parent = grid.parentNode;
+      if (!parent) return;
+      while (grid.firstChild) parent.insertBefore(grid.firstChild, grid);
+      parent.removeChild(grid);
+    });
+
+    Array.prototype.forEach.call(root.querySelectorAll('.form-group'), function(group){
+      classifySetting(group, group.parentNode);
+    });
+
+    Array.prototype.forEach.call(root.querySelectorAll('fieldset,.well'), function(container){
+      container.classList.remove('ccp-auto-grid');
+    });
+  }
+
+  function initRepeaterCards() {
+    Array.prototype.forEach.call(root.querySelectorAll('.ccp-repeater-card'), function(card, index){
+      if (card.getAttribute('data-ccp-repeater-ready') === '1') return;
+      card.setAttribute('data-ccp-repeater-ready', '1');
+      var heading = card.querySelector(':scope > strong');
+      if (!heading) return;
+      heading.classList.add('ccp-repeater-title');
+      var bodyWrap = document.createElement('div');
+      bodyWrap.className = 'ccp-repeater-body';
+      var next = heading.nextSibling;
+      while (next) {
+        var current = next;
+        next = next.nextSibling;
+        bodyWrap.appendChild(current);
+      }
+      card.appendChild(bodyWrap);
+      var toggle = document.createElement('button');
+      toggle.type = 'button';
+      toggle.className = 'btn btn-default btn-xs ccp-repeater-toggle';
+      toggle.setAttribute('aria-expanded', index === 0 ? 'true' : 'false');
+      toggle.innerHTML = '<i class="fa fa-chevron-down"></i>';
+      heading.appendChild(toggle);
+      var siblingCards = Array.prototype.filter.call(card.parentNode.children || [], function(item){ return item.classList && item.classList.contains('ccp-repeater-card'); });
+      var siblingIndex = siblingCards.indexOf(card);
+      if (siblingIndex > 0) card.classList.add('is-collapsed');
+      function render() {
+        var collapsed = card.classList.contains('is-collapsed');
+        toggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+        var icon = toggle.querySelector('.fa');
+        if (icon) icon.className = collapsed ? 'fa fa-chevron-right' : 'fa fa-chevron-down';
+      }
+      toggle.addEventListener('click', function(event){
+        event.preventDefault();
+        card.classList.toggle('is-collapsed');
+        render();
+      });
+      render();
+    });
+  }
+
+  function initSectionIntros() {
+    var settingsLabel = root.getAttribute('data-ccp-settings-label') || '';
+    Array.prototype.forEach.call(root.querySelectorAll('.ccp-tab-content > .tab-pane'), function(pane){
+      if (!pane.id || pane.id === 'tab-general' || pane.id === 'tab-diagnostics' || pane.id === 'tab-about' || pane.querySelector(':scope > .ccp-section-intro')) return;
+      var link = root.querySelector('.ccp-tabs a[href="#' + pane.id + '"]');
+      if (!link) return;
+      var icon = link.querySelector('.fa');
+      var title = cleanText(link.textContent);
+      var count = pane.querySelectorAll('.form-group').length;
+      var intro = document.createElement('div');
+      intro.className = 'ccp-section-intro';
+      intro.innerHTML = '<div class="ccp-section-intro-icon"><i class="fa ' + (icon ? icon.className.replace(/^fa\s+/, '') : 'fa-cog') + '"></i></div><div class="ccp-section-intro-copy"><h2>' + escapeHtml(title) + '</h2><p>' + count + ' ' + escapeHtml(settingsLabel) + '</p></div>';
+      pane.insertBefore(intro, pane.firstChild);
+    });
+  }
+
+  function normalizeTabGroups() {
+    var active = root.querySelector('.ccp-tabs > li.active');
+    var activeGroup = active && active.closest ? active.closest('.ccp-tab-group') : null;
+    Array.prototype.forEach.call(root.querySelectorAll('.ccp-tab-group'), function(group){
+      group.classList.toggle('is-open', group === activeGroup);
+    });
+  }
+
+  function updateMediaPreview(picker) {
+    if (!picker) return;
+    var input = picker.querySelector('input[type="text"]');
+    var preview = picker.parentNode ? picker.parentNode.querySelector('.ccp-media-preview') : null;
+    if (!input || !preview) return;
+    var value = String(input.value || '').replace(/^image\//, '').replace(/^\/+/, '');
+    var image = preview.querySelector('img');
+    if (!value) {
+      preview.classList.add('is-empty');
+      if (image) image.removeAttribute('src');
+      return;
+    }
+    preview.classList.remove('is-empty');
+    if (image) image.src = '../image/' + value;
+  }
+
+  function enhanceMediaPickers() {
+    Array.prototype.forEach.call(root.querySelectorAll('.ccp-media-picker'), function(picker){
+      if (picker.getAttribute('data-ccp-preview-ready') === '1') return;
+      picker.setAttribute('data-ccp-preview-ready', '1');
+      var mediaGroup = picker.closest ? picker.closest('.form-group') : null;
+      if (mediaGroup) mediaGroup.classList.add('ccp-media-setting');
+      var preview = document.createElement('div');
+      preview.className = 'ccp-media-preview is-empty';
+      preview.innerHTML = '<img alt="" loading="lazy"><span><i class="fa fa-picture-o"></i></span>';
+      picker.parentNode.insertBefore(preview, picker);
+      var input = picker.querySelector('input[type="text"]');
+      if (input) input.addEventListener('change', function(){ updateMediaPreview(picker); });
+      updateMediaPreview(picker);
+    });
+    if (window.jQuery) {
+      jQuery(document).on('hidden.bs.modal', '#modal-image', function(){
+        window.setTimeout(function(){ Array.prototype.forEach.call(root.querySelectorAll('.ccp-media-picker'), updateMediaPreview); }, 80);
+      });
+    }
+  }
+
+  function resetLeftMenu() {
+    var menu = root.querySelector('[data-ccp-tab-menu]');
+    if (!menu) return;
+    Array.prototype.forEach.call(menu.querySelectorAll('li,.ccp-tab-group'), function(item){ item.style.display = ''; });
+  }
+
+  function initTabGroups() {
+    Array.prototype.forEach.call(root.querySelectorAll('.ccp-tab-group-title'), function(button){
+      if (button.getAttribute('data-ccp-ready') === '1') return;
+      button.setAttribute('data-ccp-ready', '1');
+      button.addEventListener('click', function(e){
+        e.preventDefault();
+        var group = closest(button, '.ccp-tab-group');
+        if (group) group.classList.toggle('is-open');
+      });
+    });
+    Array.prototype.forEach.call(root.querySelectorAll('[data-ccp-tab-menu] a[data-toggle="tab"]'), function(link){
+      if (link.getAttribute('data-ccp-tab-ready') === '1') return;
+      link.setAttribute('data-ccp-tab-ready', '1');
+      link.addEventListener('click', function(){
+        var id = cleanTabId(link.getAttribute('href'));
+        var hidden = document.getElementById('ccp-active-tab');
+        if (hidden) hidden.value = id;
+        try { localStorage.setItem('ccp_theme_active_tab', id); } catch(err) {}
+        var group = closest(link, '.ccp-tab-group');
+        if (group) group.classList.add('is-open');
+        window.setTimeout(buildStructuredLayout, 80);
+      });
+    });
+  }
+
+  function cleanTabId(value) {
+    value = String(value || '').replace(/^#/, '');
+    return /^[a-zA-Z0-9_-]+$/.test(value) ? value : '';
+  }
+
+  function restoreActiveTab() {
+    var serverTab = cleanTabId({{ ccp_active_tab|default('')|json_encode }});
+    var storedTab = '';
+    try { storedTab = cleanTabId(localStorage.getItem('ccp_theme_active_tab')); } catch(err) {}
+    var id = serverTab || storedTab;
+    if (!id) return;
+    var link = root.querySelector('.ccp-tabs a[href="#' + id + '"]');
+    if (!link) return;
+    var group = closest(link, '.ccp-tab-group');
+    if (group) group.classList.add('is-open');
+    showTab(link);
+    var hidden = document.getElementById('ccp-active-tab');
+    if (hidden) hidden.value = id;
+  }
+
+  function initScrollSave() {
+    var form = document.getElementById('form-codecart-pro');
+    if (form && form.getAttribute('data-ccp-scroll-ready') !== '1') {
+      form.setAttribute('data-ccp-scroll-ready', '1');
+      form.addEventListener('submit', function(){
+        var active = root.querySelector('.ccp-tabs li.active a[href^="#"]');
+        var activeId = active ? cleanTabId(active.getAttribute('href')) : '';
+        var tabInput = document.getElementById('ccp-active-tab');
+        var scrollInput = document.getElementById('ccp-scroll-top');
+        if (tabInput && activeId) tabInput.value = activeId;
+        if (scrollInput) scrollInput.value = String(window.pageYOffset || document.documentElement.scrollTop || 0);
+      });
+    }
+    var scrollTop = parseInt({{ ccp_scroll_top|default(0)|json_encode }}, 10);
+    if (scrollTop > 0) window.setTimeout(function(){ window.scrollTo(0, scrollTop); }, 120);
+  }
+
+  function buildSearchIndex() {
+    var index = [];
+    var seen = {};
+    var menu = root.querySelector('[data-ccp-tab-menu]');
+    if (menu) {
+      Array.prototype.forEach.call(menu.querySelectorAll('li > a[href^="#"]'), function(link){
+        var title = cleanText(link.textContent);
+        var mainId = cleanTabId(link.getAttribute('href'));
+        if (!title || !mainId) return;
+        index.push({type:'section', title:title, section:'', mainId:mainId, innerId:'', target:link.parentNode, search:normalize(title + ' ' + mainId)});
+      });
+    }
+    Array.prototype.forEach.call(root.querySelectorAll('#form-codecart-pro .form-group'), function(group){
+      var label = group.querySelector('.control-label,label');
+      var help = group.querySelector('.help-block');
+      var legend = group.closest('fieldset') ? group.closest('fieldset').querySelector('legend') : null;
+      var title = cleanText(label ? label.textContent : '');
+      if (!title) return;
+      var fields = [];
+      Array.prototype.forEach.call(group.querySelectorAll('input,select,textarea'), function(field){
+        fields.push(field.getAttribute('name') || '', field.getAttribute('id') || '', field.getAttribute('placeholder') || '');
+        if (field.tagName === 'SELECT') Array.prototype.forEach.call(field.options || [], function(option){ fields.push(option.text || ''); });
+      });
+      var mainPane = findMainPane(group);
+      var innerPane = findInnerPane(group);
+      var section = cleanText([mainPane ? labelForPane(mainPane.id) : '', innerPane ? labelForPane(innerPane.id) : '', legend ? legend.textContent : ''].join(' / ')).replace(/\s+\/\s+\/\s+/g, ' / ');
+      var key = (mainPane ? mainPane.id : '') + '|' + (innerPane ? innerPane.id : '') + '|' + title;
+      if (seen[key]) return;
+      seen[key] = true;
+      index.push({type:'setting', title:title, section:section, mainId:mainPane ? mainPane.id : '', innerId:innerPane ? innerPane.id : '', target:group, search:normalize([title, help ? help.textContent : '', section, fields.join(' ')].join(' '))});
+    });
+    return index;
+  }
+
+  function findMainPane(element) {
+    var node = element;
+    while (node && node !== document) {
+      if (node.classList && node.classList.contains('tab-pane') && node.parentNode && node.parentNode.classList && node.parentNode.classList.contains('ccp-tab-content')) return node;
+      node = node.parentNode;
+    }
+    return null;
+  }
+
+  function findInnerPane(element) {
+    var node = element;
+    while (node && node !== document) {
+      if (node.classList && node.classList.contains('tab-pane') && node.parentNode && node.parentNode.classList && node.parentNode.classList.contains('ccp-inner-content')) return node;
+      node = node.parentNode;
+    }
+    return null;
+  }
+
+  function labelForPane(id) {
+    var link = root.querySelector('a[href="#' + id + '"]');
+    return link ? cleanText(link.textContent) : '';
+  }
+
+  function scoreItem(item, query, words) {
+    var haystack = item.search || normalize((item.title || '') + ' ' + (item.section || ''));
+    for (var i = 0; i < words.length; i++) if (haystack.indexOf(words[i]) === -1) return -1;
+    var title = normalize(item.title || '');
+    var section = normalize(item.section || '');
+    var score = 0;
+    if (title === query) score += 100;
+    if (title.indexOf(query) !== -1) score += 70;
+    if (section.indexOf(query) !== -1) score += 25;
+    if (item.type === 'setting') score += 15;
+    score += Math.max(0, 20 - title.length / 8);
+    return score;
+  }
+
+  function activateSearchResult(item, resultsBox, input) {
+    if (!item) return;
+    if (resultsBox) resultsBox.style.display = 'none';
+    resetLeftMenu();
+    var main = item.mainId ? root.querySelector('.ccp-tabs a[href="#' + item.mainId + '"]') : null;
+    if (main) {
+      var group = closest(main, '.ccp-tab-group');
+      if (group) group.classList.add('is-open');
+      showTab(main);
+    }
+    window.setTimeout(function(){
+      var inner = item.innerId ? root.querySelector('#' + item.mainId + ' a[href="#' + item.innerId + '"]') : null;
+      if (inner) showTab(inner);
+      window.setTimeout(function(){
+        if (item.target && item.target.scrollIntoView) {
+          var repeater = item.target.closest ? item.target.closest('.ccp-repeater-card') : null;
+          if (repeater) repeater.classList.remove('is-collapsed');
+          item.target.classList.add('ccp-search-hit');
+          item.target.scrollIntoView({behavior:'smooth', block:'center'});
+          window.setTimeout(function(){ item.target.classList.remove('ccp-search-hit'); }, 1700);
+        }
+        if (input) input.blur();
+      }, 120);
+    }, 120);
+  }
+
+  function initSearch() {
+    var input = root.querySelector('[data-ccp-tab-search]');
+    var box = root.querySelector('[data-ccp-search-results]');
+    if (!input || !box || input.getAttribute('data-ccp-ready') === '1') return;
+    input.setAttribute('data-ccp-ready', '1');
+    var index = [];
+    function render() {
+      resetLeftMenu();
+      var query = normalize(input.value);
+      if (!query) { box.innerHTML = ''; box.style.display = 'none'; return; }
+      if (!index.length) index = buildSearchIndex();
+      var words = query.split(' ').filter(Boolean);
+      var results = index.map(function(item){ return {item:item, score:scoreItem(item, query, words)}; }).filter(function(row){ return row.score >= 0; }).sort(function(a,b){ return b.score - a.score; }).slice(0,14).map(function(row){ return row.item; });
+      if (!results.length) { box.innerHTML = '<div class="ccp-admin-search-empty">' + escapeHtml(textNoMatches) + '</div>'; box.style.display = 'block'; return; }
+      box.innerHTML = results.map(function(item, i){
+        var icon = item.type === 'section' ? 'fa-folder-open' : 'fa-sliders';
+        var section = item.section ? '<small>' + escapeHtml(item.section) + '</small>' : '';
+        return '<button type="button" data-ccp-search-result="' + i + '"><i class="fa ' + icon + '"></i><span>' + escapeHtml(item.title) + '</span>' + section + '</button>';
+      }).join('');
+      box.style.display = 'block';
+      Array.prototype.forEach.call(box.querySelectorAll('[data-ccp-search-result]'), function(button){
+        button.addEventListener('click', function(e){
+          e.preventDefault();
+          activateSearchResult(results[parseInt(button.getAttribute('data-ccp-search-result'), 10)], box, input);
+        });
+      });
+    }
+    input.addEventListener('input', render);
+    input.addEventListener('focus', function(){ if (input.value) render(); });
+    input.addEventListener('keydown', function(e){
+      if (e.key === 'Escape') { input.value = ''; box.innerHTML = ''; box.style.display = 'none'; resetLeftMenu(); }
+    });
+    document.addEventListener('click', function(e){
+      if (!closest(e.target, '[data-ccp-tab-search]') && !closest(e.target, '[data-ccp-search-results]')) box.style.display = 'none';
+    });
+  }
+
+  function initFilemanager() {
+    document.addEventListener('click', function(e){
+      var pick = closest(e.target, '[data-ccp-filemanager]');
+      if (pick) {
+        e.preventDefault();
+        var target = pick.getAttribute('data-target');
+        if (!target || !window.jQuery) return;
+        jQuery('#modal-image').remove();
+        jQuery.ajax({
+          url: filemanagerUrl + '&target=' + encodeURIComponent(target),
+          dataType: 'html',
+          success: function(html) {
+            jQuery('body').append('<div id="modal-image" class="modal fade" tabindex="-1" role="dialog">' + html + '</div>');
+            jQuery('#modal-image').on('hidden.bs.modal', function(){ jQuery(this).remove(); cleanModalState(); }).modal('show');
+          },
+          error: cleanModalState
+        });
+        return;
+      }
+      var clear = closest(e.target, '[data-ccp-clear-target]');
+      if (clear) {
+        e.preventDefault();
+        var id = clear.getAttribute('data-ccp-clear-target');
+        var field = document.getElementById(id);
+        if (field) { field.value = ''; field.dispatchEvent(new Event('change', {bubbles:true})); }
+        return;
+      }
+      var preset = closest(e.target, '[data-ccp-link-preset]');
+      if (preset) {
+        e.preventDefault();
+        var helper = closest(preset, '.ccp-link-helper');
+        var group = helper ? closest(helper, '.col-sm-10') : null;
+        var input = group ? group.querySelector('.ccp-link-input') : null;
+        if (input) { input.value = preset.getAttribute('data-ccp-link-preset') || ''; input.dispatchEvent(new Event('change', {bubbles:true})); }
+      }
+    });
+    if (window.jQuery) jQuery(document).on('hidden.bs.modal', cleanModalState);
+  }
+
+  function linkSearchUrl(type, query) {
+    if (type === 'product') return productAutocompleteUrl + '&filter_name=' + encodeURIComponent(query);
+    if (type === 'information') return informationAutocompleteUrl + '&filter_name=' + encodeURIComponent(query);
+    return categoryAutocompleteUrl + '&filter_name=' + encodeURIComponent(query);
+  }
+
+  function linkRoute(type, item) {
+    if (type === 'product') return 'index.php?route=product/product&product_id=' + encodeURIComponent(item.product_id || item.value || '');
+    if (type === 'information') return 'index.php?route=information/information&information_id=' + encodeURIComponent(item.information_id || item.value || '');
+    return 'index.php?route=product/category&path=' + encodeURIComponent(item.category_id || item.value || '');
+  }
+
+  function initLinkSearch() {
+    var timers = new WeakMap();
+    Array.prototype.forEach.call(root.querySelectorAll('.ccp-link-search'), function(input){
+      if (input.getAttribute('data-ccp-ready') === '1') return;
+      input.setAttribute('data-ccp-ready', '1');
+      input.addEventListener('input', function(){
+        var row = closest(input, '.ccp-link-search-row');
+        if (!row) return;
+        var results = row.querySelector('.ccp-link-results');
+        var typeField = row.querySelector('.ccp-link-type');
+        var type = typeField ? typeField.value : 'category';
+        var q = cleanText(input.value);
+        if (timers.get(input)) window.clearTimeout(timers.get(input));
+        if (!q || q.length < 2) { if (results) { results.innerHTML = ''; results.style.display = 'none'; } return; }
+        timers.set(input, window.setTimeout(function(){
+          if (!window.jQuery || !results) return;
+          jQuery.ajax({url:linkSearchUrl(type, q), dataType:'json', success:function(json){
+            var items = Array.isArray(json) ? json.slice(0,12) : [];
+            if (!items.length) { results.innerHTML = '<div class="ccp-link-empty">' + escapeHtml(textNoMatches) + '</div>'; results.style.display = 'block'; return; }
+            results.innerHTML = items.map(function(item, index){
+              var name = item.name || item.label || item.title || '';
+              return '<button type="button" data-index="' + index + '"><i class="fa fa-link"></i><span>' + escapeHtml(name) + '</span></button>';
+            }).join('');
+            results.style.display = 'block';
+            Array.prototype.forEach.call(results.querySelectorAll('button[data-index]'), function(button){
+              button.addEventListener('click', function(e){
+                e.preventDefault();
+                var item = items[parseInt(button.getAttribute('data-index'), 10)];
+                var helper = closest(row, '.ccp-link-helper');
+                var group = helper ? closest(helper, '.col-sm-10') : null;
+                var linkInput = group ? group.querySelector('.ccp-link-input') : null;
+                if (linkInput) { linkInput.value = linkRoute(type, item); linkInput.dispatchEvent(new Event('change', {bubbles:true})); }
+                input.value = item.name || item.label || item.title || '';
+                results.style.display = 'none';
+              });
+            });
+          }});
+        }, 260));
+      });
+    });
+    document.addEventListener('click', function(e){
+      if (!closest(e.target, '.ccp-link-search-row')) Array.prototype.forEach.call(root.querySelectorAll('.ccp-link-results'), function(box){ box.style.display = 'none'; });
+    });
+  }
+
+  function initIconPicker() {
+    document.addEventListener('click', function(e){
+      var button = closest(e.target, '[data-ccp-icon-value]');
+      if (!button) return;
+      e.preventDefault();
+      var value = button.getAttribute('data-ccp-icon-value') || '';
+      var target = button.getAttribute('data-ccp-icon-target') || '';
+      var input = root.querySelector('[data-ccp-icon-input="' + target + '"]');
+      var preview = root.querySelector('[data-ccp-icon-preview="' + target + '"]');
+      if (input) { input.value = value; input.dispatchEvent(new Event('change', {bubbles:true})); }
+      if (preview) preview.className = 'fa ' + value;
+    });
+  }
+
+  initSettingsMenuToggle();
+  initInnerTabs();
+  initRepeaterCards();
+  initSectionIntros();
+  enhanceMediaPickers();
+  initCodeareas();
+  initColors();
+  initTabGroups();
+  initScrollSave();
+  initSearch();
+  initFilemanager();
+  initLinkSearch();
+  initIconPicker();
+  restoreActiveTab();
+  normalizeTabGroups();
+  buildStructuredLayout();
+
+  if (window.jQuery) jQuery(document).on('shown.bs.tab ccpAdminLayoutRefresh', function(){ window.setTimeout(buildStructuredLayout, 60); });
+  document.addEventListener('shown.bs.tab', function(){ window.setTimeout(buildStructuredLayout, 60); }, true);
+  window.setTimeout(buildStructuredLayout, 140);
+})();
+</script>
+
+{{ footer }}

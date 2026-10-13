@@ -1,0 +1,32 @@
+CodeCart PRO Theme 8.7.7
+
+PURPOSE
+CodeCart PRO Theme is a commercial storefront theme and integrated toolkit for ocStore 3.0.x and OpenCart 3.0.x. It provides a modern storefront, product cards, product carousels, a blog, enhanced reviews, quick requests, SEO markup and an optimized checkout.
+
+KEY BENEFITS
+- Compatible with CodeCart PRO 3.0.6.0, ocStore 3.0.4.1, OpenCart 3.x and PHP 8.1–8.3.
+- Default post-install status: disabled. Storefront logic is not applied until the theme is enabled and settings are saved.
+- MVC-L and OCMOD integration without direct core-file editing.
+- Russian, Ukrainian and English interfaces.
+- InnoDB/utf8mb4 module tables.
+- Scoped theme assets, protected admin actions and guarded storefront endpoints.
+- Product carousels, blog, reviews, SEO URLs, sitemap, Schema.org and diagnostics.
+
+AUTHOR
+CodeCart PRO
+https://codecartpro.com
+
+IMPORTANT
+Before installation or update, always create a full backup of the website files and database.
+
+Compatibility with other themes
+CodeCart PRO Theme is an independent storefront theme, not a UniShop2 add-on. It cannot be active simultaneously with UniShop2. When disabled or when another theme is selected, CodeCart PRO Theme storefront logic does not run.
+
+Information-only mode turns the store into a catalogue without sales: prices, quantity controls, cart and checkout are disabled while product content, stock, benefits and recommendations remain visible.
+
+VERSION 8.7.7
+Fixed native OpenCart Swiper integration: the theme no longer overwrites swiper-wrapper/swiper-slide widths or Swiper transform geometry, so native slideshows render correctly. Accumulated duplicate slideshow CSS was removed and replaced with one canonical responsive implementation.
+
+Mobile slideshow/banner hiding is now reversible after resize/orientation. Configured container width and dark-theme colors are no longer overwritten by late CSS variables. Added a body route-class fallback, missing floating-contact/dark-theme translations, Telegram/Viber/WhatsApp normalization, and accessible titles/ARIA labels for icon-only controls.
+
+The product-page DOM/footer correction introduced in 8.6.7 is retained: ccp-related-carousel__viewport and ccp-related-carousel are closed correctly so the footer cannot remain inside #product-product > .row.

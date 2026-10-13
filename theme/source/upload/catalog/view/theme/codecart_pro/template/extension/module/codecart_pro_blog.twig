@@ -1,0 +1,14 @@
+{{ header }}
+<div class="ccp-breadcrumb-wrap"><div class="container"><ul class="breadcrumb">{% for breadcrumb in breadcrumbs %}<li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>{% endfor %}</ul></div></div>
+<div id="ccp-blog" class="container ccp-blog-page">
+  <div class="row">{{ column_left }}{% if column_left and column_right %}{% set class = 'col-sm-6' %}{% elseif column_left or column_right %}{% set class = 'col-sm-9' %}{% else %}{% set class = 'col-sm-12' %}{% endif %}
+    <div id="content" class="{{ class }}">{{ content_top }}
+      <div class="ccp-section-head"><h1>{{ heading_title }}</h1>{% if description %}<p>{{ description }}</p>{% endif %}</div>
+      {% if categories %}<div class="ccp-blog-categories"><a href="{{ blog_href }}" class="ccp-blog-cat{% if not active_category_id %} active{% endif %}">{{ text_all_articles }}</a>{% for category in categories %}<a href="{{ category.href }}" class="ccp-blog-cat{% if category.category_id == active_category_id %} active{% endif %}">{{ category.name }}</a>{% endfor %}</div>{% endif %}
+      {% if active_tag %}<div class="ccp-active-tag">{{ text_tags }}: <strong>{{ active_tag }}</strong></div>{% endif %}
+      {% if articles %}<div class="ccp-blog-grid ccp-standard-card-grid">{% for article in articles %}<article class="ccp-blog-card">{% if article.thumb %}<a href="{{ article.href }}" class="ccp-blog-thumb"><img src="{{ article.thumb }}" alt="{{ article.title }}" loading="lazy" decoding="async" width="420" height="260" /></a>{% endif %}<div class="ccp-blog-body"><div class="ccp-blog-date">{{ article.date_added }}</div><h2><a href="{{ article.href }}">{{ article.title }}</a></h2><p>{{ article.description }}</p><a href="{{ article.href }}" class="btn ccp-btn-outline">{{ text_read_more|default('Read more') }}</a></div></article>{% endfor %}</div>{% else %}<div class="alert alert-info">{{ text_no_articles|default('No articles yet') }}</div>{% endif %}
+      {% if seo_text %}<div class="ccp-blog-seo-text">{{ seo_text }}</div>{% endif %}
+      {{ content_bottom }}</div>{{ column_right }}
+  </div>
+</div>
+{{ footer }}

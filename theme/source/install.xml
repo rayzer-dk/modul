@@ -1,0 +1,1275 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<modification>
+  <name>CodeCart PRO Theme</name>
+  <code>codecart_pro_theme</code>
+  <version>8.7.7</version>
+  <author>CodeCart PRO</author>
+  <link>https://codecartpro.com</link>
+
+<file path="catalog/controller/common/header.php">
+    <operation error="skip">
+      <search><![CDATA[$data['styles'] = $this->document->getStyles();]]></search>
+      <add position="before"><![CDATA[
+        $ccp_get_color = function($key, $fallback) {
+            $value = (string)$this->config->get($key);
+            return preg_match('/^#[0-9a-fA-F]{6}$/', $value) ? $value : $fallback;
+        };
+
+        $ccp_container_width = (int)$this->config->get('theme_codecart_pro_container_width');
+        if ($ccp_container_width < 1400 || in_array($ccp_container_width, array(1560, 1640), true)) { $ccp_container_width = 1500; }
+        $ccp_card_radius = (int)$this->config->get('theme_codecart_pro_card_radius');
+        $ccp_element_radius = (int)$this->config->get('theme_codecart_pro_element_radius');
+        $ccp_button_radius = (int)$this->config->get('theme_codecart_pro_button_radius');
+        $ccp_language_id = (int)$this->config->get('config_language_id');
+        $ccp_header_notice = $this->config->get('theme_codecart_pro_header_notice');
+        $ccp_config_theme = (string)$this->config->get('config_theme');
+        $ccp_theme_directory_key = $ccp_config_theme ? 'theme_' . $ccp_config_theme . '_directory' : '';
+        $ccp_theme_directory = $ccp_theme_directory_key ? (string)$this->config->get($ccp_theme_directory_key) : '';
+        $ccp_is_codecart_theme = ($ccp_config_theme === 'codecart_pro' || $ccp_theme_directory === 'codecart_pro' || (string)$this->config->get('config_template') === 'codecart_pro');
+        if ($ccp_is_codecart_theme && (int)$this->config->get('theme_codecart_pro_status')) {
+        // CodeCart PRO v8.7.7: logo must also go through image/cache so AVIF/WebP/JXL processing can replace it reliably.
+        $data['ccp_logo_cached'] = '';
+        $ccp_logo_file = (string)$this->config->get('config_logo');
+        if ($ccp_logo_file !== '' && is_file(DIR_IMAGE . $ccp_logo_file)) {
+            $this->load->model('tool/image');
+            $data['ccp_logo_cached'] = $this->model_tool_image->resize($ccp_logo_file, 260, 80);
+        }
+
+        $data['ccp_version'] = '8.7.7';
+        $data['ccp_language_id'] = $ccp_language_id;
+        $ccp_route_value = isset($this->request->get['route']) ? (string)$this->request->get['route'] : 'common/home';
+        $ccp_route_class = trim(preg_replace('/[^a-z0-9_-]+/i', '-', str_replace('/', '-', $ccp_route_value)), '-');
+        $data['ccp_route_class'] = $ccp_route_class !== '' ? $ccp_route_class : 'common-home';
+        $ccp_schema_version = (int)$this->config->get('theme_codecart_pro_schema_version');
+        $data['ccp_information_mode'] = ($ccp_schema_version < 852) ? 1 : (int)$this->config->get('theme_codecart_pro_information_mode');
+        $data['ccp_primary_color'] = $ccp_get_color('theme_codecart_pro_primary_color', '#0057b7');
+        $data['ccp_accent_color'] = $ccp_get_color('theme_codecart_pro_accent_color', '#ffd700');
+        $data['ccp_success_color'] = $ccp_get_color('theme_codecart_pro_success_color', '#16a34a');
+        $data['ccp_danger_color'] = $ccp_get_color('theme_codecart_pro_danger_color', '#dc2626');
+        $data['ccp_background_color'] = $ccp_get_color('theme_codecart_pro_background_color', '#f5f7fb');
+        $data['ccp_page_side_background_color'] = $ccp_get_color('theme_codecart_pro_page_side_background_color', '#f5f7fb');
+        $ccp_page_side_background_image = ltrim(trim((string)$this->config->get('theme_codecart_pro_page_side_background_image')), '/');
+        if (strpos($ccp_page_side_background_image, 'image/') === 0) { $ccp_page_side_background_image = substr($ccp_page_side_background_image, 6); }
+        if ($ccp_page_side_background_image !== ''
+            && strpos($ccp_page_side_background_image, '..') === false
+            && strpos($ccp_page_side_background_image, ':') === false
+            && strpos($ccp_page_side_background_image, '//') === false
+            && preg_match('/\.(?:jpe?g|png|gif|webp|avif)$/i', $ccp_page_side_background_image)
+            && is_file(DIR_IMAGE . ltrim($ccp_page_side_background_image, '/'))
+        ) {
+            $ccp_page_side_background_image = rtrim((!empty($this->request->server['HTTPS']) ? HTTPS_SERVER : HTTP_SERVER), '/') . '/image/' . ltrim($ccp_page_side_background_image, '/');
+        } else {
+            $ccp_page_side_background_image = '';
+        }
+        $data['ccp_page_side_background_image'] = $ccp_page_side_background_image;
+        $data['ccp_dark_theme_status'] = (int)$this->config->get('theme_codecart_pro_dark_theme_status');
+        $data['ccp_dark_theme_default'] = (int)$this->config->get('theme_codecart_pro_dark_theme_default');
+        $data['ccp_dark_theme_show_toggle'] = $this->config->has('theme_codecart_pro_dark_theme_show_toggle') ? (int)$this->config->get('theme_codecart_pro_dark_theme_show_toggle') : 1;
+        $data['ccp_dark_theme_background'] = $ccp_get_color('theme_codecart_pro_dark_theme_background', '#0f172a');
+        $data['ccp_dark_theme_surface'] = $ccp_get_color('theme_codecart_pro_dark_theme_surface', '#111827');
+        $data['ccp_dark_theme_card'] = $ccp_get_color('theme_codecart_pro_dark_theme_card', '#1e293b');
+        $data['ccp_dark_theme_text'] = $ccp_get_color('theme_codecart_pro_dark_theme_text', '#f8fafc');
+        $data['ccp_dark_theme_muted'] = $ccp_get_color('theme_codecart_pro_dark_theme_muted', '#cbd5e1');
+        $data['ccp_dark_theme_border'] = $ccp_get_color('theme_codecart_pro_dark_theme_border', '#334155');
+        $data['ccp_text_color'] = $ccp_get_color('theme_codecart_pro_text_color', '#1f2937');
+        $data['ccp_container_width'] = ($ccp_container_width >= 1400 && $ccp_container_width <= 1680) ? $ccp_container_width : 1500;
+        $data['ccp_card_radius'] = ($ccp_card_radius >= 0 && $ccp_card_radius <= 40) ? $ccp_card_radius : 16;
+        $data['ccp_element_radius'] = ($ccp_element_radius >= 0 && $ccp_element_radius <= 40) ? $ccp_element_radius : 14;
+        $data['ccp_button_radius'] = ($ccp_button_radius >= 0 && $ccp_button_radius <= 40) ? $ccp_button_radius : 12;
+        $data['ccp_card_shadow'] = (int)$this->config->get('theme_codecart_pro_card_shadow');
+        $data['ccp_card_image_ratio'] = (string)$this->config->get('theme_codecart_pro_card_image_ratio') ?: '1x1';
+        $data['ccp_sticky_header'] = (int)$this->config->get('theme_codecart_pro_sticky_header');
+        $data['ccp_compact_header'] = (int)$this->config->get('theme_codecart_pro_compact_header');
+        $data['ccp_show_top_bar'] = (int)$this->config->get('theme_codecart_pro_show_top_bar');
+        $data['ccp_mobile_bottom_bar'] = (int)$this->config->get('theme_codecart_pro_mobile_bottom_bar');
+        $data['ccp_mobile_hide_home_slider_status'] = (int)$this->config->get('theme_codecart_pro_mobile_hide_home_slider_status');
+        $data['ccp_mobile_hide_home_banners_status'] = (int)$this->config->get('theme_codecart_pro_mobile_hide_home_banners_status');
+        $data['ccp_mobile_hide_native_slideshow_status'] = (int)$this->config->get('theme_codecart_pro_mobile_hide_native_slideshow_status');
+        $data['ccp_mobile_hide_native_banners_status'] = (int)$this->config->get('theme_codecart_pro_mobile_hide_native_banners_status');
+        $ccp_mobile_banner_breakpoint = (int)$this->config->get('theme_codecart_pro_mobile_hide_banner_breakpoint');
+        $data['ccp_mobile_hide_banner_breakpoint'] = ($ccp_mobile_banner_breakpoint >= 320 && $ccp_mobile_banner_breakpoint <= 1200) ? $ccp_mobile_banner_breakpoint : 767;
+        $ccp_native_banner_fit_mode = (string)$this->config->get('theme_codecart_pro_native_banner_fit_mode');
+        $data['ccp_native_banner_fit_mode'] = in_array($ccp_native_banner_fit_mode, array('width','height','cover'), true) ? $ccp_native_banner_fit_mode : 'height';
+        $data['ccp_card_show_description'] = (int)$this->config->get('theme_codecart_pro_card_show_description');
+        $data['ccp_card_show_rating'] = (int)$this->config->get('theme_codecart_pro_card_show_rating');
+        $data['ccp_card_show_stock'] = (int)$this->config->get('theme_codecart_pro_card_show_stock');
+        $data['ccp_card_show_quick_actions'] = (int)$this->config->get('theme_codecart_pro_card_show_quick_actions');
+        $data['ccp_product_sticky_buy'] = (int)$this->config->get('theme_codecart_pro_product_sticky_buy');
+        $data['ccp_product_bottom_sticky_buy'] = (int)$this->config->get('theme_codecart_pro_product_bottom_sticky_buy');
+        $data['ccp_product_bottom_sticky_buy_desktop'] = (int)$this->config->get('theme_codecart_pro_product_bottom_sticky_buy_desktop');
+        $data['ccp_product_bottom_sticky_buy_mobile'] = (int)$this->config->get('theme_codecart_pro_product_bottom_sticky_buy_mobile');
+        $data['ccp_enable_custom_css'] = (int)$this->config->get('theme_codecart_pro_enable_custom_css');
+        $data['ccp_custom_css'] = (string)$this->config->get('theme_codecart_pro_custom_css');
+        $data['ccp_custom_css_global'] = (string)$this->config->get('theme_codecart_pro_custom_css_global');
+        $data['ccp_custom_css_header'] = (string)$this->config->get('theme_codecart_pro_custom_css_header');
+        $data['ccp_custom_css_menu'] = (string)$this->config->get('theme_codecart_pro_custom_css_menu');
+        $data['ccp_custom_css_product_card'] = (string)$this->config->get('theme_codecart_pro_custom_css_product_card');
+        $data['ccp_custom_css_category'] = (string)$this->config->get('theme_codecart_pro_custom_css_category');
+        $data['ccp_custom_css_product'] = (string)$this->config->get('theme_codecart_pro_custom_css_product');
+        $data['ccp_custom_css_mobile'] = (string)$this->config->get('theme_codecart_pro_custom_css_mobile');
+        $data['ccp_custom_css_checkout'] = (string)$this->config->get('theme_codecart_pro_custom_css_checkout');
+        $data['ccp_enable_custom_js'] = (int)$this->config->get('theme_codecart_pro_enable_custom_js');
+        $data['ccp_custom_js_head'] = (string)$this->config->get('theme_codecart_pro_custom_js_head');
+        $data['ccp_enable_custom_html'] = (int)$this->config->get('theme_codecart_pro_enable_custom_html');
+        $data['ccp_custom_html_head'] = (string)$this->config->get('theme_codecart_pro_custom_html_head');
+        $data['ccp_custom_html_after_body'] = (string)$this->config->get('theme_codecart_pro_custom_html_after_body');
+        $data['ccp_custom_html_header_top'] = (string)$this->config->get('theme_codecart_pro_custom_html_header_top');
+
+        // Ignore obsolete manual information-mode snippets immediately, even before
+        // the administrator opens the settings page and the migration clears them.
+        foreach (array('ccp_custom_css_global','ccp_custom_css_header','ccp_custom_css_menu','ccp_custom_css_product_card','ccp_custom_css_category','ccp_custom_css_product','ccp_custom_css_mobile','ccp_custom_css_checkout','ccp_custom_css') as $ccp_custom_css_key) {
+            $ccp_custom_css_value = isset($data[$ccp_custom_css_key]) ? (string)$data[$ccp_custom_css_key] : '';
+            $ccp_custom_css_legacy = strpos($ccp_custom_css_value, 'ccp-information-mode-manual') !== false
+                || strpos($ccp_custom_css_value, 'CodeCart PRO: информационный режим без продаж') !== false
+                || (strpos($ccp_custom_css_value, '.ccp-header-cart-link') !== false && strpos($ccp_custom_css_value, '.ccp-product-card__price') !== false && strpos($ccp_custom_css_value, 'display: none !important') !== false);
+            if ($ccp_custom_css_legacy) { $data[$ccp_custom_css_key] = ''; }
+        }
+        foreach (array('ccp_custom_js_head') as $ccp_custom_js_key) {
+            $ccp_custom_js_value = isset($data[$ccp_custom_js_key]) ? (string)$data[$ccp_custom_js_key] : '';
+            $ccp_custom_js_legacy = strpos($ccp_custom_js_value, 'ccp-information-mode-manual') !== false
+                || strpos($ccp_custom_js_value, 'salesSelector') !== false
+                || strpos($ccp_custom_js_value, 'hiddenSelectors') !== false
+                || strpos($ccp_custom_js_value, 'removeSalesElements') !== false
+                || (strpos($ccp_custom_js_value, 'CodeCartProTheme.quantitySwitch') !== false && strpos($ccp_custom_js_value, 'MutationObserver') !== false);
+            if ($ccp_custom_js_legacy) { $data[$ccp_custom_js_key] = ''; }
+        }
+        $this->load->language('extension/theme/codecart_pro');
+        $data['ccp_header_notice'] = is_array($ccp_header_notice) ? $ccp_header_notice : array();
+        $data['ccp_text_live_search_empty'] = $this->language->get('ccp_text_live_search_empty');
+        $data['ccp_text_live_search_products'] = $this->language->get('ccp_text_live_search_products');
+        $data['ccp_text_live_search_categories'] = $this->language->get('ccp_text_live_search_categories');
+        $data['ccp_text_loading'] = $this->language->get('ccp_text_loading');
+        $data['ccp_text_product_not_found'] = $this->language->get('ccp_text_product_not_found');
+        $data['ccp_text_load_error'] = $this->language->get('ccp_text_load_error');
+        $data['ccp_text_send_error'] = $this->language->get('ccp_text_send_error');
+        $data['ccp_text_selected_options'] = $this->language->get('ccp_text_selected_options');
+
+        $ccp_worktime = $this->config->get('theme_codecart_pro_header_worktime');
+        $ccp_footer_text = $this->config->get('theme_codecart_pro_footer_text');
+        $data['ccp_header_layout'] = (string)$this->config->get('theme_codecart_pro_header_layout');
+        $data['ccp_header_show_phone'] = (int)$this->config->get('theme_codecart_pro_header_show_phone');
+        $data['ccp_header_show_email'] = (int)$this->config->get('theme_codecart_pro_header_show_email');
+        $data['ccp_header_show_worktime'] = (int)$this->config->get('theme_codecart_pro_header_show_worktime');
+        $data['ccp_header_phone'] = (string)$this->config->get('theme_codecart_pro_header_phone');
+        $ccp_header_email_value = trim((string)$this->config->get('theme_codecart_pro_header_email'));
+        $data['ccp_header_email'] = $ccp_header_email_value;
+        $data['ccp_contact'] = $this->url->link('information/contact');
+        $data['ccp_text_write_email'] = $this->language->get('ccp_text_write_email');
+        $data['ccp_header_worktime'] = is_array($ccp_worktime) ? $ccp_worktime : array();
+        $data['ccp_menu_style'] = (string)$this->config->get('theme_codecart_pro_menu_style');
+        $data['ccp_menu_width'] = (string)$this->config->get('theme_codecart_pro_menu_width') ?: 'short';
+        $data['ccp_menu_show_home'] = (int)$this->config->get('theme_codecart_pro_menu_show_home');
+        $data['ccp_menu_show_categories'] = (int)$this->config->get('theme_codecart_pro_menu_show_categories');
+        $data['ccp_menu_sticky'] = (int)$this->config->get('theme_codecart_pro_menu_sticky');
+        $data['ccp_footer_show_contacts'] = (int)$this->config->get('theme_codecart_pro_footer_show_contacts');
+        $data['ccp_footer_text'] = is_array($ccp_footer_text) ? $ccp_footer_text : array();
+        $ccp_seo_footer_text = $this->config->get('theme_codecart_pro_seo_footer_text');
+        $data['ccp_seo_footer_text_status'] = (int)$this->config->get('theme_codecart_pro_seo_footer_text_status');
+        $data['ccp_seo_footer_text'] = is_array($ccp_seo_footer_text) ? $ccp_seo_footer_text : array();
+        $data['ccp_footer_payment_icons'] = (string)$this->config->get('theme_codecart_pro_footer_payment_icons');
+        $data['ccp_floating_contacts'] = (int)$this->config->get('theme_codecart_pro_floating_contacts');
+        $data['ccp_floating_phone'] = (string)$this->config->get('theme_codecart_pro_floating_phone');
+        $ccp_social_url = function($value, $service) {
+            $value = trim((string)$value);
+            if ($value === '') { return ''; }
+            if (preg_match('#^https?://#i', $value)) {
+                return filter_var($value, FILTER_VALIDATE_URL) ? $value : '';
+            }
+            if ($service === 'telegram') {
+                if (stripos($value, 'tg://') === 0) { return $value; }
+                if (preg_match('#^(?:t\\.me|telegram\\.me)/([A-Za-z][A-Za-z0-9_]{4,31})/?$#i', $value, $m)) { return 'https://t.me/' . $m[1]; }
+                $username = ltrim($value, '@');
+                return preg_match('/^[A-Za-z][A-Za-z0-9_]{4,31}$/', $username) ? 'https://t.me/' . $username : '';
+            }
+            if ($service === 'viber') {
+                if (stripos($value, 'viber://') === 0) { return $value; }
+                $digits = preg_replace('/\\D+/', '', $value);
+                return strlen($digits) >= 7 ? 'viber://chat?number=%2B' . $digits : '';
+            }
+            if ($service === 'whatsapp') {
+                if (stripos($value, 'whatsapp://') === 0) { return $value; }
+                $digits = preg_replace('/\\D+/', '', $value);
+                return strlen($digits) >= 7 ? 'https://wa.me/' . $digits : '';
+            }
+            return '';
+        };
+        $data['ccp_floating_telegram'] = $ccp_social_url($this->config->get('theme_codecart_pro_floating_telegram'), 'telegram');
+        $data['ccp_floating_viber'] = $ccp_social_url($this->config->get('theme_codecart_pro_floating_viber'), 'viber');
+        $data['ccp_floating_whatsapp'] = $ccp_social_url($this->config->get('theme_codecart_pro_floating_whatsapp'), 'whatsapp');
+        $data['ccp_floating_position'] = (string)$this->config->get('theme_codecart_pro_floating_position');
+
+        $data['ccp_floating_cart_status'] = (int)$this->config->get('theme_codecart_pro_floating_cart_status');
+        $data['ccp_floating_wishlist_status'] = (int)$this->config->get('theme_codecart_pro_floating_wishlist_status');
+        $data['ccp_floating_compare_status'] = (int)$this->config->get('theme_codecart_pro_floating_compare_status');
+        $data['ccp_compare'] = $this->url->link('product/compare');
+        $data['ccp_price_color'] = $ccp_get_color('theme_codecart_pro_price_color', '#0057b7');
+        $data['ccp_old_price_color'] = $ccp_get_color('theme_codecart_pro_old_price_color', '#9ca3af');
+        $data['ccp_menu_bg_color'] = $ccp_get_color('theme_codecart_pro_menu_bg_color', '#0057b7');
+        $data['ccp_menu_text_color'] = $ccp_get_color('theme_codecart_pro_menu_text_color', '#ffffff');
+        $data['ccp_footer_bg_color'] = $ccp_get_color('theme_codecart_pro_footer_bg_color', '#0f172a');
+        $data['ccp_footer_text_color'] = $ccp_get_color('theme_codecart_pro_footer_text_color', '#cbd5e1');
+        $data['ccp_enable_quick_view'] = (int)$this->config->get('theme_codecart_pro_enable_quick_view');
+        $data['ccp_enable_quick_order'] = (int)$this->config->get('theme_codecart_pro_enable_quick_order');
+        $data['ccp_enable_stickers'] = (int)$this->config->get('theme_codecart_pro_enable_stickers');
+        $data['ccp_card_second_image_status'] = (int)$this->config->get('theme_codecart_pro_card_second_image_status');
+        $data['ccp_enable_stock_indicator'] = ((int)$this->config->get('theme_codecart_pro_enable_stock_indicator') && (int)$this->config->get('theme_codecart_pro_card_show_stock')) ? 1 : 0;
+        $data['ccp_enable_live_price'] = (int)$this->config->get('theme_codecart_pro_enable_live_price');
+        $data['ccp_sticker_sale_color'] = $ccp_get_color('theme_codecart_pro_sticker_sale_color', '#dc2626');
+        $data['ccp_sticker_new_color'] = $ccp_get_color('theme_codecart_pro_sticker_new_color', '#16a34a');
+        $data['ccp_sticker_hit_color'] = $ccp_get_color('theme_codecart_pro_sticker_hit_color', '#f59e0b');
+        $data['ccp_price_color'] = $ccp_get_color('theme_codecart_pro_price_color', '#0057b7');
+        $data['ccp_old_price_color'] = $ccp_get_color('theme_codecart_pro_old_price_color', '#9ca3af');
+        $data['ccp_enable_live_search'] = (int)$this->config->get('theme_codecart_pro_enable_live_search');
+        $data['ccp_live_search_limit'] = (int)$this->config->get('theme_codecart_pro_live_search_limit');
+        $data['ccp_live_search_min_chars'] = (int)$this->config->get('theme_codecart_pro_live_search_min_chars');
+        $data['ccp_popup_notification_status'] = (int)$this->config->get('theme_codecart_pro_popup_notification_status');
+        $data['ccp_popup_notification_delay'] = (int)$this->config->get('theme_codecart_pro_popup_notification_delay');
+
+        $data['ccp_seo_output'] = '';
+        if ($ccp_is_codecart_theme && (int)$this->config->get('theme_codecart_pro_status')) {
+            try {
+                $data['ccp_seo_output'] = $this->load->controller('extension/module/codecart_pro_seo');
+            } catch (Exception $ccp_optional_exception) {
+                $data['ccp_seo_output'] = '';
+                $this->log->write('CodeCart PRO Theme optional SEO block disabled: ' . $ccp_optional_exception->getMessage());
+            } catch (Throwable $ccp_optional_throwable) {
+                $data['ccp_seo_output'] = '';
+                $this->log->write('CodeCart PRO Theme optional SEO block disabled: ' . $ccp_optional_throwable->getMessage());
+            }
+        }
+        $data['ccp_blog_status'] = (int)$this->config->get('theme_codecart_pro_blog_status');
+        $data['ccp_blog_href'] = rtrim((!empty($this->request->server['HTTPS']) ? HTTPS_SERVER : HTTP_SERVER), '/') . '/index.php?route=extension/module/codecart_pro_blog';
+        $data['ccp_blog_menu_title'] = $this->config->get('theme_codecart_pro_blog_title');
+        $ccp_language_code = (string)$this->config->get('config_language');
+        $data['ccp_text_information_menu'] = (strpos($ccp_language_code, 'uk') === 0 || strpos($ccp_language_code, 'ua') === 0) ? 'Статті' : ((strpos($ccp_language_code, 'ru') === 0) ? 'Статьи' : 'Articles');
+        $data['ccp_information_links'] = array();
+        try {
+            $this->load->model('catalog/information');
+            foreach ($this->model_catalog_information->getInformations() as $ccp_information) {
+                if (!empty($ccp_information['information_id']) && !empty($ccp_information['title'])) {
+                    $data['ccp_information_links'][] = array(
+                        'title' => $ccp_information['title'],
+                        'href'  => $this->url->link('information/information', 'information_id=' . (int)$ccp_information['information_id'])
+                    );
+                }
+            }
+        } catch (Exception $e) {}
+
+        $ccp_popup_notification_text = $this->config->get('theme_codecart_pro_popup_notification_text');
+        $data['ccp_popup_notification_text'] = is_array($ccp_popup_notification_text) ? $ccp_popup_notification_text : array();
+
+        $data['ccp_category_columns_desktop'] = (int)$this->config->get('theme_codecart_pro_category_columns_desktop') ?: 5;
+        $data['ccp_category_columns_tablet'] = (int)$this->config->get('theme_codecart_pro_category_columns_tablet') ?: 3;
+        $data['ccp_category_columns_mobile'] = (int)$this->config->get('theme_codecart_pro_category_columns_mobile') ?: 2;
+        $data['ccp_category_layout'] = ((string)$this->config->get('theme_codecart_pro_category_layout') === 'list') ? 'list' : 'grid';
+        $data['ccp_category_show_subcategories'] = $this->config->has('theme_codecart_pro_category_show_subcategories') ? (int)$this->config->get('theme_codecart_pro_category_show_subcategories') : 1;
+        $data['ccp_card_title_lines'] = (int)$this->config->get('theme_codecart_pro_card_title_lines') ?: 2;
+        $data['ccp_card_full_click'] = (int)$this->config->get('theme_codecart_pro_card_full_click');
+        $data['ccp_category_sticky_toolbar'] = (int)$this->config->get('theme_codecart_pro_category_sticky_toolbar');
+        $data['ccp_ajax_catalog_status'] = (int)$this->config->get('theme_codecart_pro_ajax_catalog_status');
+        $data['ccp_checkout_style_status'] = (int)$this->config->get('theme_codecart_pro_checkout_style_status');
+        $data['ccp_checkout_compact_status'] = (int)$this->config->get('theme_codecart_pro_checkout_compact_status');
+
+        $data['ccp_mega_menu_status'] = (int)$this->config->get('theme_codecart_pro_mega_menu_status');
+        $data['ccp_mega_menu_source'] = (string)$this->config->get('theme_codecart_pro_mega_menu_source');
+        $data['ccp_mega_menu_only_top'] = (int)$this->config->get('theme_codecart_pro_mega_menu_only_top');
+        $data['ccp_mega_menu_depth'] = (int)$this->config->get('theme_codecart_pro_mega_menu_depth');
+        $data['ccp_mega_menu_columns'] = (int)$this->config->get('theme_codecart_pro_mega_menu_columns');
+        $data['ccp_mega_menu_show_images'] = (int)$this->config->get('theme_codecart_pro_mega_menu_show_images');
+        $data['ccp_mega_menu_show_counts'] = (int)$this->config->get('theme_codecart_pro_mega_menu_show_counts');
+        $data['ccp_mega_menu'] = '';
+        if ($ccp_is_codecart_theme && (int)$this->config->get('theme_codecart_pro_status') && (int)$this->config->get('theme_codecart_pro_mega_menu_status')) {
+            try {
+                $data['ccp_mega_menu'] = $this->load->controller('extension/module/codecart_pro_menu');
+            } catch (Exception $ccp_optional_exception) {
+                $data['ccp_mega_menu'] = '';
+                $this->log->write('CodeCart PRO Theme optional menu disabled: ' . $ccp_optional_exception->getMessage());
+            } catch (Throwable $ccp_optional_throwable) {
+                $data['ccp_mega_menu'] = '';
+                $this->log->write('CodeCart PRO Theme optional menu disabled: ' . $ccp_optional_throwable->getMessage());
+            }
+        }
+        $data['ccp_mobile_menu_show_search'] = (int)$this->config->get('theme_codecart_pro_mobile_menu_show_search');
+        $data['ccp_mobile_menu_show_categories'] = (int)$this->config->get('theme_codecart_pro_mobile_menu_show_categories');
+        $data['ccp_mobile_menu_show_blog'] = (int)$this->config->get('theme_codecart_pro_mobile_menu_show_blog');
+        $data['ccp_mobile_menu_show_contacts'] = (int)$this->config->get('theme_codecart_pro_mobile_menu_show_contacts');
+        $data['ccp_mobile_menu_show_account'] = (int)$this->config->get('theme_codecart_pro_mobile_menu_show_account');
+        $data['ccp_header_search_mode'] = (string)$this->config->get('theme_codecart_pro_header_search_mode');
+        $data['ccp_reviews_plus_minus_status'] = (int)$this->config->get('theme_codecart_pro_reviews_plus_minus_status');
+        $data['ccp_reviews_photos_status'] = (int)$this->config->get('theme_codecart_pro_reviews_photos_status');
+        $data['ccp_reviews_admin_reply_status'] = (int)$this->config->get('theme_codecart_pro_reviews_admin_reply_status');
+        $data['ccp_reviews_votes_status'] = (int)$this->config->get('theme_codecart_pro_reviews_votes_status');
+        $data['ccp_reviews_real_buyer_status'] = (int)$this->config->get('theme_codecart_pro_reviews_real_buyer_status');
+        $data['ccp_cart_drawer_status'] = (int)$this->config->get('theme_codecart_pro_cart_drawer_status');
+        $data['ccp_cart_toast_status'] = (int)$this->config->get('theme_codecart_pro_cart_toast_status');
+        $data['ccp_direct_checkout_after_add_status'] = $this->config->has('theme_codecart_pro_direct_checkout_after_add_status') ? (int)$this->config->get('theme_codecart_pro_direct_checkout_after_add_status') : 0;
+        $data['ccp_checkout_url'] = $this->url->link('checkout/checkout', '', true);
+        $data['ccp_cart_drawer_position'] = (string)$this->config->get('theme_codecart_pro_cart_drawer_position') ?: 'right';
+        $data['ccp_notification_position'] = (string)$this->config->get('theme_codecart_pro_notification_position') ?: 'top-right';
+        $data['ccp_schema_breadcrumbs_status'] = (int)$this->config->get('theme_codecart_pro_schema_breadcrumbs_status');
+        $data['ccp_performance_lazy_images'] = (int)$this->config->get('theme_codecart_pro_performance_lazy_images');
+        $data['ccp_performance_eager_first_images'] = (int)$this->config->get('theme_codecart_pro_performance_eager_first_images');
+        $data['ccp_performance_fetchpriority_status'] = (int)$this->config->get('theme_codecart_pro_performance_fetchpriority_status');
+        $data['ccp_performance_image_decoding_status'] = (int)$this->config->get('theme_codecart_pro_performance_image_decoding_status');
+        $ccp_jquery_candidates = array('jquery-3.7.1.min.js', 'jquery-3.6.0.min.js', 'jquery-3.5.1.min.js', 'jquery-2.1.1.min.js');
+        $data['ccp_jquery_path'] = 'catalog/view/theme/codecart_pro/javascript/jquery-3.7.1.min.js';
+        foreach ($ccp_jquery_candidates as $ccp_jquery_file) {
+            if (is_file(DIR_APPLICATION . 'view/javascript/jquery/' . $ccp_jquery_file)) {
+                $data['ccp_jquery_path'] = 'catalog/view/javascript/jquery/' . $ccp_jquery_file;
+                break;
+            }
+        }
+        }
+      ]]></add>
+    </operation>
+    <operation error="skip">
+      <search><![CDATA[$data['cart'] = $this->load->controller('common/cart');]]></search>
+      <add position="after"><![CDATA[
+        // CodeCart PRO Theme v8.7.7: minimal fallback for catalogue-only mode.
+        if (!isset($data['ccp_information_mode'])) {
+            $ccp_fallback_theme = (string)$this->config->get('config_theme');
+            $ccp_fallback_directory_key = $ccp_fallback_theme ? 'theme_' . $ccp_fallback_theme . '_directory' : '';
+            $ccp_fallback_directory = $ccp_fallback_directory_key ? (string)$this->config->get($ccp_fallback_directory_key) : '';
+            $ccp_fallback_active = ($ccp_fallback_theme === 'codecart_pro' || $ccp_fallback_theme === 'theme_codecart_pro' || $ccp_fallback_directory === 'codecart_pro' || (string)$this->config->get('config_template') === 'codecart_pro');
+            $ccp_fallback_schema = (int)$this->config->get('theme_codecart_pro_schema_version');
+            $ccp_fallback_information_mode = ($ccp_fallback_schema < 852) ? 1 : (int)$this->config->get('theme_codecart_pro_information_mode');
+            $data['ccp_information_mode'] = ($ccp_fallback_active && (int)$this->config->get('theme_codecart_pro_status')) ? $ccp_fallback_information_mode : 0;
+        }
+      ]]></add>
+    </operation>
+  </file>
+
+
+  <!-- CodeCart PRO Theme v8.7.7: minimal legacy blog SEO route resolver.
+       It does not rewrite URLs; it only maps the module's own decoded ID keys
+       to their explicit controllers before OpenCart dispatches the route. -->
+  <file path="catalog/controller/startup/seo_url.php">
+    <operation error="skip">
+      <search><![CDATA[if (isset($this->request->get['route'])) {]]></search>
+      <add position="before"><![CDATA[
+        if ((int)$this->config->get('theme_codecart_pro_status') && !isset($this->request->get['route'])) {
+            if (!empty($this->request->get['ccp_article_id'])) {
+                $this->request->get['route'] = 'extension/module/codecart_pro_blog/article';
+            } elseif (!empty($this->request->get['ccp_category_id'])) {
+                $this->request->get['route'] = 'extension/module/codecart_pro_blog/category';
+            } elseif (!empty($this->request->get['ccp_blog'])) {
+                $this->request->get['route'] = 'extension/module/codecart_pro_blog';
+            }
+        }
+      ]]></add>
+    </operation>
+  </file>
+
+  <file path="catalog/controller/common/footer.php">
+    <operation error="skip">
+      <search><![CDATA[return $this->load->view('common/footer', $data);]]></search>
+      <add position="before"><![CDATA[
+        $ccp_footer_config_theme = (string)$this->config->get('config_theme');
+        $ccp_footer_directory_key = $ccp_footer_config_theme ? 'theme_' . $ccp_footer_config_theme . '_directory' : '';
+        $ccp_footer_directory = $ccp_footer_directory_key ? (string)$this->config->get($ccp_footer_directory_key) : '';
+        $ccp_footer_is_codecart_theme = ($ccp_footer_config_theme === 'codecart_pro' || $ccp_footer_config_theme === 'theme_codecart_pro' || $ccp_footer_directory === 'codecart_pro' || (string)$this->config->get('config_template') === 'codecart_pro');
+        if ($ccp_footer_is_codecart_theme && (int)$this->config->get('theme_codecart_pro_status')) {
+        $ccp_footer_schema_version = (int)$this->config->get('theme_codecart_pro_schema_version');
+        $data['ccp_information_mode'] = ($ccp_footer_schema_version < 852) ? 1 : (int)$this->config->get('theme_codecart_pro_information_mode');
+        $data['ccp_enable_custom_js'] = (int)$this->config->get('theme_codecart_pro_enable_custom_js');
+        $data['ccp_custom_js'] = (string)$this->config->get('theme_codecart_pro_custom_js');
+        $data['ccp_custom_js_footer'] = (string)$this->config->get('theme_codecart_pro_custom_js_footer');
+        $data['ccp_custom_js_after_load'] = (string)$this->config->get('theme_codecart_pro_custom_js_after_load');
+        $data['ccp_enable_custom_html'] = (int)$this->config->get('theme_codecart_pro_enable_custom_html');
+        $data['ccp_custom_html_before_footer'] = (string)$this->config->get('theme_codecart_pro_custom_html_before_footer');
+        $data['ccp_custom_html_footer_bottom'] = (string)$this->config->get('theme_codecart_pro_custom_html_footer_bottom');
+        $data['ccp_mobile_bottom_bar'] = (int)$this->config->get('theme_codecart_pro_mobile_bottom_bar');
+        $data['ccp_home'] = $this->url->link('common/home');
+        $data['ccp_search'] = $this->url->link('product/search');
+        $data['ccp_account'] = $this->url->link('account/account', '', true);
+        $data['ccp_wishlist'] = $this->url->link('account/wishlist', '', true);
+        $data['ccp_direct_checkout_after_add_status'] = $this->config->has('theme_codecart_pro_direct_checkout_after_add_status') ? (int)$this->config->get('theme_codecart_pro_direct_checkout_after_add_status') : 0;
+        $data['ccp_checkout'] = $this->url->link('checkout/checkout', '', true);
+        $data['ccp_cart'] = $this->url->link('checkout/cart');
+        $data['ccp_contact'] = $this->url->link('information/contact');
+        $this->load->language('extension/theme/codecart_pro');
+        $ccp_language_code = (string)$this->config->get('config_language');
+        $ccp_is_ru = (strpos($ccp_language_code, 'ru') === 0);
+        $ccp_is_uk = (strpos($ccp_language_code, 'uk') === 0 || strpos($ccp_language_code, 'ua') === 0);
+        $ccp_text = function($en, $ru, $uk) use ($ccp_is_ru, $ccp_is_uk) { return $ccp_is_ru ? $ru : ($ccp_is_uk ? $uk : $en); };
+        $data['ccp_store_name'] = (string)$this->config->get('config_name');
+        $data['ccp_language_id'] = (int)$this->config->get('config_language_id');
+        $data['ccp_enable_callback'] = $this->config->has('theme_codecart_pro_enable_callback') ? (int)$this->config->get('theme_codecart_pro_enable_callback') : 1;
+        $data['ccp_enable_subscribe'] = $this->config->has('theme_codecart_pro_enable_subscribe') ? (int)$this->config->get('theme_codecart_pro_enable_subscribe') : 1;
+        $data['ccp_enable_quick_order'] = $this->config->has('theme_codecart_pro_enable_quick_order') ? (int)$this->config->get('theme_codecart_pro_enable_quick_order') : 1;
+        $data['ccp_quick_order_required_email'] = $this->config->has('theme_codecart_pro_quick_order_required_email') ? (int)$this->config->get('theme_codecart_pro_quick_order_required_email') : 0;
+        $ccp_quick_order_privacy_text = $this->config->get('theme_codecart_pro_quick_order_privacy_text');
+        $data['ccp_quick_order_privacy_text'] = is_array($ccp_quick_order_privacy_text) ? $ccp_quick_order_privacy_text : array();
+        $data['ccp_text_call_now'] = $this->language->get('ccp_text_call_now');
+        $data['ccp_text_callback_request'] = $this->language->get('ccp_text_callback_request');
+        $data['ccp_text_scroll_top'] = $this->language->get('ccp_text_scroll_top');
+        $data['ccp_text_floating_cart'] = $this->language->get('ccp_text_floating_cart');
+        $data['ccp_text_floating_wishlist'] = $this->language->get('ccp_text_floating_wishlist');
+        $data['ccp_text_floating_compare'] = $this->language->get('ccp_text_floating_compare');
+        $data['ccp_text_callback'] = $this->language->get('ccp_text_callback');
+        $data['ccp_text_subscribe'] = $this->language->get('ccp_text_subscribe');
+        $data['ccp_text_subscribe_placeholder'] = $this->language->get('ccp_text_subscribe_placeholder');
+        $data['ccp_text_subscribe_note'] = $this->language->get('ccp_text_subscribe_note');
+        $data['ccp_text_loading'] = $this->language->get('ccp_text_loading');
+        $data['ccp_text_quick_order_help'] = $this->language->get('ccp_text_quick_order_help');
+        $data['ccp_text_home'] = $this->language->get('ccp_text_home');
+        $data['ccp_text_search'] = $this->language->get('ccp_text_search');
+        $data['ccp_text_catalog_short'] = $this->language->get('ccp_text_catalog_short');
+        $data['ccp_text_wishlist'] = $this->language->get('ccp_text_wishlist');
+        $data['ccp_text_cart_short'] = $this->language->get('ccp_text_cart_short');
+        $data['ccp_text_account_short'] = $this->language->get('ccp_text_account_short');
+        $data['ccp_button_quick_view'] = $this->language->get('ccp_button_quick_view');
+        $data['ccp_button_quick_order'] = $this->language->get('ccp_button_quick_order');
+        $data['ccp_text_name'] = $this->language->get('ccp_text_name');
+        $data['ccp_text_phone'] = $this->language->get('ccp_text_phone');
+        $data['ccp_text_email'] = $this->language->get('ccp_text_email');
+        $data['ccp_text_comment'] = $this->language->get('ccp_text_comment');
+        $data['ccp_button_send'] = $this->language->get('ccp_button_send');
+        $data['ccp_button_close'] = $this->language->get('ccp_button_close');
+        $data['ccp_text_floating_contacts'] = $this->language->get('ccp_text_floating_contacts');
+        $data['ccp_text_dark_theme'] = $this->language->get('ccp_text_dark_theme');
+        $data['ccp_text_new'] = $ccp_text('New', 'Новинка', 'Новинка');
+        $data['ccp_text_top'] = $ccp_text('Top', 'Топ', 'Топ');
+        $data['ccp_text_minus'] = $ccp_text('Decrease quantity', 'Уменьшить количество', 'Зменшити кількість');
+        $data['ccp_text_plus'] = $ccp_text('Increase quantity', 'Увеличить количество', 'Збільшити кількість');
+        $data['ccp_text_popup_close'] = $this->language->get('ccp_text_popup_close');
+        $data['ccp_blog_status'] = (int)$this->config->get('theme_codecart_pro_blog_status');
+        $data['ccp_blog_href'] = rtrim((!empty($this->request->server['HTTPS']) ? HTTPS_SERVER : HTTP_SERVER), '/') . '/index.php?route=extension/module/codecart_pro_blog';
+        $ccp_blog_menu_title = $this->config->get('theme_codecart_pro_blog_title');
+        $data['ccp_blog_menu_title'] = is_array($ccp_blog_menu_title) ? $ccp_blog_menu_title : array();
+        $ccp_footer_text = $this->config->get('theme_codecart_pro_footer_text');
+        $data['ccp_footer_text'] = is_array($ccp_footer_text) ? $ccp_footer_text : array();
+        $ccp_footer_signature = $this->config->get('theme_codecart_pro_footer_signature');
+        $data['ccp_footer_signature'] = is_array($ccp_footer_signature) ? $ccp_footer_signature : array();
+        $data['ccp_footer_show_contacts'] = (int)$this->config->get('theme_codecart_pro_footer_show_contacts');
+        $data['ccp_footer_payment_icons'] = (string)$this->config->get('theme_codecart_pro_footer_payment_icons');
+        $data['ccp_floating_contacts'] = (int)$this->config->get('theme_codecart_pro_floating_contacts');
+        $data['ccp_floating_phone'] = (string)$this->config->get('theme_codecart_pro_floating_phone');
+        $ccp_social_url = function($value, $service) {
+            $value = trim((string)$value);
+            if ($value === '') { return ''; }
+            if (preg_match('#^https?://#i', $value)) {
+                return filter_var($value, FILTER_VALIDATE_URL) ? $value : '';
+            }
+            if ($service === 'telegram') {
+                if (stripos($value, 'tg://') === 0) { return $value; }
+                if (preg_match('#^(?:t\\.me|telegram\\.me)/([A-Za-z][A-Za-z0-9_]{4,31})/?$#i', $value, $m)) { return 'https://t.me/' . $m[1]; }
+                $username = ltrim($value, '@');
+                return preg_match('/^[A-Za-z][A-Za-z0-9_]{4,31}$/', $username) ? 'https://t.me/' . $username : '';
+            }
+            if ($service === 'viber') {
+                if (stripos($value, 'viber://') === 0) { return $value; }
+                $digits = preg_replace('/\\D+/', '', $value);
+                return strlen($digits) >= 7 ? 'viber://chat?number=%2B' . $digits : '';
+            }
+            if ($service === 'whatsapp') {
+                if (stripos($value, 'whatsapp://') === 0) { return $value; }
+                $digits = preg_replace('/\\D+/', '', $value);
+                return strlen($digits) >= 7 ? 'https://wa.me/' . $digits : '';
+            }
+            return '';
+        };
+        $data['ccp_floating_telegram'] = $ccp_social_url($this->config->get('theme_codecart_pro_floating_telegram'), 'telegram');
+        $data['ccp_floating_viber'] = $ccp_social_url($this->config->get('theme_codecart_pro_floating_viber'), 'viber');
+        $data['ccp_floating_whatsapp'] = $ccp_social_url($this->config->get('theme_codecart_pro_floating_whatsapp'), 'whatsapp');
+        $data['ccp_floating_position'] = (string)$this->config->get('theme_codecart_pro_floating_position');
+
+        $data['ccp_floating_cart_status'] = (int)$this->config->get('theme_codecart_pro_floating_cart_status');
+        $data['ccp_floating_wishlist_status'] = (int)$this->config->get('theme_codecart_pro_floating_wishlist_status');
+        $data['ccp_floating_compare_status'] = (int)$this->config->get('theme_codecart_pro_floating_compare_status');
+        $data['ccp_compare'] = $this->url->link('product/compare');
+        $data['ccp_cart_drawer_status'] = (int)$this->config->get('theme_codecart_pro_cart_drawer_status');
+        $data['ccp_cart_toast_status'] = (int)$this->config->get('theme_codecart_pro_cart_toast_status');
+        $data['ccp_direct_checkout_after_add_status'] = $this->config->has('theme_codecart_pro_direct_checkout_after_add_status') ? (int)$this->config->get('theme_codecart_pro_direct_checkout_after_add_status') : 0;
+        $data['ccp_checkout_url'] = $this->url->link('checkout/checkout', '', true);
+        $data['ccp_cart_drawer_position'] = (string)$this->config->get('theme_codecart_pro_cart_drawer_position') ?: 'right';
+        $data['ccp_notification_position'] = (string)$this->config->get('theme_codecart_pro_notification_position') ?: 'top-right';
+        $data['ccp_text_cart'] = $this->language->get('ccp_text_cart');
+        $data['ccp_text_continue_shopping'] = $this->language->get('ccp_text_continue_shopping');
+        $data['ccp_text_go_to_cart'] = $this->language->get('ccp_text_go_to_cart');
+        $data['ccp_text_checkout'] = $this->language->get('ccp_text_checkout');
+        $data['ccp_checkout_style_status'] = (int)$this->config->get('theme_codecart_pro_checkout_style_status');
+        $ccp_checkout_trust_text = $this->config->get('theme_codecart_pro_checkout_trust_text');
+        $data['ccp_checkout_trust_text'] = is_array($ccp_checkout_trust_text) ? $ccp_checkout_trust_text : array();
+        $ccp_color_safe = function($key, $fallback) {
+            $value = (string)$this->config->get($key);
+            return preg_match('/^#[0-9a-fA-F]{6}$/', $value) ? $value : $fallback;
+        };
+        $data['ccp_dark_theme_status'] = (int)$this->config->get('theme_codecart_pro_dark_theme_status');
+        $data['ccp_dark_theme_default'] = (int)$this->config->get('theme_codecart_pro_dark_theme_default');
+        $data['ccp_dark_theme_show_toggle'] = $this->config->has('theme_codecart_pro_dark_theme_show_toggle') ? (int)$this->config->get('theme_codecart_pro_dark_theme_show_toggle') : 1;
+        $data['ccp_dark_theme_background'] = $ccp_color_safe('theme_codecart_pro_dark_theme_background', '#0f172a');
+        $data['ccp_dark_theme_surface'] = $ccp_color_safe('theme_codecart_pro_dark_theme_surface', '#111827');
+        $data['ccp_dark_theme_card'] = $ccp_color_safe('theme_codecart_pro_dark_theme_card', '#1e293b');
+        $data['ccp_dark_theme_text'] = $ccp_color_safe('theme_codecart_pro_dark_theme_text', '#f8fafc');
+        $data['ccp_dark_theme_muted'] = $ccp_color_safe('theme_codecart_pro_dark_theme_muted', '#cbd5e1');
+        $data['ccp_dark_theme_border'] = $ccp_color_safe('theme_codecart_pro_dark_theme_border', '#334155');
+        }
+      ]]></add>
+    </operation>
+  </file>
+
+  <file path="catalog/controller/common/home.php">
+    <operation error="skip">
+      <search><![CDATA[$data['content_top'] = $this->load->controller('common/content_top');]]></search>
+      <add position="after"><![CDATA[
+        // CodeCart PRO v8.7.7: prepare home builder once only, only when CodeCart PRO theme is active.
+        $ccp_home_config_theme = (string)$this->config->get('config_theme');
+        $ccp_home_directory_key = $ccp_home_config_theme ? 'theme_' . $ccp_home_config_theme . '_directory' : '';
+        $ccp_home_directory = $ccp_home_directory_key ? (string)$this->config->get($ccp_home_directory_key) : '';
+        $ccp_home_is_codecart_theme = ($ccp_home_config_theme === 'codecart_pro' || $ccp_home_directory === 'codecart_pro' || (string)$this->config->get('config_template') === 'codecart_pro');
+        $data['ccp_home_slideshow'] = '';
+        $data['ccp_home_blocks'] = '';
+        if ($ccp_home_is_codecart_theme && (int)$this->config->get('theme_codecart_pro_status')) {
+            try {
+                $data['ccp_home_slideshow'] = $this->load->controller('extension/module/codecart_pro_home/slideshow');
+            } catch (Exception $ccp_home_exception) {
+                $data['ccp_home_slideshow'] = '';
+                $this->log->write('CodeCart PRO Theme optional home slideshow disabled: ' . $ccp_home_exception->getMessage());
+            } catch (Throwable $ccp_home_throwable) {
+                $data['ccp_home_slideshow'] = '';
+                $this->log->write('CodeCart PRO Theme optional home slideshow disabled: ' . $ccp_home_throwable->getMessage());
+            }
+            try {
+                $data['ccp_home_blocks'] = $this->load->controller('extension/module/codecart_pro_home');
+            } catch (Exception $ccp_home_exception) {
+                $data['ccp_home_blocks'] = '';
+                $this->log->write('CodeCart PRO Theme optional home builder disabled: ' . $ccp_home_exception->getMessage());
+            } catch (Throwable $ccp_home_throwable) {
+                $data['ccp_home_blocks'] = '';
+                $this->log->write('CodeCart PRO Theme optional home builder disabled: ' . $ccp_home_throwable->getMessage());
+            }
+        }
+      ]]></add>
+    </operation>
+  </file>
+
+    <!-- CodeCart PRO Theme v8.7.7: blog uses direct route URLs; no global SEO router modification. -->
+
+
+  <file path="catalog/controller/product/category.php">
+    <operation error="skip">
+      <search><![CDATA[$this->load->language('product/category');]]></search>
+      <add position="after"><![CDATA[
+        $ccp_language_code = (string)$this->config->get('config_language');
+        $ccp_is_ru = (strpos($ccp_language_code, 'ru') === 0);
+        $ccp_is_uk = (strpos($ccp_language_code, 'uk') === 0 || strpos($ccp_language_code, 'ua') === 0);
+        $ccp_text = function($en, $ru, $uk) use ($ccp_is_ru, $ccp_is_uk) { return $ccp_is_ru ? $ru : ($ccp_is_uk ? $uk : $en); };
+        $ccp_category_config_theme = (string)$this->config->get('config_theme');
+        $ccp_category_directory_key = $ccp_category_config_theme ? 'theme_' . $ccp_category_config_theme . '_directory' : '';
+        $ccp_category_directory = $ccp_category_directory_key ? (string)$this->config->get($ccp_category_directory_key) : '';
+        $ccp_category_template_directory = (string)$this->config->get('template_directory');
+        $ccp_category_active = ((int)$this->config->get('theme_codecart_pro_status') === 1 && ($ccp_category_config_theme === 'codecart_pro' || $ccp_category_config_theme === 'theme_codecart_pro' || $ccp_category_directory === 'codecart_pro' || (string)$this->config->get('config_template') === 'codecart_pro' || strpos($ccp_category_template_directory, 'codecart_pro/') === 0));
+        $ccp_category_second_images = array();
+      ]]></add>
+    </operation>
+    <operation error="skip">
+      <search><![CDATA['rating'      => $result['rating'],]]></search>
+      <add position="after"><![CDATA[
+                    'ccp_model'        => isset($result['model']) ? $result['model'] : '',
+                    'ccp_manufacturer' => isset($result['manufacturer']) ? $result['manufacturer'] : '',
+                    'ccp_stock_status' => (isset($result['quantity']) && (int)$result['quantity'] > 0 ? (isset($ccp_text) ? $ccp_text('In stock', 'В наличии', 'В наявності') : 'In stock') : (isset($result['stock_status']) && $result['stock_status'] ? $result['stock_status'] : (isset($ccp_text) ? $ccp_text('Out of stock', 'Нет в наличии', 'Немає в наявності') : 'Out of stock'))),
+                    'ccp_stock_class'  => (isset($result['quantity']) && (int)$result['quantity'] > 0 ? 'in' : 'out'),
+                    'ccp_quantity'     => isset($result['quantity']) ? (int)$result['quantity'] : 0,
+                    'ccp_is_new'       => (!empty($result['date_added']) && strtotime($result['date_added']) >= strtotime('-30 days')),
+      ]]></add>
+    </operation>
+    <operation error="skip"><search><![CDATA[$results = $this->model_catalog_product->getProducts($filter_data);]]></search><add position="after"><![CDATA[
+                if (!isset($ccp_category_second_images) || !is_array($ccp_category_second_images)) { $ccp_category_second_images = array(); }
+                if (!empty($ccp_category_active) && (int)$this->config->get('theme_codecart_pro_card_second_image_status') === 1 && !empty($results)) {
+                    $ccp_category_product_ids = array();
+                    foreach ($results as $ccp_category_result) {
+                        if (!empty($ccp_category_result['product_id'])) {
+                            $ccp_category_product_ids[] = (int)$ccp_category_result['product_id'];
+                        }
+                    }
+                    $ccp_category_product_ids = array_values(array_unique(array_filter($ccp_category_product_ids)));
+                    if ($ccp_category_product_ids) {
+                        $ccp_category_image_query = $this->db->query("SELECT product_id, image FROM `" . DB_PREFIX . "product_image` WHERE product_id IN (" . implode(',', array_map('intval', $ccp_category_product_ids)) . ") AND image <> '' ORDER BY product_id ASC, sort_order ASC, product_image_id ASC");
+                        foreach ($ccp_category_image_query->rows as $ccp_category_image_row) {
+                            $ccp_category_image_product_id = (int)$ccp_category_image_row['product_id'];
+                            if ($ccp_category_image_product_id > 0 && !isset($ccp_category_second_images[$ccp_category_image_product_id])) {
+                                $ccp_category_second_images[$ccp_category_image_product_id] = (string)$ccp_category_image_row['image'];
+                            }
+                        }
+                    }
+                }
+      ]]></add></operation><operation error="skip">
+      <search><![CDATA[$data['products'][] = array(]]></search>
+      <add position="before"><![CDATA[
+                    $ccp_second_thumb = '';
+                    $ccp_sale_percent = 0;
+                    if (!empty($ccp_category_active)) {
+                        $ccp_image_width = max(1, (int)$this->config->get('theme_codecart_pro_image_product_width'));
+                        $ccp_image_height = max(1, (int)$this->config->get('theme_codecart_pro_image_product_height'));
+                        if ($ccp_image_width < 2) { $ccp_image_width = 640; }
+                        if ($ccp_image_height < 2) { $ccp_image_height = 407; }
+                        $ccp_primary_filename = !empty($result['image']) && is_file(DIR_IMAGE . $result['image']) ? $result['image'] : 'placeholder.png';
+                        $image = $this->model_tool_image->resize($ccp_primary_filename, $ccp_image_width, $ccp_image_height);
+                        $ccp_category_product_id = isset($result['product_id']) ? (int)$result['product_id'] : 0;
+                        if ((int)$this->config->get('theme_codecart_pro_card_second_image_status') === 1 && $ccp_category_product_id > 0 && !empty($ccp_category_second_images[$ccp_category_product_id]) && is_file(DIR_IMAGE . $ccp_category_second_images[$ccp_category_product_id])) {
+                            $ccp_second_thumb = $this->model_tool_image->resize($ccp_category_second_images[$ccp_category_product_id], $ccp_image_width, $ccp_image_height);
+                        }
+                        if (isset($result['special'], $result['price']) && (float)$result['special'] > 0 && (float)$result['price'] > 0) {
+                            $ccp_sale_percent = max(1, min(99, (int)round((1 - ((float)$result['special'] / (float)$result['price'])) * 100)));
+                        }
+                    }
+      ]]></add>
+    </operation>
+    <operation error="skip">
+      <search><![CDATA['thumb'       => $image,]]></search>
+      <add position="after"><![CDATA[
+                    'ccp_second_thumb' => isset($ccp_second_thumb) ? $ccp_second_thumb : '',
+      ]]></add>
+    </operation>
+    <operation error="skip">
+      <search><![CDATA['ccp_is_new'       => (!empty($result['date_added']) && strtotime($result['date_added']) >= strtotime('-30 days')),]]></search>
+      <add position="after"><![CDATA[
+                    'ccp_sale_percent' => isset($ccp_sale_percent) ? (int)$ccp_sale_percent : 0,
+      ]]></add>
+    </operation>
+    <operation error="skip">
+      <search><![CDATA[return $this->load->view('product/category', $data);]]></search>
+      <add position="before"><![CDATA[
+        $ccp_config_theme = (string)$this->config->get('config_theme');
+        $ccp_theme_directory_key = $ccp_config_theme ? 'theme_' . $ccp_config_theme . '_directory' : '';
+        $ccp_theme_directory = $ccp_theme_directory_key ? (string)$this->config->get($ccp_theme_directory_key) : '';
+        $ccp_is_codecart_theme = ($ccp_config_theme === 'codecart_pro' || $ccp_theme_directory === 'codecart_pro' || (string)$this->config->get('config_template') === 'codecart_pro');
+        $data['ccp_language_id'] = (int)$this->config->get('config_language_id');
+        $data['ccp_card_style'] = (string)$this->config->get('theme_codecart_pro_card_style') ?: 'commerce';
+        $data['ccp_card_title_lines'] = (int)$this->config->get('theme_codecart_pro_card_title_lines') ?: 2;
+        $data['ccp_card_full_click'] = (int)$this->config->get('theme_codecart_pro_card_full_click');
+        $data['ccp_card_show_description'] = (int)$this->config->get('theme_codecart_pro_card_show_description');
+        $data['ccp_card_show_rating'] = (int)$this->config->get('theme_codecart_pro_card_show_rating');
+        $data['ccp_card_show_stock'] = (int)$this->config->get('theme_codecart_pro_card_show_stock');
+        $data['ccp_card_show_quick_actions'] = (int)$this->config->get('theme_codecart_pro_card_show_quick_actions');
+        $data['ccp_card_show_wishlist'] = (int)$this->config->get('theme_codecart_pro_card_show_wishlist');
+        $data['ccp_card_show_compare'] = (int)$this->config->get('theme_codecart_pro_card_show_compare');
+        $data['ccp_card_show_quantity'] = (int)$this->config->get('theme_codecart_pro_card_show_quantity');
+        $data['ccp_card_show_buy_button'] = (int)$this->config->get('theme_codecart_pro_card_show_buy_button');
+        $data['ccp_card_stock_mode'] = (string)$this->config->get('theme_codecart_pro_card_stock_mode') ?: 'smart';
+        $data['ccp_card_second_image_status'] = (int)$this->config->get('theme_codecart_pro_card_second_image_status');
+        $data['ccp_card_sale_percent_status'] = (int)$this->config->get('theme_codecart_pro_card_sale_percent_status');
+        $data['ccp_card_hover_actions_mode'] = (string)$this->config->get('theme_codecart_pro_card_hover_actions_mode') ?: 'smart';
+        $data['ccp_card_show_model'] = (int)$this->config->get('theme_codecart_pro_card_show_model');
+        $data['ccp_card_show_manufacturer'] = (int)$this->config->get('theme_codecart_pro_card_show_manufacturer');
+        $data['ccp_card_meta_position'] = (string)$this->config->get('theme_codecart_pro_card_meta_position') ?: 'under_title';
+        $data['ccp_category_itemlist_schema_status'] = (int)$this->config->get('theme_codecart_pro_category_itemlist_schema_status');
+        $data['ccp_ajax_catalog_status'] = (int)$this->config->get('theme_codecart_pro_ajax_catalog_status');
+        $data['ccp_checkout_style_status'] = (int)$this->config->get('theme_codecart_pro_checkout_style_status');
+        $data['ccp_checkout_compact_status'] = (int)$this->config->get('theme_codecart_pro_checkout_compact_status');
+        $data['ccp_category_columns_desktop'] = (int)$this->config->get('theme_codecart_pro_category_columns_desktop') ?: 5;
+        $data['ccp_category_columns_tablet'] = (int)$this->config->get('theme_codecart_pro_category_columns_tablet') ?: 3;
+        $data['ccp_category_columns_mobile'] = (int)$this->config->get('theme_codecart_pro_category_columns_mobile') ?: 2;
+        $data['ccp_category_description_position'] = (string)$this->config->get('theme_codecart_pro_category_description_position') ?: 'top';
+        $data['ccp_category_sticky_toolbar'] = (int)$this->config->get('theme_codecart_pro_category_sticky_toolbar');
+        $data['ccp_category_description_collapse'] = (int)$this->config->get('theme_codecart_pro_category_description_collapse');
+        $data['ccp_category_description_height'] = (int)$this->config->get('theme_codecart_pro_category_description_height') ?: 180;
+        $data['ccp_category_thumb_large'] = isset($data['thumb']) ? $data['thumb'] : '';
+        $data['ccp_schema_breadcrumbs_status'] = (int)$this->config->get('theme_codecart_pro_schema_breadcrumbs_status');
+        $data['ccp_performance_lazy_images'] = (int)$this->config->get('theme_codecart_pro_performance_lazy_images');
+        $data['ccp_performance_eager_first_images'] = (int)$this->config->get('theme_codecart_pro_performance_eager_first_images');
+        $data['ccp_performance_fetchpriority_status'] = (int)$this->config->get('theme_codecart_pro_performance_fetchpriority_status');
+        $data['ccp_performance_image_decoding_status'] = (int)$this->config->get('theme_codecart_pro_performance_image_decoding_status');
+
+        $data['ccp_mega_menu_status'] = (int)$this->config->get('theme_codecart_pro_mega_menu_status');
+        $data['ccp_mega_menu_source'] = (string)$this->config->get('theme_codecart_pro_mega_menu_source');
+        $data['ccp_mega_menu_only_top'] = (int)$this->config->get('theme_codecart_pro_mega_menu_only_top');
+        $data['ccp_mega_menu_depth'] = (int)$this->config->get('theme_codecart_pro_mega_menu_depth');
+        $data['ccp_mega_menu_columns'] = (int)$this->config->get('theme_codecart_pro_mega_menu_columns');
+        $data['ccp_mega_menu_show_images'] = (int)$this->config->get('theme_codecart_pro_mega_menu_show_images');
+        $data['ccp_mega_menu_show_counts'] = (int)$this->config->get('theme_codecart_pro_mega_menu_show_counts');
+        $data['ccp_mega_menu'] = '';
+        if (isset($ccp_is_codecart_theme) && $ccp_is_codecart_theme && (int)$this->config->get('theme_codecart_pro_status') && (int)$this->config->get('theme_codecart_pro_mega_menu_status')) {
+            try {
+                $data['ccp_mega_menu'] = $this->load->controller('extension/module/codecart_pro_menu');
+            } catch (Exception $ccp_optional_exception) {
+                $data['ccp_mega_menu'] = '';
+                $this->log->write('CodeCart PRO Theme optional menu disabled: ' . $ccp_optional_exception->getMessage());
+            } catch (Throwable $ccp_optional_throwable) {
+                $data['ccp_mega_menu'] = '';
+                $this->log->write('CodeCart PRO Theme optional menu disabled: ' . $ccp_optional_throwable->getMessage());
+            }
+        }
+        $data['ccp_mobile_menu_show_search'] = (int)$this->config->get('theme_codecart_pro_mobile_menu_show_search');
+        $data['ccp_mobile_menu_show_categories'] = (int)$this->config->get('theme_codecart_pro_mobile_menu_show_categories');
+        $data['ccp_mobile_menu_show_blog'] = (int)$this->config->get('theme_codecart_pro_mobile_menu_show_blog');
+        $data['ccp_mobile_menu_show_contacts'] = (int)$this->config->get('theme_codecart_pro_mobile_menu_show_contacts');
+        $data['ccp_mobile_menu_show_account'] = (int)$this->config->get('theme_codecart_pro_mobile_menu_show_account');
+        $data['ccp_header_search_mode'] = (string)$this->config->get('theme_codecart_pro_header_search_mode');
+        $data['ccp_text_in_stock'] = $ccp_text('In stock', 'В наличии', 'В наявності');
+        $data['ccp_sticky_home'] = $this->url->link('common/home');
+        $data['ccp_sticky_cart'] = ($this->config->has('theme_codecart_pro_direct_checkout_after_add_status') ? (int)$this->config->get('theme_codecart_pro_direct_checkout_after_add_status') : 0) ? $this->url->link('checkout/checkout', '', true) : $this->url->link('checkout/cart');
+        $data['ccp_text_home'] = $ccp_text('Home', 'Главная', 'Головна');
+        $data['ccp_text_catalog_short'] = $ccp_text('Catalog', 'Каталог', 'Каталог');
+        $data['ccp_text_cart_short'] = $ccp_text('Cart', 'Корзина', 'Кошик');
+        $data['ccp_text_quantity'] = $ccp_text('Quantity', 'Количество', 'Кількість');
+        $data['ccp_text_new'] = $ccp_text('New', 'Новинка', 'Новинка');
+        $data['ccp_text_top'] = $ccp_text('Top', 'Топ', 'Топ');
+        $data['ccp_text_minus'] = $ccp_text('Decrease quantity', 'Уменьшить количество', 'Зменшити кількість');
+        $data['ccp_text_plus'] = $ccp_text('Increase quantity', 'Увеличить количество', 'Збільшити кількість');
+        $data['ccp_text_grid'] = $ccp_text('Grid', 'Сетка', 'Сітка');
+        $data['ccp_text_list'] = $ccp_text('List', 'Список', 'Список');
+        $data['ccp_text_read_more'] = $ccp_text('Read more', 'Читать дальше', 'Читати далі');
+        $data['ccp_text_hide'] = $ccp_text('Hide', 'Скрыть', 'Сховати');
+        $data['ccp_button_quick_order'] = $ccp_text('Buy in 1 click', 'Купить в 1 клик', 'Купити в 1 клік');
+        $data['ccp_button_quick_view'] = $ccp_text('Quick view', 'Быстрый просмотр', 'Швидкий перегляд');
+        $data['ccp_enable_quick_view'] = (int)$this->config->get('theme_codecart_pro_enable_quick_view');
+        $data['ccp_enable_quick_order'] = (int)$this->config->get('theme_codecart_pro_enable_quick_order');
+        $data['ccp_enable_stickers'] = (int)$this->config->get('theme_codecart_pro_enable_stickers');
+
+        $ccp_config_theme = (string)$this->config->get('config_theme');
+        $ccp_theme_directory_key = $ccp_config_theme ? 'theme_' . $ccp_config_theme . '_directory' : '';
+        $ccp_theme_directory = $ccp_theme_directory_key ? (string)$this->config->get($ccp_theme_directory_key) : '';
+        $ccp_template_directory = (string)$this->config->get('template_directory');
+        $ccp_is_codecart_theme = ($ccp_config_theme === 'codecart_pro' || $ccp_config_theme === 'theme_codecart_pro' || $ccp_theme_directory === 'codecart_pro' || (string)$this->config->get('config_template') === 'codecart_pro' || strpos($ccp_template_directory, 'codecart_pro/') === 0);
+        $data['ccp_category_commercial_blocks'] = '';
+        $ccp_category_id = isset($category_id) ? (int)$category_id : 0;
+        if ($ccp_is_codecart_theme && (int)$this->config->get('theme_codecart_pro_status') && (int)$this->config->get('theme_codecart_pro_product_modules_status') && (int)$this->config->get('theme_codecart_pro_product_module_category_status') && $ccp_category_id) {
+            $ccp_lazy_category_url = str_replace('&amp;', '&', $this->url->link('extension/module/codecart_pro_lazy/categoryBlocks', 'category_id=' . (int)$ccp_category_id, true));
+            $ccp_lazy_category_id = 'ccp-lazy-category-blocks-' . (int)$ccp_category_id;
+            $data['ccp_category_commercial_blocks'] = '<div id="' . $ccp_lazy_category_id . '" class="ccp-lazy-blocks ccp-lazy-category-blocks" data-ccp-lazy-url="' . htmlspecialchars($ccp_lazy_category_url, ENT_QUOTES, 'UTF-8') . '"></div>' . "
+" . '<script>(function(){var r=document.getElementById("' . $ccp_lazy_category_id . '");if(!r||r.getAttribute("data-ccp-loaded")){return;}function l(){if(r.getAttribute("data-ccp-loaded")){return;}r.setAttribute("data-ccp-loaded","1");var u=r.getAttribute("data-ccp-lazy-url");if(!u){return;}var x=new XMLHttpRequest();x.open("GET",u,true);x.setRequestHeader("X-Requested-With","XMLHttpRequest");x.onreadystatechange=function(){if(x.readyState===4){if(x.status>=200&&x.status<300&&x.responseText){r.innerHTML=x.responseText;}else{r.parentNode&&r.parentNode.removeChild(r);}}};x.send(null);}if("requestIdleCallback" in window){requestIdleCallback(l,{timeout:1800});}else{setTimeout(l,700);}})();</script>';
+        }
+
+        // CodeCart PRO v8.7.7: main category image uses a generic cache source; AVIF/WebP/JXL delivery is selected by the image optimizer.
+        if ($ccp_is_codecart_theme && (int)$this->config->get('theme_codecart_pro_status') && isset($category_info['image']) && $category_info['image']) {
+            $this->load->model('tool/image');
+            $ccp_cat_w_v840 = min(2400, max(480, (int)$this->config->get('theme_codecart_pro_category_hero_width') ?: 1200));
+            $ccp_cat_h_v840 = min(1600, max(300, (int)$this->config->get('theme_codecart_pro_category_hero_height') ?: 750));
+            $data['ccp_category_thumb_large'] = $this->model_tool_image->resize($category_info['image'], $ccp_cat_w_v840, $ccp_cat_h_v840);
+            $data['thumb'] = $data['ccp_category_thumb_large'];
+        }
+
+        $ccp_category_template = DIR_TEMPLATE . (string)$this->config->get('template_directory') . 'product/category.twig';
+        if (!is_file($ccp_category_template) && is_file(DIR_TEMPLATE . 'default/template/product/category.twig')) {
+            $ccp_template_directory_backup = (string)$this->config->get('template_directory');
+            $this->config->set('template_directory', 'default/template/');
+            $ccp_category_output = $this->load->view('product/category', $data);
+            $this->config->set('template_directory', $ccp_template_directory_backup);
+            return $ccp_category_output;
+        }
+      ]]></add>
+    </operation>
+    <operation error="skip">
+      <search><![CDATA[$this->response->setOutput($this->load->view('product/category', $data));]]></search>
+      <add position="before"><![CDATA[
+        $ccp_config_theme = (string)$this->config->get('config_theme');
+        $ccp_theme_directory_key = $ccp_config_theme ? 'theme_' . $ccp_config_theme . '_directory' : '';
+        $ccp_theme_directory = $ccp_theme_directory_key ? (string)$this->config->get($ccp_theme_directory_key) : '';
+        $ccp_is_codecart_theme = ($ccp_config_theme === 'codecart_pro' || $ccp_theme_directory === 'codecart_pro' || (string)$this->config->get('config_template') === 'codecart_pro');
+        $data['ccp_language_id'] = (int)$this->config->get('config_language_id');
+        $data['ccp_card_style'] = (string)$this->config->get('theme_codecart_pro_card_style') ?: 'commerce';
+        $data['ccp_card_title_lines'] = (int)$this->config->get('theme_codecart_pro_card_title_lines') ?: 2;
+        $data['ccp_card_full_click'] = (int)$this->config->get('theme_codecart_pro_card_full_click');
+        $data['ccp_card_show_description'] = (int)$this->config->get('theme_codecart_pro_card_show_description');
+        $data['ccp_card_show_rating'] = (int)$this->config->get('theme_codecart_pro_card_show_rating');
+        $data['ccp_card_show_stock'] = (int)$this->config->get('theme_codecart_pro_card_show_stock');
+        $data['ccp_card_show_quick_actions'] = (int)$this->config->get('theme_codecart_pro_card_show_quick_actions');
+        $data['ccp_card_show_wishlist'] = (int)$this->config->get('theme_codecart_pro_card_show_wishlist');
+        $data['ccp_card_show_compare'] = (int)$this->config->get('theme_codecart_pro_card_show_compare');
+        $data['ccp_card_show_quantity'] = (int)$this->config->get('theme_codecart_pro_card_show_quantity');
+        $data['ccp_card_show_buy_button'] = (int)$this->config->get('theme_codecart_pro_card_show_buy_button');
+        $data['ccp_card_stock_mode'] = (string)$this->config->get('theme_codecart_pro_card_stock_mode') ?: 'smart';
+        $data['ccp_card_second_image_status'] = (int)$this->config->get('theme_codecart_pro_card_second_image_status');
+        $data['ccp_card_sale_percent_status'] = (int)$this->config->get('theme_codecart_pro_card_sale_percent_status');
+        $data['ccp_card_hover_actions_mode'] = (string)$this->config->get('theme_codecart_pro_card_hover_actions_mode') ?: 'smart';
+        $data['ccp_card_show_model'] = (int)$this->config->get('theme_codecart_pro_card_show_model');
+        $data['ccp_card_show_manufacturer'] = (int)$this->config->get('theme_codecart_pro_card_show_manufacturer');
+        $data['ccp_card_meta_position'] = (string)$this->config->get('theme_codecart_pro_card_meta_position') ?: 'under_title';
+        $data['ccp_category_itemlist_schema_status'] = (int)$this->config->get('theme_codecart_pro_category_itemlist_schema_status');
+        $data['ccp_ajax_catalog_status'] = (int)$this->config->get('theme_codecart_pro_ajax_catalog_status');
+        $data['ccp_checkout_style_status'] = (int)$this->config->get('theme_codecart_pro_checkout_style_status');
+        $data['ccp_checkout_compact_status'] = (int)$this->config->get('theme_codecart_pro_checkout_compact_status');
+        $data['ccp_category_columns_desktop'] = (int)$this->config->get('theme_codecart_pro_category_columns_desktop') ?: 5;
+        $data['ccp_category_columns_tablet'] = (int)$this->config->get('theme_codecart_pro_category_columns_tablet') ?: 3;
+        $data['ccp_category_columns_mobile'] = (int)$this->config->get('theme_codecart_pro_category_columns_mobile') ?: 2;
+        $data['ccp_category_description_position'] = (string)$this->config->get('theme_codecart_pro_category_description_position') ?: 'top';
+        $data['ccp_category_sticky_toolbar'] = (int)$this->config->get('theme_codecart_pro_category_sticky_toolbar');
+        $data['ccp_category_description_collapse'] = (int)$this->config->get('theme_codecart_pro_category_description_collapse');
+        $data['ccp_category_description_height'] = (int)$this->config->get('theme_codecart_pro_category_description_height') ?: 180;
+        $data['ccp_schema_breadcrumbs_status'] = (int)$this->config->get('theme_codecart_pro_schema_breadcrumbs_status');
+        $data['ccp_performance_lazy_images'] = (int)$this->config->get('theme_codecart_pro_performance_lazy_images');
+        $data['ccp_performance_eager_first_images'] = (int)$this->config->get('theme_codecart_pro_performance_eager_first_images');
+        $data['ccp_performance_fetchpriority_status'] = (int)$this->config->get('theme_codecart_pro_performance_fetchpriority_status');
+        $data['ccp_performance_image_decoding_status'] = (int)$this->config->get('theme_codecart_pro_performance_image_decoding_status');
+
+        $data['ccp_mega_menu_status'] = (int)$this->config->get('theme_codecart_pro_mega_menu_status');
+        $data['ccp_mega_menu_source'] = (string)$this->config->get('theme_codecart_pro_mega_menu_source');
+        $data['ccp_mega_menu_only_top'] = (int)$this->config->get('theme_codecart_pro_mega_menu_only_top');
+        $data['ccp_mega_menu_depth'] = (int)$this->config->get('theme_codecart_pro_mega_menu_depth');
+        $data['ccp_mega_menu_columns'] = (int)$this->config->get('theme_codecart_pro_mega_menu_columns');
+        $data['ccp_mega_menu_show_images'] = (int)$this->config->get('theme_codecart_pro_mega_menu_show_images');
+        $data['ccp_mega_menu_show_counts'] = (int)$this->config->get('theme_codecart_pro_mega_menu_show_counts');
+        $data['ccp_mega_menu'] = '';
+        if (isset($ccp_is_codecart_theme) && $ccp_is_codecart_theme && (int)$this->config->get('theme_codecart_pro_status') && (int)$this->config->get('theme_codecart_pro_mega_menu_status')) {
+            try {
+                $data['ccp_mega_menu'] = $this->load->controller('extension/module/codecart_pro_menu');
+            } catch (Exception $ccp_optional_exception) {
+                $data['ccp_mega_menu'] = '';
+                $this->log->write('CodeCart PRO Theme optional menu disabled: ' . $ccp_optional_exception->getMessage());
+            } catch (Throwable $ccp_optional_throwable) {
+                $data['ccp_mega_menu'] = '';
+                $this->log->write('CodeCart PRO Theme optional menu disabled: ' . $ccp_optional_throwable->getMessage());
+            }
+        }
+        $data['ccp_mobile_menu_show_search'] = (int)$this->config->get('theme_codecart_pro_mobile_menu_show_search');
+        $data['ccp_mobile_menu_show_categories'] = (int)$this->config->get('theme_codecart_pro_mobile_menu_show_categories');
+        $data['ccp_mobile_menu_show_blog'] = (int)$this->config->get('theme_codecart_pro_mobile_menu_show_blog');
+        $data['ccp_mobile_menu_show_contacts'] = (int)$this->config->get('theme_codecart_pro_mobile_menu_show_contacts');
+        $data['ccp_mobile_menu_show_account'] = (int)$this->config->get('theme_codecart_pro_mobile_menu_show_account');
+        $data['ccp_header_search_mode'] = (string)$this->config->get('theme_codecart_pro_header_search_mode');
+        $data['ccp_text_in_stock'] = $ccp_text('In stock', 'В наличии', 'В наявності');
+        $data['ccp_text_quantity'] = $ccp_text('Quantity', 'Количество', 'Кількість');
+        $data['ccp_text_new'] = $ccp_text('New', 'Новинка', 'Новинка');
+        $data['ccp_text_top'] = $ccp_text('Top', 'Топ', 'Топ');
+        $data['ccp_text_minus'] = $ccp_text('Decrease quantity', 'Уменьшить количество', 'Зменшити кількість');
+        $data['ccp_text_plus'] = $ccp_text('Increase quantity', 'Увеличить количество', 'Збільшити кількість');
+        $data['ccp_text_grid'] = $ccp_text('Grid', 'Сетка', 'Сітка');
+        $data['ccp_text_list'] = $ccp_text('List', 'Список', 'Список');
+        $data['ccp_text_read_more'] = $ccp_text('Read more', 'Читать дальше', 'Читати далі');
+        $data['ccp_text_hide'] = $ccp_text('Hide', 'Скрыть', 'Сховати');
+        $data['ccp_button_quick_order'] = $ccp_text('Buy in 1 click', 'Купить в 1 клик', 'Купити в 1 клік');
+        $data['ccp_button_quick_view'] = $ccp_text('Quick view', 'Быстрый просмотр', 'Швидкий перегляд');
+        $data['ccp_enable_quick_view'] = (int)$this->config->get('theme_codecart_pro_enable_quick_view');
+        $data['ccp_enable_quick_order'] = (int)$this->config->get('theme_codecart_pro_enable_quick_order');
+        $data['ccp_enable_stickers'] = (int)$this->config->get('theme_codecart_pro_enable_stickers');
+
+        $ccp_config_theme = (string)$this->config->get('config_theme');
+        $ccp_theme_directory_key = $ccp_config_theme ? 'theme_' . $ccp_config_theme . '_directory' : '';
+        $ccp_theme_directory = $ccp_theme_directory_key ? (string)$this->config->get($ccp_theme_directory_key) : '';
+        $ccp_template_directory = (string)$this->config->get('template_directory');
+        $ccp_is_codecart_theme = ($ccp_config_theme === 'codecart_pro' || $ccp_config_theme === 'theme_codecart_pro' || $ccp_theme_directory === 'codecart_pro' || (string)$this->config->get('config_template') === 'codecart_pro' || strpos($ccp_template_directory, 'codecart_pro/') === 0);
+        $data['ccp_category_commercial_blocks'] = '';
+        $ccp_category_id = isset($category_id) ? (int)$category_id : 0;
+        if ($ccp_is_codecart_theme && (int)$this->config->get('theme_codecart_pro_status') && (int)$this->config->get('theme_codecart_pro_product_modules_status') && (int)$this->config->get('theme_codecart_pro_product_module_category_status') && $ccp_category_id) {
+            $ccp_lazy_category_url = str_replace('&amp;', '&', $this->url->link('extension/module/codecart_pro_lazy/categoryBlocks', 'category_id=' . (int)$ccp_category_id, true));
+            $ccp_lazy_category_id = 'ccp-lazy-category-blocks-' . (int)$ccp_category_id;
+            $data['ccp_category_commercial_blocks'] = '<div id="' . $ccp_lazy_category_id . '" class="ccp-lazy-blocks ccp-lazy-category-blocks" data-ccp-lazy-url="' . htmlspecialchars($ccp_lazy_category_url, ENT_QUOTES, 'UTF-8') . '"></div>' . "
+" . '<script>(function(){var r=document.getElementById("' . $ccp_lazy_category_id . '");if(!r||r.getAttribute("data-ccp-loaded")){return;}function l(){if(r.getAttribute("data-ccp-loaded")){return;}r.setAttribute("data-ccp-loaded","1");var u=r.getAttribute("data-ccp-lazy-url");if(!u){return;}var x=new XMLHttpRequest();x.open("GET",u,true);x.setRequestHeader("X-Requested-With","XMLHttpRequest");x.onreadystatechange=function(){if(x.readyState===4){if(x.status>=200&&x.status<300&&x.responseText){r.innerHTML=x.responseText;}else{r.parentNode&&r.parentNode.removeChild(r);}}};x.send(null);}if("requestIdleCallback" in window){requestIdleCallback(l,{timeout:1800});}else{setTimeout(l,700);}})();</script>';
+        }
+
+        // CodeCart PRO v8.7.7: main category image uses a generic cache source; AVIF/WebP/JXL delivery is selected by the image optimizer.
+        if ($ccp_is_codecart_theme && (int)$this->config->get('theme_codecart_pro_status') && isset($category_info['image']) && $category_info['image']) {
+            $this->load->model('tool/image');
+            $ccp_cat_w_v840 = min(2400, max(480, (int)$this->config->get('theme_codecart_pro_category_hero_width') ?: 1200));
+            $ccp_cat_h_v840 = min(1600, max(300, (int)$this->config->get('theme_codecart_pro_category_hero_height') ?: 750));
+            $data['ccp_category_thumb_large'] = $this->model_tool_image->resize($category_info['image'], $ccp_cat_w_v840, $ccp_cat_h_v840);
+            $data['thumb'] = $data['ccp_category_thumb_large'];
+        }
+
+        $ccp_category_template = DIR_TEMPLATE . (string)$this->config->get('template_directory') . 'product/category.twig';
+        if (!is_file($ccp_category_template) && is_file(DIR_TEMPLATE . 'default/template/product/category.twig')) {
+            $ccp_template_directory_backup = (string)$this->config->get('template_directory');
+            $this->config->set('template_directory', 'default/template/');
+            $ccp_category_view_route = 'product/category';
+            $this->response->setOutput($this->load->view($ccp_category_view_route, $data));
+            $this->config->set('template_directory', $ccp_template_directory_backup);
+            return;
+        }
+      ]]></add>
+    </operation>
+  </file>
+
+  <file path="admin/controller/common/column_left.php">
+    <operation error="skip">
+      <search><![CDATA[return $this->load->view('common/column_left', $data);]]></search>
+      <add position="before"><![CDATA[
+        $ccp_admin_language = (string)$this->config->get('config_admin_language');
+        $ccp_is_ru = (strpos($ccp_admin_language, 'ru') === 0);
+        $ccp_is_uk = (strpos($ccp_admin_language, 'uk') === 0 || strpos($ccp_admin_language, 'ua') === 0);
+        $ccp_text_theme = $ccp_is_ru ? 'Настройки темы' : ($ccp_is_uk ? 'Налаштування теми' : 'Theme settings');
+        $ccp_text_blog = $ccp_is_ru ? 'Блог' : ($ccp_is_uk ? 'Блог' : 'Blog');
+        $ccp_text_reviews = $ccp_is_ru ? 'Отзывы' : ($ccp_is_uk ? 'Відгуки' : 'Reviews');
+        $ccp_children = array();
+        if ($this->user->hasPermission('access', 'extension/theme/codecart_pro')) {
+            $ccp_children[] = array('name' => $ccp_text_theme, 'href' => $this->url->link('extension/theme/codecart_pro', 'user_token=' . $this->session->data['user_token'], true), 'children' => array());
+        }
+        if ($this->user->hasPermission('access', 'extension/module/codecart_pro_blog')) {
+            $ccp_children[] = array('name' => $ccp_text_blog, 'href' => $this->url->link('extension/module/codecart_pro_blog', 'user_token=' . $this->session->data['user_token'], true), 'children' => array());
+        }
+        if ($this->user->hasPermission('access', 'extension/module/codecart_pro_review')) {
+            $ccp_children[] = array('name' => $ccp_text_reviews, 'href' => $this->url->link('extension/module/codecart_pro_review', 'user_token=' . $this->session->data['user_token'], true), 'children' => array());
+        }
+        if ($ccp_children) {
+            $ccp_menu = array('id' => 'menu-codecart-pro-theme', 'icon' => 'fa-paint-brush', 'name' => 'CodeCart PRO', 'href' => '', 'children' => $ccp_children);
+            if (isset($data['menus']) && is_array($data['menus'])) {
+                array_splice($data['menus'], 1, 0, array($ccp_menu));
+            } else {
+                $data['menus'] = array($ccp_menu);
+            }
+        }
+      ]]></add>
+    </operation>
+  </file>
+
+  <file path="catalog/controller/checkout/checkout.php">
+
+    <operation error="skip">
+      <search><![CDATA[public function index() {]]></search>
+      <add position="after"><![CDATA[
+        $ccp_info_theme = (string)$this->config->get('config_theme');
+        $ccp_info_directory_key = $ccp_info_theme ? 'theme_' . $ccp_info_theme . '_directory' : '';
+        $ccp_info_directory = $ccp_info_directory_key ? (string)$this->config->get($ccp_info_directory_key) : '';
+        $ccp_info_active = ($ccp_info_theme === 'codecart_pro' || $ccp_info_directory === 'codecart_pro' || (string)$this->config->get('config_template') === 'codecart_pro');
+        if ($ccp_info_active && (int)$this->config->get('theme_codecart_pro_status') && (((int)$this->config->get('theme_codecart_pro_schema_version') < 852) || (int)$this->config->get('theme_codecart_pro_information_mode'))) {
+            $this->response->redirect($this->url->link('common/home', '', true));
+            return;
+        }
+      ]]></add>
+    </operation>
+    <operation error="skip">
+      <search><![CDATA[$this->response->setOutput($this->load->view('checkout/checkout', $data));]]></search>
+      <add position="before"><![CDATA[
+        $ccp_checkout_theme = (string)$this->config->get('config_theme');
+        $ccp_checkout_directory_key = $ccp_checkout_theme ? 'theme_' . $ccp_checkout_theme . '_directory' : '';
+        $ccp_checkout_directory = $ccp_checkout_directory_key ? (string)$this->config->get($ccp_checkout_directory_key) : '';
+        $ccp_checkout_theme_active = ($ccp_checkout_theme === 'codecart_pro' || $ccp_checkout_theme === 'theme_codecart_pro' || $ccp_checkout_directory === 'codecart_pro' || (string)$this->config->get('config_template') === 'codecart_pro');
+        if ($ccp_checkout_theme_active && (int)$this->config->get('theme_codecart_pro_status')) {
+        $this->load->language('extension/module/codecart_pro_checkout');
+        $ccp_simple_checkout_status = $this->config->has('theme_codecart_pro_simple_checkout_status') ? (int)$this->config->get('theme_codecart_pro_simple_checkout_status') : 0;
+        $ccp_checkout_digital_mode_config = $this->config->has('theme_codecart_pro_checkout_digital_mode') ? (int)$this->config->get('theme_codecart_pro_checkout_digital_mode') : 0;
+        $ccp_checkout_has_shipping = $this->cart->hasShipping();
+        // Never bypass OpenCart shipping requirements for a physical cart.
+        $ccp_checkout_digital_mode = $ccp_checkout_digital_mode_config && !$ccp_checkout_has_shipping;
+
+        $data['ccp_simple_checkout_status'] = $ccp_simple_checkout_status;
+        $data['ccp_checkout_digital_mode'] = $ccp_checkout_digital_mode;
+        $data['ccp_checkout_has_shipping'] = $ccp_checkout_has_shipping ? 1 : 0;
+        $data['ccp_checkout_customer_save'] = $this->url->link('extension/module/codecart_pro_checkout/saveCustomer', '', true);
+        $data['ccp_checkout_heading'] = $this->language->get('text_simple_checkout');
+        $data['ccp_language_id'] = (int)$this->config->get('config_language_id');
+        $data['ccp_checkout_style_status'] = $this->config->has('theme_codecart_pro_checkout_style_status') ? (int)$this->config->get('theme_codecart_pro_checkout_style_status') : 1;
+        $ccp_checkout_trust = $this->config->get('theme_codecart_pro_checkout_trust_text');
+        $data['ccp_checkout_trust_text'] = is_array($ccp_checkout_trust) ? $ccp_checkout_trust : array();
+        $data['ccp_checkout_contact_title'] = $this->language->get('text_contact_data');
+        $data['ccp_checkout_contact_help'] = $this->language->get('text_contact_help');
+        $data['ccp_checkout_payment_title'] = $this->language->get('text_payment_data');
+        $data['ccp_checkout_confirm_title'] = $this->language->get('text_confirm_data');
+        $data['ccp_checkout_order_summary'] = $this->language->get('text_order_summary');
+        $data['ccp_checkout_no_shipping'] = $this->language->get('text_no_shipping');
+        $data['ccp_checkout_loading'] = $this->language->get('text_loading');
+        $data['ccp_checkout_next_payment'] = $this->language->get('text_next_payment');
+        $data['ccp_checkout_reload_payment'] = $this->language->get('text_reload_payment');
+        $data['ccp_checkout_payment_wait'] = $this->language->get('text_payment_wait');
+        $data['ccp_checkout_confirm_wait'] = $this->language->get('text_confirm_wait');
+        $data['ccp_checkout_edit_cart'] = $this->language->get('text_edit_cart');
+        $data['ccp_checkout_remove'] = $this->language->get('text_remove_from_cart');
+        $data['ccp_error_cart_remove'] = $this->language->get('error_cart_remove');
+        $data['ccp_checkout_digital_instruction_status'] = $this->config->has('theme_codecart_pro_checkout_digital_instruction_status') ? (int)$this->config->get('theme_codecart_pro_checkout_digital_instruction_status') : 1;
+        $ccp_checkout_digital_instruction_text = $this->config->get('theme_codecart_pro_checkout_digital_instruction_text');
+        $ccp_checkout_language_id = (int)$this->config->get('config_language_id');
+        $data['ccp_checkout_digital_instruction'] = is_array($ccp_checkout_digital_instruction_text) && !empty($ccp_checkout_digital_instruction_text[$ccp_checkout_language_id]) ? $ccp_checkout_digital_instruction_text[$ccp_checkout_language_id] : $this->language->get('text_digital_instruction');
+        $data['ccp_cart_url'] = $this->url->link('checkout/cart', '', true);
+        $data['ccp_entry_customer_name'] = $this->language->get('entry_customer_name');
+        $data['ccp_entry_email'] = $this->language->get('entry_email');
+        $data['ccp_entry_telephone'] = $this->language->get('entry_telephone');
+        $data['ccp_entry_comment'] = $this->language->get('entry_comment');
+        $data['ccp_placeholder_customer_name'] = $this->language->get('placeholder_customer_name');
+        $data['ccp_placeholder_email'] = $this->language->get('placeholder_email');
+        $data['ccp_placeholder_telephone'] = $this->language->get('placeholder_telephone');
+        $data['ccp_placeholder_comment'] = $this->language->get('placeholder_comment');
+        $data['ccp_error_payment_load'] = $this->language->get('error_payment_load');
+        $data['ccp_error_confirm_load'] = $this->language->get('error_confirm_load');
+        $data['ccp_customer_name'] = $this->customer->isLogged() ? trim($this->customer->getFirstName() . ' ' . $this->customer->getLastName()) : (isset($this->session->data['guest']['firstname']) ? trim($this->session->data['guest']['firstname'] . ' ' . $this->session->data['guest']['lastname']) : '');
+        $data['ccp_customer_email'] = $this->customer->isLogged() ? (string)$this->customer->getEmail() : (isset($this->session->data['guest']['email']) ? (string)$this->session->data['guest']['email'] : '');
+        $data['ccp_customer_telephone'] = $this->customer->isLogged() ? (string)$this->customer->getTelephone() : (isset($this->session->data['guest']['telephone']) ? (string)$this->session->data['guest']['telephone'] : '');
+
+        if (!$ccp_simple_checkout_status) {
+            // Let the stock theme event select the native checkout for this view only.
+            $ccp_view_config_backup = array();
+            foreach (array('config_theme', 'theme_default_directory', 'theme_default_status', 'template_directory') as $ccp_view_key) {
+                $ccp_view_config_backup[$ccp_view_key] = $this->config->get($ccp_view_key);
+            }
+            $this->config->set('config_theme', 'default');
+            $this->config->set('theme_default_directory', 'default');
+            $this->config->set('theme_default_status', 1);
+            $this->config->set('template_directory', 'default/template/');
+            try {
+                $this->response->setOutput($this->load->view('checkout/checkout', $data));
+            } finally {
+                foreach ($ccp_view_config_backup as $ccp_view_key => $ccp_view_value) {
+                    $this->config->set($ccp_view_key, $ccp_view_value);
+                }
+            }
+            return;
+        }
+
+        $data['ccp_checkout_products'] = array();
+        $this->load->model('tool/image');
+        foreach ($this->cart->getProducts() as $ccp_product) {
+            if ($ccp_product['image']) {
+                $ccp_thumb = $this->model_tool_image->resize($ccp_product['image'], 70, 70);
+            } else {
+                $ccp_thumb = '';
+            }
+            $data['ccp_checkout_products'][] = array(
+                'key'      => isset($ccp_product['cart_id']) ? $ccp_product['cart_id'] : (isset($ccp_product['key']) ? $ccp_product['key'] : ''),
+                'name'     => $ccp_product['name'],
+                'thumb'    => $ccp_thumb,
+                'quantity' => $ccp_product['quantity'],
+                'price'    => $this->currency->format($this->tax->calculate($ccp_product['price'], $ccp_product['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']),
+                'total'    => $this->currency->format($this->tax->calculate($ccp_product['price'], $ccp_product['tax_class_id'], $this->config->get('config_tax')) * $ccp_product['quantity'], $this->session->data['currency'])
+            );
+        }
+
+        $ccp_totals = array();
+        $ccp_taxes = $this->cart->getTaxes();
+        $ccp_total = 0;
+        $this->load->model('setting/extension');
+        $ccp_total_data = array('totals' => &$ccp_totals, 'taxes' => &$ccp_taxes, 'total' => &$ccp_total);
+        $ccp_results = $this->model_setting_extension->getExtensions('total');
+        $ccp_sort_order = array();
+        foreach ($ccp_results as $ccp_key => $ccp_value) {
+            $ccp_sort_order[$ccp_key] = $this->config->get('total_' . $ccp_value['code'] . '_sort_order');
+        }
+        array_multisort($ccp_sort_order, SORT_ASC, $ccp_results);
+        foreach ($ccp_results as $ccp_result) {
+            if ($this->config->get('total_' . $ccp_result['code'] . '_status')) {
+                $this->load->model('extension/total/' . $ccp_result['code']);
+                $this->{'model_extension_total_' . $ccp_result['code']}->getTotal($ccp_total_data);
+            }
+        }
+        $ccp_sort_order = array();
+        foreach ($ccp_totals as $ccp_key => $ccp_value) {
+            $ccp_sort_order[$ccp_key] = $ccp_value['sort_order'];
+        }
+        array_multisort($ccp_sort_order, SORT_ASC, $ccp_totals);
+        $data['ccp_checkout_totals'] = array();
+        foreach ($ccp_totals as $ccp_total_row) {
+            $data['ccp_checkout_totals'][] = array(
+                'title' => $ccp_total_row['title'],
+                'text'  => $this->currency->format($ccp_total_row['value'], $this->session->data['currency'])
+            );
+        }
+        }
+      ]]></add>
+    </operation>
+  </file>
+
+  <file path="catalog/controller/checkout/cart.php">
+
+    <operation error="skip">
+      <search><![CDATA[public function index() {]]></search>
+      <add position="after"><![CDATA[
+        $ccp_info_theme = (string)$this->config->get('config_theme');
+        $ccp_info_directory_key = $ccp_info_theme ? 'theme_' . $ccp_info_theme . '_directory' : '';
+        $ccp_info_directory = $ccp_info_directory_key ? (string)$this->config->get($ccp_info_directory_key) : '';
+        $ccp_info_active = ($ccp_info_theme === 'codecart_pro' || $ccp_info_directory === 'codecart_pro' || (string)$this->config->get('config_template') === 'codecart_pro');
+        if ($ccp_info_active && (int)$this->config->get('theme_codecart_pro_status') && (((int)$this->config->get('theme_codecart_pro_schema_version') < 852) || (int)$this->config->get('theme_codecart_pro_information_mode'))) {
+            $this->response->redirect($this->url->link('common/home', '', true));
+            return;
+        }
+      ]]></add>
+    </operation>
+
+    <operation error="skip">
+      <search><![CDATA[public function add() {]]></search>
+      <add position="after"><![CDATA[
+        $ccp_info_theme = (string)$this->config->get('config_theme');
+        $ccp_info_directory_key = $ccp_info_theme ? 'theme_' . $ccp_info_theme . '_directory' : '';
+        $ccp_info_directory = $ccp_info_directory_key ? (string)$this->config->get($ccp_info_directory_key) : '';
+        $ccp_info_active = ($ccp_info_theme === 'codecart_pro' || $ccp_info_directory === 'codecart_pro' || (string)$this->config->get('config_template') === 'codecart_pro');
+        if ($ccp_info_active && (int)$this->config->get('theme_codecart_pro_status') && (((int)$this->config->get('theme_codecart_pro_schema_version') < 852) || (int)$this->config->get('theme_codecart_pro_information_mode'))) {
+            $ccp_language = (string)$this->config->get('config_language');
+            $ccp_message = ($ccp_language === 'uk-ua') ? 'Замовлення на цьому сайті тимчасово вимкнені.' : (($ccp_language === 'ru-ru') ? 'Заказы на этом сайте временно отключены.' : 'Ordering is temporarily disabled on this website.');
+            $json = array('error' => array('warning' => $ccp_message));
+            $this->response->addHeader('Content-Type: application/json; charset=utf-8');
+            $this->response->setOutput(json_encode($json));
+            return;
+        }
+      ]]></add>
+    </operation>
+    <operation error="skip">
+      <search><![CDATA[$this->response->setOutput($this->load->view('checkout/cart', $data));]]></search>
+      <add position="before"><![CDATA[
+        $ccp_cart_theme = (string)$this->config->get('config_theme');
+        $ccp_cart_directory_key = $ccp_cart_theme ? 'theme_' . $ccp_cart_theme . '_directory' : '';
+        $ccp_cart_directory = $ccp_cart_directory_key ? (string)$this->config->get($ccp_cart_directory_key) : '';
+        $ccp_cart_theme_active = ($ccp_cart_theme === 'codecart_pro' || $ccp_cart_theme === 'theme_codecart_pro' || $ccp_cart_directory === 'codecart_pro' || (string)$this->config->get('config_template') === 'codecart_pro');
+        $ccp_cart_features_active = $ccp_cart_theme_active && (int)$this->config->get('theme_codecart_pro_status');
+        $data['ccp_checkout_hide_reward_status'] = $ccp_cart_features_active ? ($this->config->has('theme_codecart_pro_checkout_hide_reward_status') ? (int)$this->config->get('theme_codecart_pro_checkout_hide_reward_status') : 1) : 0;
+        $data['ccp_checkout_hide_coupon_status'] = $ccp_cart_features_active ? ($this->config->has('theme_codecart_pro_checkout_hide_coupon_status') ? (int)$this->config->get('theme_codecart_pro_checkout_hide_coupon_status') : 1) : 0;
+        $data['ccp_checkout_hide_voucher_status'] = $ccp_cart_features_active ? ($this->config->has('theme_codecart_pro_checkout_hide_voucher_status') ? (int)$this->config->get('theme_codecart_pro_checkout_hide_voucher_status') : 1) : 0;
+      ]]></add>
+    </operation>
+  </file>
+
+
+  <file path="catalog/controller/checkout/success.php">
+    <operation error="skip">
+      <search><![CDATA[$data['continue'] = $this->url->link('common/home');]]></search>
+      <add position="before"><![CDATA[
+        $ccp_success_theme = (string)$this->config->get('config_theme');
+        $ccp_success_directory_key = $ccp_success_theme ? 'theme_' . $ccp_success_theme . '_directory' : '';
+        $ccp_success_directory = $ccp_success_directory_key ? (string)$this->config->get($ccp_success_directory_key) : '';
+        $ccp_success_theme_active = ($ccp_success_theme === 'codecart_pro' || $ccp_success_directory === 'codecart_pro' || (string)$this->config->get('config_template') === 'codecart_pro');
+        if ($ccp_success_theme_active && (int)$this->config->get('theme_codecart_pro_status') && !empty($this->session->data['ccp_digital_checkout'])) {
+            $this->load->language('extension/module/codecart_pro_checkout');
+            $ccp_digital_instruction_status = $this->config->has('theme_codecart_pro_checkout_digital_instruction_status') ? (int)$this->config->get('theme_codecart_pro_checkout_digital_instruction_status') : 1;
+            if ($ccp_digital_instruction_status) {
+                $ccp_digital_instruction_text = $this->config->get('theme_codecart_pro_checkout_digital_instruction_text');
+                $ccp_digital_language_id = (int)$this->config->get('config_language_id');
+                $ccp_digital_instruction = is_array($ccp_digital_instruction_text) && !empty($ccp_digital_instruction_text[$ccp_digital_language_id]) ? $ccp_digital_instruction_text[$ccp_digital_language_id] : $this->language->get('text_digital_instruction');
+                if ($ccp_digital_instruction !== '') {
+                    $data['text_message'] .= '<div class="alert alert-info ccp-digital-success"><i class="fa fa-info-circle"></i> ' . nl2br(htmlspecialchars($ccp_digital_instruction, ENT_QUOTES, 'UTF-8')) . '</div>';
+                }
+            }
+            unset($this->session->data['ccp_digital_checkout']);
+        }
+      ]]></add>
+    </operation>
+  </file>
+
+  <file path="admin/controller/catalog/product.php">
+    <operation error="skip">
+      <search><![CDATA[$this->model_catalog_product->addProduct($this->request->post);]]></search>
+      <add position="replace"><![CDATA[
+                $ccp_product_id = (int)$this->model_catalog_product->addProduct($this->request->post);
+                if ((int)$this->config->get('theme_codecart_pro_status') && $ccp_product_id && isset($this->request->post['ccp_product_changelog']) && is_array($this->request->post['ccp_product_changelog'])) {
+                    $this->load->model('extension/theme/codecart_pro_product');
+                    $this->model_extension_theme_codecart_pro_product->saveChangelog($ccp_product_id, $this->request->post['ccp_product_changelog']);
+                }
+      ]]></add>
+    </operation>
+    <operation error="skip">
+      <search><![CDATA[$this->model_catalog_product->editProduct($this->request->get['product_id'], $this->request->post);]]></search>
+      <add position="after"><![CDATA[
+                $ccp_product_id = isset($this->request->get['product_id']) ? (int)$this->request->get['product_id'] : 0;
+                if ((int)$this->config->get('theme_codecart_pro_status') && $ccp_product_id && isset($this->request->post['ccp_product_changelog']) && is_array($this->request->post['ccp_product_changelog'])) {
+                    $this->load->model('extension/theme/codecart_pro_product');
+                    $this->model_extension_theme_codecart_pro_product->saveChangelog($ccp_product_id, $this->request->post['ccp_product_changelog']);
+                }
+      ]]></add>
+    </operation>
+    <operation error="skip">
+      <search><![CDATA[$data['product_description'] = array();]]></search>
+      <add position="after"><![CDATA[
+        if ((int)$this->config->get('theme_codecart_pro_status')) {
+        $ccp_admin_language_code = (string)$this->config->get('config_language');
+        $ccp_admin_is_ru = (strpos($ccp_admin_language_code, 'ru') === 0);
+        $ccp_admin_is_uk = (strpos($ccp_admin_language_code, 'uk') === 0 || strpos($ccp_admin_language_code, 'ua') === 0);
+        $data['tab_ccp_changelog'] = $ccp_admin_is_ru ? 'История изменений' : ($ccp_admin_is_uk ? 'Історія змін' : 'Changelog');
+        $data['entry_ccp_changelog'] = $data['tab_ccp_changelog'];
+        $data['help_ccp_changelog'] = $ccp_admin_is_ru ? 'Укажите изменения по версиям для этого модуля. Вкладка на витрине появится только если поле заполнено.' : ($ccp_admin_is_uk ? 'Вкажіть зміни за версіями для цього модуля. Вкладка на вітрині з’явиться лише якщо поле заповнене.' : 'Add version changes for this module. The storefront tab is shown only when this field is filled.');
+        $data['ccp_product_changelog'] = array();
+        $ccp_product_id = isset($this->request->get['product_id']) ? (int)$this->request->get['product_id'] : 0;
+        if (isset($this->request->post['ccp_product_changelog']) && is_array($this->request->post['ccp_product_changelog'])) {
+            $data['ccp_product_changelog'] = $this->request->post['ccp_product_changelog'];
+        } elseif ($ccp_product_id) {
+            $this->load->model('extension/theme/codecart_pro_product');
+            $data['ccp_product_changelog'] = $this->model_extension_theme_codecart_pro_product->getChangelog($ccp_product_id);
+        }
+        }
+      ]]></add>
+    </operation>
+    <operation error="skip">
+      <search><![CDATA[if (isset($this->request->post['model'])) {]]></search>
+      <add position="before"><![CDATA[
+        // CodeCart PRO Theme v8.7.7: product changelog editor data.
+        if ((int)$this->config->get('theme_codecart_pro_status') && !isset($data['tab_ccp_changelog'])) {
+            $ccp_admin_language_code = (string)$this->config->get('config_language');
+            $ccp_admin_is_ru = (strpos($ccp_admin_language_code, 'ru') === 0);
+            $ccp_admin_is_uk = (strpos($ccp_admin_language_code, 'uk') === 0 || strpos($ccp_admin_language_code, 'ua') === 0);
+            $data['tab_ccp_changelog'] = $ccp_admin_is_ru ? 'История изменений' : ($ccp_admin_is_uk ? 'Історія змін' : 'Changelog');
+            $data['entry_ccp_changelog'] = $data['tab_ccp_changelog'];
+            $data['help_ccp_changelog'] = $ccp_admin_is_ru ? 'Укажите изменения по версиям для этого модуля. Вкладка на витрине появится только если поле заполнено.' : ($ccp_admin_is_uk ? 'Вкажіть зміни за версіями для цього модуля. Вкладка на вітрині з’явиться лише якщо поле заповнене.' : 'Add version changes for this module. The storefront tab is shown only when this field is filled.');
+            $data['ccp_product_changelog'] = array();
+            $ccp_product_id = isset($this->request->get['product_id']) ? (int)$this->request->get['product_id'] : 0;
+            if (isset($this->request->post['ccp_product_changelog']) && is_array($this->request->post['ccp_product_changelog'])) {
+                $data['ccp_product_changelog'] = $this->request->post['ccp_product_changelog'];
+            } elseif ($ccp_product_id) {
+            $this->load->model('extension/theme/codecart_pro_product');
+            $data['ccp_product_changelog'] = $this->model_extension_theme_codecart_pro_product->getChangelog($ccp_product_id);
+            }
+        }
+      ]]></add>
+    </operation>
+  </file>
+
+  <file path="admin/view/template/catalog/product_form.twig">
+    <operation error="skip">
+      <search><![CDATA[<li><a href="#tab-design" data-toggle="tab">{{ tab_design }}</a></li>]]></search>
+      <add position="before"><![CDATA[
+                {% if tab_ccp_changelog is defined and tab_ccp_changelog %}
+                <li><a href="#tab-ccp-changelog" data-toggle="tab">{{ tab_ccp_changelog }}</a></li>
+                {% endif %}
+      ]]></add>
+    </operation>
+    <operation error="skip">
+      <search><![CDATA[<div class="tab-pane" id="tab-design">]]></search>
+      <add position="before"><![CDATA[
+            {% if tab_ccp_changelog is defined and tab_ccp_changelog %}
+            <div class="tab-pane" id="tab-ccp-changelog">
+              <div class="alert alert-info"><i class="fa fa-info-circle"></i> {{ help_ccp_changelog }}</div>
+              <ul class="nav nav-tabs" id="ccp-changelog-language">
+                {% for language in languages %}
+                <li><a href="#ccp-changelog-language{{ language.language_id }}" data-toggle="tab"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /> {{ language.name }}</a></li>
+                {% endfor %}
+              </ul>
+              <div class="tab-content">
+                {% for language in languages %}
+                <div class="tab-pane" id="ccp-changelog-language{{ language.language_id }}">
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label" for="input-ccp-changelog{{ language.language_id }}">{{ entry_ccp_changelog }}</label>
+                    <div class="col-sm-10">
+                      <textarea name="ccp_product_changelog[{{ language.language_id }}]" placeholder="{{ entry_ccp_changelog }}" id="input-ccp-changelog{{ language.language_id }}" data-toggle="summernote" data-lang="{{ summernote }}" class="form-control">{{ ccp_product_changelog[language.language_id] is defined ? ccp_product_changelog[language.language_id] : '' }}</textarea>
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+            {% endif %}
+      ]]></add>
+    </operation>
+    <operation error="skip">
+      <search><![CDATA[$('#language a:first').tab('show');]]></search>
+      <add position="after"><![CDATA[
+$('#ccp-changelog-language a:first').tab('show');
+      ]]></add>
+    </operation>
+  </file>
+
+
+  <!-- Missing category paths are initialised by the active-theme runtime events.
+       Never replace lexical path expressions: existing isset() checks must remain intact. -->
+
+
+  <file path="catalog/controller/checkout/cart.php">
+    <operation error="skip">
+      <search><![CDATA[$json['total'] = sprintf]]></search>
+      <add position="before"><![CDATA[
+        if (!empty($json['success']) && isset($product_info, $option) && (int)$this->config->get('theme_codecart_pro_status') && (string)$this->config->get('config_theme') === 'codecart_pro' && ($this->customer->isLogged() || !$this->config->get('config_customer_price'))) {
+            foreach ($this->cart->getProducts() as $ccp_cart_product) {
+                if ((int)$ccp_cart_product['product_id'] !== (int)$this->request->post['product_id']) { continue; }
+                $ccp_selected_options = array();
+                foreach ($ccp_cart_product['option'] as $ccp_cart_option) {
+                    $ccp_option_id = (int)$ccp_cart_option['product_option_id'];
+                    if ($ccp_cart_option['type'] === 'checkbox') {
+                        $ccp_selected_options[$ccp_option_id][] = (string)$ccp_cart_option['product_option_value_id'];
+                    } else {
+                        $ccp_selected_options[$ccp_option_id] = in_array($ccp_cart_option['type'], array('select', 'radio', 'image'), true) ? (string)$ccp_cart_option['product_option_value_id'] : (string)$ccp_cart_option['value'];
+                    }
+                }
+                $ccp_requested_options = $option;
+                foreach ($ccp_requested_options as &$ccp_option_value) {
+                    if (is_array($ccp_option_value)) { $ccp_option_value = array_map('strval', $ccp_option_value); sort($ccp_option_value); }
+                    else { $ccp_option_value = (string)$ccp_option_value; }
+                }
+                unset($ccp_option_value);
+                foreach ($ccp_selected_options as &$ccp_option_value) { if (is_array($ccp_option_value)) { sort($ccp_option_value); } }
+                unset($ccp_option_value);
+                ksort($ccp_requested_options); ksort($ccp_selected_options);
+                if ($ccp_requested_options != $ccp_selected_options) { continue; }
+                $ccp_added_quantity = max(1, (int)$quantity);
+                $ccp_unit_price = $this->tax->calculate($ccp_cart_product['price'], $ccp_cart_product['tax_class_id'], $this->config->get('config_tax'));
+                $json['ccp_cart_item'] = array('quantity' => $ccp_added_quantity, 'price' => $this->currency->format($ccp_unit_price, $this->session->data['currency']), 'total' => $this->currency->format($ccp_unit_price * $ccp_added_quantity, $this->session->data['currency']));
+                break;
+            }
+        }
+      ]]></add>
+    </operation>
+  </file>
+
+</modification>

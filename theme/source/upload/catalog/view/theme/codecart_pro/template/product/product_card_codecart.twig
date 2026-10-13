@@ -1,0 +1,49 @@
+{% set ccp_card_style = ccp_card_style is defined ? ccp_card_style : 'commerce' %}
+{% set ccp_card_title_lines = ccp_card_title_lines is defined ? ccp_card_title_lines : 2 %}
+{% set ccp_card_full_click = ccp_card_full_click is defined ? ccp_card_full_click : 1 %}
+{% set ccp_card_show_description = ccp_card_show_description is defined ? ccp_card_show_description : 1 %}
+{% set ccp_card_show_rating = ccp_card_show_rating is defined ? ccp_card_show_rating : 1 %}
+{% set ccp_card_show_stock = ccp_card_show_stock is defined ? ccp_card_show_stock : 1 %}
+{% set ccp_card_show_quick_actions = ccp_card_show_quick_actions is defined ? ccp_card_show_quick_actions : 1 %}
+{% set ccp_card_show_wishlist = ccp_card_show_wishlist is defined ? ccp_card_show_wishlist : 1 %}
+{% set ccp_card_show_compare = ccp_card_show_compare is defined ? ccp_card_show_compare : 1 %}
+{% set ccp_card_show_model = ccp_card_show_model is defined ? ccp_card_show_model : 1 %}
+{% set ccp_card_show_manufacturer = ccp_card_show_manufacturer is defined ? ccp_card_show_manufacturer : 1 %}
+{% set ccp_card_meta_position = ccp_card_meta_position is defined ? ccp_card_meta_position : 'under_title' %}
+{% set ccp_card_show_quantity = ccp_card_show_quantity is defined ? ccp_card_show_quantity : 1 %}
+{% set ccp_card_show_buy_button = ccp_card_show_buy_button is defined ? ccp_card_show_buy_button : 1 %}
+{% set ccp_card_stock_mode = ccp_card_stock_mode is defined ? ccp_card_stock_mode : 'smart' %}
+{% set ccp_card_second_image_status = ccp_card_second_image_status is defined ? ccp_card_second_image_status : 0 %}
+{% set ccp_card_sale_percent_status = ccp_card_sale_percent_status is defined ? ccp_card_sale_percent_status : 1 %}
+{% set ccp_card_hover_actions_mode = ccp_card_hover_actions_mode is defined ? ccp_card_hover_actions_mode : 'smart' %}
+{% set ccp_card_index = ccp_card_index|default(999) %}
+{% set ccp_eager_limit = ccp_performance_eager_first_images|default(0) %}
+{% set ccp_card_eager = ccp_eager_limit and ccp_card_index <= ccp_eager_limit %}
+{% set ccp_img_loading = ccp_card_eager ? 'eager' : (ccp_performance_lazy_images|default(1) ? 'lazy' : 'eager') %}
+<div class="ccp-card ccp-product-card ccp-card-style-{{ ccp_card_style }} ccp-hover-actions-{{ ccp_card_hover_actions_mode }}{% if ccp_card_full_click %} ccp-card-full-click{% endif %}" data-product-id="{{ product.product_id }}" data-href="{{ product.href }}" style="--ccp-title-lines:{{ ccp_card_title_lines }}">
+  {% if ccp_card_full_click %}<a class="ccp-card-link" href="{{ product.href }}" aria-label="{{ product.name|e('html_attr') }}"></a>{% endif %}
+  <div class="ccp-product-card__image">
+    {% if ccp_enable_stickers is not defined or ccp_enable_stickers %}<div class="ccp-stickers">
+      {% if product.special %}<span class="ccp-sticker ccp-sticker-sale">{% if ccp_card_sale_percent_status and product.ccp_sale_percent is defined and product.ccp_sale_percent %}-{{ product.ccp_sale_percent }}%{% else %}%{% endif %}</span>{% endif %}
+      {% if product.ccp_is_new is defined and product.ccp_is_new %}<span class="ccp-sticker ccp-sticker-new">{{ ccp_text_new|default('New') }}</span>{% endif %}
+      {% if product.rating and product.rating >= 4 %}<span class="ccp-sticker ccp-sticker-hit">{{ ccp_text_top|default('Top') }}</span>{% endif %}
+    </div>{% endif %}
+    <a href="{{ product.href }}" class="ccp-product-image-link{% if ccp_card_second_image_status and product.ccp_second_thumb is defined and product.ccp_second_thumb %} ccp-has-second-image{% endif %}"><img class="ccp-img-main" src="{{ product.thumb }}" alt="{{ product.name }}" loading="{{ ccp_img_loading }}"{% if ccp_performance_image_decoding_status|default(1) %} decoding="async"{% endif %}{% if ccp_card_eager and ccp_performance_fetchpriority_status|default(1) %} fetchpriority="high"{% endif %} width="640" height="407" />{% if ccp_card_second_image_status and product.ccp_second_thumb is defined and product.ccp_second_thumb %}<img class="ccp-img-second" src="{{ product.ccp_second_thumb }}" alt="{{ product.name }}" loading="lazy"{% if ccp_performance_image_decoding_status|default(1) %} decoding="async"{% endif %} width="640" height="407" />{% endif %}</a>
+  </div>
+  <div class="ccp-product-card__body">
+    <div class="ccp-product-card__name"><a href="{{ product.href }}">{{ product.name }}</a></div>
+    {% if ccp_card_meta_position == 'under_title' and ((ccp_card_show_model and product.ccp_model is defined and product.ccp_model) or (ccp_card_show_manufacturer and product.ccp_manufacturer is defined and product.ccp_manufacturer)) %}<div class="ccp-product-card__meta ccp-card-meta-{{ ccp_card_meta_position }}">{% if ccp_card_show_manufacturer and product.ccp_manufacturer is defined and product.ccp_manufacturer %}<span><i class="fa fa-industry"></i> {{ product.ccp_manufacturer }}</span>{% endif %}{% if ccp_card_show_model and product.ccp_model is defined and product.ccp_model %}<span><i class="fa fa-barcode"></i> {{ product.ccp_model }}</span>{% endif %}</div>{% endif %}
+    {% if ccp_card_show_description %}<div class="ccp-product-card__desc">{% if product.description %}{{ product.description }}{% else %}&nbsp;{% endif %}</div>{% endif %}
+    {% if ccp_card_show_rating and product.rating %}<div class="ccp-product-card__rating" aria-label="{{ product.rating }}/5">{% for i in 1..5 %}{% if product.rating < i %}<i class="fa fa-star-o"></i>{% else %}<i class="fa fa-star"></i>{% endif %}{% endfor %}</div>{% endif %}
+    {% if product.price %}<div class="ccp-product-card__price">{% if not product.special %}{{ product.price }}{% else %}<span class="price-new">{{ product.special }}</span><span class="price-old">{{ product.price }}</span>{% endif %}{% if product.tax %}<span class="price-tax">{{ text_tax }} {{ product.tax }}</span>{% endif %}</div>{% endif %}
+    {% if ccp_card_meta_position == 'under_price' and ((ccp_card_show_model and product.ccp_model is defined and product.ccp_model) or (ccp_card_show_manufacturer and product.ccp_manufacturer is defined and product.ccp_manufacturer)) %}<div class="ccp-product-card__meta ccp-card-meta-{{ ccp_card_meta_position }}">{% if ccp_card_show_manufacturer and product.ccp_manufacturer is defined and product.ccp_manufacturer %}<span><i class="fa fa-industry"></i> {{ product.ccp_manufacturer }}</span>{% endif %}{% if ccp_card_show_model and product.ccp_model is defined and product.ccp_model %}<span><i class="fa fa-barcode"></i> {{ product.ccp_model }}</span>{% endif %}</div>{% endif %}
+    {% if ccp_card_show_stock and ccp_card_stock_mode != 'hide' %}{% if product.ccp_stock_status is defined %}<div class="ccp-product-card__stock ccp-stock-{{ product.ccp_stock_class|default('in') }}"><i class="fa fa-check-circle"></i> {{ product.ccp_stock_status }}</div>{% elseif ccp_card_stock_mode == 'always' %}<div class="ccp-product-card__stock ccp-stock-soft"><i class="fa fa-check-circle"></i> {{ ccp_text_in_stock|default('In stock') }}</div>{% endif %}{% endif %}
+    <div class="ccp-product-card__actions{% if not ccp_card_show_buy_button %} ccp-no-buy{% endif %}">
+      {% if ccp_card_show_quantity %}<div class="ccp-card-qty"><button type="button" class="ccp-qty-btn" data-ccp-qty="minus">−</button><input type="text" value="{{ product.minimum|default(1) }}" inputmode="numeric" min="{{ product.minimum|default(1) }}" aria-label="{{ ccp_text_quantity|default('Quantity') }}"><button type="button" class="ccp-qty-btn" data-ccp-qty="plus">+</button></div>{% endif %}
+      {% if ccp_card_show_buy_button %}<button type="button" class="btn ccp-btn ccp-card-cart" data-product-id="{{ product.product_id }}"><i class="fa fa-shopping-cart"></i> <span>{{ button_cart }}</span></button>{% endif %}
+      {% if ccp_enable_quick_order is not defined or ccp_enable_quick_order %}<button type="button" class="ccp-mini-btn ccp-js-quick-order" data-product-id="{{ product.product_id }}" data-product-name="{{ product.name|e('html_attr') }}" title="{{ ccp_button_quick_order|default('Buy in 1 click') }}"><i class="fa fa-bolt"></i></button>{% endif %}
+      {% if ccp_card_show_wishlist %}<button type="button" class="ccp-mini-btn" onclick="wishlist.add('{{ product.product_id }}');" title="{{ button_wishlist|default('Wishlist') }}"><i class="fa fa-heart"></i></button>{% endif %}
+      {% if ccp_card_show_compare %}<button type="button" class="ccp-mini-btn" onclick="compare.add('{{ product.product_id }}');" title="{{ button_compare|default('Compare') }}"><i class="fa fa-exchange"></i></button>{% endif %}
+    </div>
+  </div>
+</div>

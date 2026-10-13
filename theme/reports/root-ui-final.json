@@ -1,0 +1,57 @@
+{
+  "platform": "ocStore3.0.4.1 native theme checkout",
+  "browser": "Codex IAB",
+  "viewport": 1280,
+  "observed": "2026-10-13",
+  "popup": {
+    "uk_label": "Перейти до оформлення замовлення",
+    "client_width": 364,
+    "scroll_width": 364,
+    "white_space": "normal",
+    "escape_active_element": "button-cart",
+    "escape_display": "none",
+    "status": "PASS"
+  },
+  "sticky": {
+    "css_position": "sticky",
+    "css_top": 109,
+    "start": {
+      "scrollY": 0,
+      "sideTop": 360.8689575,
+      "sideBottom": 607.4963837,
+      "footerTop": 1160.059082
+    },
+    "middle": {
+      "scrollY": 629.631897,
+      "sideTop": 108.9985428,
+      "sideBottom": 355.6259689,
+      "footerTop": 530.4271851
+    },
+    "end": {
+      "scrollY": 820.9721069,
+      "sideTop": 28.4830666,
+      "sideBottom": 275.1104927,
+      "footerTop": 339.0869446
+    },
+    "status": "PASS"
+  },
+  "footer_trust": {
+    "end_top": -611.737915,
+    "end_bottom": -564.1679535,
+    "footer_top": 339.0869446,
+    "status": "PASS"
+  },
+  "remaining_not_run": [
+    "external Checkout Simple licensed integration",
+    "external video module playback",
+    "final mobile admin navigation toggle"
+  ],
+  "dark": {
+    "status": "PASS",
+    "html_class": "ccp-dark-theme",
+    "body_background": "rgb(15, 23, 42)",
+    "overflow_px": -15,
+    "view": "nativecheckout end/footer",
+    "visual": "readable controls and footer, no extra trust row"
+  }
+}

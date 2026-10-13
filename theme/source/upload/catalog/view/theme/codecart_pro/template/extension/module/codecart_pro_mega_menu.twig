@@ -1,0 +1,33 @@
+<nav class="ccp-mega-menu" aria-label="{{ text_menu|default('Main menu') }}">
+  {% if show_home %}<a class="ccp-mega-home" href="{{ home }}" aria-label="{{ ccp_text_home|default('Home') }}"><i class="fa fa-home"></i></a>{% endif %}
+  {% for link in custom_links %}<a class="ccp-mega-custom-link" href="{{ link.href }}">{% if link.icon %}<i class="{{ link.icon }}"></i>{% endif %} {{ link.title }}</a>{% endfor %}
+  {% for category in categories %}
+    <div class="ccp-mega-item{% if category.children %} ccp-has-children{% endif %}">
+      <a class="ccp-mega-link" href="{{ category.href }}">{% if show_images and category.image %}<img src="{{ category.image }}" alt="{{ category.name }}" loading="lazy" decoding="async" width="36" height="36" />{% endif %}<span>{{ category.name }}</span>{% if show_counts and category.total is not null %}<em>{{ category.total }}</em>{% endif %}{% if category.children %}<i class="fa fa-angle-down"></i>{% endif %}</a>
+      {% if category.children %}
+      <div class="ccp-mega-dropdown ccp-mega-cols-{{ columns }}">
+        <div class="ccp-mega-grid">
+          {% for child in category.children %}
+            <div class="ccp-mega-col">
+              <a class="ccp-mega-child-title" href="{{ child.href }}">{% if show_images and child.image %}<img src="{{ child.image }}" alt="{{ child.name }}" loading="lazy" decoding="async" width="40" height="40" />{% endif %}<span>{{ child.name }}</span>{% if show_counts and child.total is not null %}<em>{{ child.total }}</em>{% endif %}</a>
+              {% if child.children %}
+                <ul class="ccp-mega-sublist">
+                  {% for sub in child.children %}<li><a href="{{ sub.href }}">{{ sub.name }}{% if show_counts and sub.total is not null %}<em>{{ sub.total }}</em>{% endif %}</a></li>{% endfor %}
+                </ul>
+              {% endif %}
+            </div>
+          {% endfor %}
+          {% if promo_status %}
+            <div class="ccp-mega-promo">
+              <strong>{{ promo_title }}</strong>
+              <span>{{ promo_text }}</span>
+              {% if promo_link %}<a href="{{ promo_link }}">{{ text_more_details|default('More details') }}</a>{% endif %}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  {% endfor %}
+  {% if blog_status %}<a class="ccp-mega-custom-link ccp-mega-blog" href="{{ blog_href }}"><i class="fa fa-newspaper-o"></i> {{ blog_title }}</a>{% endif %}
+</nav>

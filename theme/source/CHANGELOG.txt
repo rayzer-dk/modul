@@ -1,0 +1,260 @@
+8.7.7 — 2026-10-13
+- Modern responsive storefront and page-local theme/blog/review admin.
+- Checkout trust panel removed from below footer; desktop summary sticky rules and full cart CTA label layout.
+- Server-authoritative popup item pricing, direct product routes and native checkout fallback.
+- Safe explicit schema migration, events lifecycle and complete-settings-form guard.
+- Preserve existing configuration and processed image/cache integration.
+- Current validation limitations: see VALIDATION.txt.
+
+Historical baseline changelog (not independent verification):
+v8.7.7
+- Fix CSS cascade specificity for category product cards, blog and article responsive grids.
+- Keep 5 desktop, 3 tablet, 2 mobile grid columns, where appropriate.
+- Preserve language routing behavior unchanged pending SEO-router diagnosis.
+- Static syntax checks only; live browser/SEO routing tests not performed.
+
+8.7.7
+- Restored the storefront desktop canvas to 1500px and migrate legacy 1240/1560/1640 saved defaults to 1500px.
+- Standardized product, category and article blocks: 5 desktop cards without sidebar, 4 desktop cards with sidebar, 3 tablet, 2 phone.
+- Unified blog listing, blog home, product-linked articles, related articles and related products under the same responsive density rules.
+- Fixed the blog article lead image 404 by using the OpenCart image resize cache instead of a custom cache directory.
+- Changed blog article lead media to a responsive 16:9 presentation.
+- Added a final dark-theme typography layer so headings and linked card titles remain readable in dark mode.
+- Kept the configured container width and dark-theme variables authoritative instead of overriding them from late CSS.
+
+CodeCart PRO Theme v8.7.7
+=============================
+- Исправлена поломка штатного OpenCart Swiper: тема больше не перезаписывает ширину swiper-wrapper/swiper-slide и transform-геометрию.
+- Удалены дублирующие конфликтующие CSS-реализации native slideshow; оставлен один канонический адаптивный блок.
+- Исправлено обратимое скрытие native/home баннеров на мобильных: элементы восстанавливаются после resize/orientation или изменения условий.
+- Исправлено применение ширины контейнера и цветов тёмной темы из настроек: поздние CSS-блоки больше не перекрывают runtime CSS variables.
+- Добавлен безопасный route class для body и JS fallback для страниц, где core не передал class.
+- Добавлены отсутствовавшие локализации ccp_text_floating_contacts и ccp_text_dark_theme для uk-ua, ru-ru, en-gb.
+- Исправлена нормализация Telegram/Viber/WhatsApp ссылок; неверные значения больше не превращаются во внутренние URL магазина.
+- Сохранена совместимость с OpenCart/ocStore native Swiper, desktop/tablet/mobile и тёмной темой.
+
+8.6.7
+- Fixed malformed product-page HTML in the native related-products carousel.
+- Closed ccp-related-carousel__viewport and ccp-related-carousel before subsequent product-page blocks.
+- Prevents #product-product > .row from swallowing the footer and shrinking it to a flex item on product pages.
+- Release metadata and asset cache markers synchronized to 8.6.7.
+
+8.6.6
+- Compatibility target synchronized to PHP 8.1–8.3 and CodeCart PRO 3.0.6.0 / ocStore 3.0.4.1 / OpenCart 3.x.
+- PHP diagnostics now enforce both boundaries: >= 7.4 and < 8.6.
+- Strict OFF improved: opening disabled theme settings no longer runs schema/runtime migrations; migrations run only for an enabled theme or when it is enabled on save.
+- Added explicit user_token validation to theme settings, import/preset/export access, blog administration and enhanced review administration.
+- Legacy blog SEO route resolver now remains inactive while the theme is OFF.
+- Release metadata and schema marker synchronized to 8.6.6.
+
+8.6.5
+- Fixed schema migration state so normal settings saves no longer roll the stored schema version backwards and rerun migrations.
+- Made runtime Event registration idempotent and limited uninstall cleanup to this theme's exact Event codes.
+- Removed automatic demo/starter blog content creation and obsolete dead settings/functions.
+- Fixed checkout safety: hiding coupon/voucher/reward controls no longer removes total extensions from calculation; digital checkout can never bypass OpenCart shipping requirements for physical products.
+- Guarded checkout-success and SEO/runtime injections so they run only when CodeCart PRO Theme is active and enabled.
+- Restored Quick View as a real configurable feature and exposed previously hidden product-card/floating-position settings in the admin UI.
+- Fixed mobile menu settings for search, contacts, account and worktime and restored the floating cart output.
+- Fixed floating left/right positioning on mobile by removing hard-coded right-side overrides.
+- Removed duplicate gallery JavaScript handler and unused PHP/JavaScript helpers.
+- Reworked blog SEO audit/form lookups and blog/review bulk actions to use bounded batch queries instead of avoidable N+1 database operations.
+- Required POST for settings import, preset application and SEO regeneration actions that modify data.
+- Updated admin table headers to the CodeCart PRO table standard with a blue top border and clear vertical separators.
+- Updated release metadata, documentation and compatibility target to PHP 7.4–8.3.
+
+8.6.4
+- Rebuilt the normal product gallery around one canonical responsive layout.
+- Main image now uses the available gallery width without a synthetic fixed-height canvas.
+- Removed all main-stage navigation controls; only the bottom thumbnail strip controls remain.
+- Enlarged and normalized thumbnails, added a clear active state and full-width horizontal scrolling.
+- Thumbnail arrows are static inside the bottom strip and disappear when no overflow exists.
+- Gallery switching now updates image ratio classes, ARIA state and modern-format picture sources together.
+- Zoom control is attached to the visible image instead of the outer empty container.
+- Product image originals under image/catalog remain untouched.
+- Updated storefront/admin assets and release metadata to version 8.6.4.
+
+Version 8.6.0
+- Fixed third-party featured_product path warning with an exact in-method OCMOD replacement.
+- Fixed category hero cache dimensions: uses the dedicated 1200x750 hero settings instead of legacy 90x90 category thumbnails.
+- Repaired empty storefront blog non-destructively and restored starter articles when no published articles are visible.
+- Added language fallback for blog article cards.
+- Persisted viewed products for 30 days and removed only true duplicate product modules.
+- Rebuilt the admin settings layout without DOM-wrapping grids; fixed Bootstrap row pseudo-elements, empty cells, narrow editors and missing spacing.
+- Localized diagnostic status badges and user-facing diagnostic values.
+
+CodeCart PRO Theme v8.6.0
+- Replaced the fragile featured_product.php OCMOD edit with a route-scoped compatibility Event.
+- Added a category view Event that generates a dedicated 1200x750 hero image instead of reusing the 90x90 category thumbnail.
+- Restored former blog demo cards as real editable multilingual database articles only when the dedicated blog is empty during upgrade.
+- Rebuilt the final admin layout rules: full-width editors, compact two-column settings, aligned rows and responsive repeaters.
+- Added dedicated category hero width and height settings.
+- Updated storefront/admin cache-busting to 8.6.0.
+
+CodeCart PRO Theme 8.5.6
+
+RU
+- Полностью переработана компоновка всей админки темы: исключены растянутые строки, узкие поля и пустые области рядом с высокими блоками.
+- Простые настройки автоматически группируются в компактную адаптивную сетку, а сложные редакторы, языковые вкладки, таблицы и помощники ссылок занимают полную ширину.
+- Главные слайдеры и промо-баннеры преобразованы в компактные раскрывающиеся секции; первый элемент открыт, остальные свёрнуты.
+- Добавлены компактные заголовки разделов с количеством настроек для лучшей ориентации.
+- Редакторы CSS/JS/HTML теперь всегда используют полную доступную ширину и корректно разворачиваются только по высоте.
+- Исправлена компоновка SEO, sitemap, hreflang, баннеров, выбора иконок, многоязычных полей и ссылок без больших пустых зон.
+- Для менеджера изображений добавлен компактный предпросмотр выбранного файла с сохранением стандартного выбора OpenCart.
+- Исправлены программные изменения полей: очистка изображения, быстрые ссылки, автопоиск и выбор иконки теперь отмечают форму как изменённую.
+- Боковая панель имеет независимую стабильную прокрутку; открыта только группа активной вкладки.
+- Сохранено изолированное подключение CSS/JS только на страницах CodeCart PRO.
+
+EN
+- Rebuilt the complete theme admin layout to eliminate stretched rows, narrow controls and empty areas beside tall settings.
+- Simple settings are grouped into a compact responsive grid, while editors, language tabs, tables and link helpers use the full width.
+- Hero slides and promo banners now use compact collapsible sections; the first item is open and the remaining items are collapsed.
+- Added compact section headers with setting counts for clearer navigation.
+- CSS/JS/HTML editors always use the available width and expand vertically only.
+- Fixed SEO, sitemap, hreflang, banner, icon picker, multilingual and link-helper layouts.
+- Added a compact OpenCart image-manager preview without replacing the standard picker.
+- Programmatic field updates now correctly mark the form as modified.
+- The sidebar uses independent stable scrolling and keeps only the active group open.
+- Admin assets remain isolated and route-scoped.
+
+CodeCart PRO Theme 8.5.5
+
+RU:
+- Удалена опасная OCMOD-вставка в начало featured_product::index(), вызывавшая Parse error в storage/modification.
+- Оставлена только точечная безопасная замена чтения request->get['path'] внутри explode().
+- Админка переведена на сбалансированный компактный макет: метка и поле в одной строке, две колонки простых настроек на широком экране.
+- Панель состояния темы возвращена в начало вкладки «Основные» и больше не переносится динамическими внутренними вкладками.
+- Автоматические внутренние вкладки отключены для «Основных» и «Кастомного кода», где они создавали дубли и нарушали порядок блоков.
+- Нижняя панель сохранения теперь появляется только при несохранённых изменениях.
+- Исправлены отступы, центрирование иконок, прокрутка внутреннего меню и размеры повторяющихся блоков баннеров/слайдов.
+
+EN:
+- Removed the unsafe OCMOD insertion at the start of featured_product::index() that caused a Parse error in storage/modification.
+- Kept only a targeted safe replacement for request->get['path'] inside explode().
+- Reworked the admin page into a balanced compact layout with labels and controls on one row and two columns of simple settings on wide screens.
+- Kept the theme status dashboard at the top of the General tab instead of moving it below dynamically generated tabs.
+- Disabled generated inner tabs for General and Custom Code where they duplicated sections and broke the intended order.
+- The bottom save panel is now shown only when there are unsaved changes.
+- Fixed spacing, icon alignment, sidebar scrolling and repeated slide/banner block sizing.
+
+CodeCart PRO Theme 8.5.5
+
+- Native OpenCart collapse command is translated and now fully hides/restores the OpenCart menu on the theme settings route.
+- Settings cards and code editors use the available width instead of narrow two-column cards.
+- Category artwork is cropped more decisively to remove visible source-image margins.
+RU:
+- Исправлено сворачивание системного меню OpenCart и внутреннего меню настроек темы; состояния сохраняются в localStorage.
+- Переведена штатная надпись «Collapse to icons» на язык админки.
+- Поиск настроек больше не обрезается боковой панелью; добавлена нормальная вертикальная прокрутка без прокрутки всей страницы.
+- Формы и редакторы кода переведены на широкую вертикальную компоновку без узких полей.
+- Исправлена совместимость featured_product.php с index($setting) и небезопасным обращением к request->get['path'].
+- Удалены фиктивные демо-статьи с href="#"; пустой блог теперь честно показывает отсутствие статей.
+- Нормализованы пути изображений блога, добавлен безопасный placeholder и устранен повторный SQL-запрос категории блога.
+- Изображения популярных категорий формируются квадратными и заполняют карточку через object-fit: cover без внутренних отступов.
+- Завершена адаптация блога, категорий, кнопок и информационных карточек к темной теме.
+
+EN:
+- Fixed OpenCart and theme settings sidebar collapsing with persistent localStorage state.
+- Localized the native “Collapse to icons” label.
+- Settings search is no longer clipped by the sidebar and now has contained vertical scrolling.
+- Forms and code editors use a wide vertical layout without cramped controls.
+- Fixed featured_product.php compatibility with index($setting) and unsafe request->get['path'] access.
+- Removed fake demo articles using href="#"; an empty blog now displays a proper empty state.
+- Normalized blog image paths, added a safe placeholder and removed a duplicate blog-category SQL query.
+- Popular-category images are generated square and fill their cards with object-fit: cover.
+- Completed dark-theme styling for blog, category, button and information surfaces.
+
+CodeCart PRO Theme 8.5.3
+
+Admin UI and reliability update:
+- Rebuilt the theme settings interface with a focused status dashboard, quick actions and clear warnings.
+- Replaced accumulated conflicting inline CSS patches with one route-scoped admin stylesheet.
+- Added an unsaved-changes indicator, sticky save bar, Ctrl/Cmd+S support and leave-page protection.
+- Added diagnostic counters and filters for healthy, warning and error states.
+- Corrected numeric field units: limits and counts no longer display an incorrect px suffix.
+- Improved sidebar navigation, search scrolling, responsive layout, tables, language tabs, code editors and accessibility.
+- Admin assets load only on the CodeCart PRO Theme settings route.
+- Version updated consistently to 8.5.5.
+
+CodeCart PRO Theme 8.5.2
+
+Исправления витрины и информационного режима
+- Полностью восстановлено боковое меню каталога и информационных страниц на компьютере, планшете и телефоне. Добавлены корректные backdrop, фокус, Escape, inert и вертикальная прокрутка вложенных категорий.
+- Переработана карточка товара: основное изображение занимает всю доступную ширину колонки, сохраняет пропорции и больше не ограничивается искусственной высотой или квадратным контейнером.
+- Информационный режим теперь формируется сервером: цена, количество, Купить, Купить в 1 клик, корзина и checkout не выводятся, а преимущества, наличие, описание, избранное, сравнение, Поделиться, похожие и просмотренные товары сохраняются.
+- Для обновления со старых сборок режим действует уже на первом открытии витрины до запуска миграции в админке; устаревшие ручные CSS/JS-фрагменты очищаются безопасной миграцией.
+- Исправлены ссылки блога и статей: используются явные route-URL, а SEO URL блога мигрирует с ошибочного ccp_blog=1 на route=extension/module/codecart_pro_blog. Удалено глобальное вмешательство в startup/seo_url.php.
+- Исправлено предупреждение Undefined array key path в стороннем featured_product.php безопасной OCMOD-проверкой отсутствующего параметра path.
+- Исправлена вертикальная прокрутка результатов поиска настроек в административной панели.
+- Обновлены визуальные стили блога, товарных карточек, информационных действий и тёмной темы.
+
+Критические исправления
+- Исправлена передача ассоциативных параметров между контроллерами OpenCart 3 на PHP 8.1–8.3: настройки передаются одним позиционным массивом без ошибки неизвестных именованных параметров.
+- Восстановлен вывод рекомендованных вручную, автоматически похожих, категорийных, просмотренных, новых, акционных и популярных товарных блоков в карточке товара.
+- Исправлены вызовы productBlocks, trackViewed, blog productBlock, saveExtra и getExtras в install.xml.
+- Устранено обращение к несуществующему Request::request в синхронизации количества корзины.
+- Исправлена XML-валидность sitemap hreflang через пространство имён xhtml.
+- Усилен режим OFF: при выключенной или невыбранной теме не работают блог, sitemap, отслеживание просмотренных товаров, SEO-вставки и рабочие storefront-контроллеры.
+
+Безопасность и надёжность
+- Исправлено обновление: повторная установка больше не сбрасывает сохранённые настройки, пользовательские CSS/JS и активный режим темы.
+- Добавлены проверки POST и same-origin для публичных операций быстрых заявок, обратного звонка, подписки, голосования и загрузки изображений отзывов.
+- Добавлено серверное ограничение частоты быстрых заказов и заявок обратного звонка по IP, а также составные индексы ip/date_added.
+- Добавлены ограничения размера импорта настроек и CSV, лимиты строк и безопасная обработка CSV-формул.
+- Добавлены access/modify-проверки и понятная диагностика отсутствующего хранилища для расширенных отзывов.
+- Добавлена безопасная миграция UNIQUE-индекса review_id без автоматического удаления дублирующих legacy-данных.
+- Проверены и сохранены SQL-whitelist для динамических таблиц, колонок и сортировки; входные строки экранируются, числа приводятся к int/float.
+- Удалены лишние изменения сторонних модулей; для featured_product оставлена только точечная совместимость с отсутствующим параметром path без изменения его бизнес-логики.
+- Все OCMOD-операции используют error="skip" и ограничиваются точными штатными файлами OpenCart/ocStore.
+
+Производительность
+- Убраны запросы второго изображения товара внутри циклов: используется одна пакетная выборка.
+- Убраны запросы расширенных данных отзывов внутри цикла: используется пакетная загрузка до 100 review_id.
+- Ограничено число категорий при автоматическом подборе товаров до 12, чтобы не создавать неограниченный fan-out SQL-запросов.
+- Добавлены пагинация заявок и вертикальная прокрутка поиска по настройкам темы.
+- Тяжёлые операции не запускаются при каждой загрузке страницы и отсутствуют cron/API/webhook-задачи.
+
+Совместимость и UX
+- Добавлен штатный «Информационный режим»: серверно и визуально отключает цены, количество, покупку, корзину и checkout, сохраняя контент, наличие, преимущества и товарные карусели.
+- Версия и диагностика согласованы с ocStore/OpenCart 3.0.x и PHP 7.4–8.3.
+- Исправлено универсальное определение главной категории: product_to_category.main_category, product.main_category_id, затем безопасный fallback.
+- Поля изображений используют менеджер изображений OpenCart и сохраняют относительный путь image/.
+- Пути изображений дополнительно валидируются перед выводом и Schema.org-разметкой.
+- Удалена вводящая в заблуждение кнопка «Проверить обновления», которая не выполняла проверку и открывала только главную страницу автора.
+- Обновлён heading_title с изолированным PRO-бейджем.
+- Добавлены документы ABOUT и INSTALL на русском и английском языках с обязательным предупреждением о полном backup.
+
+Важно
+CodeCart PRO Theme является самостоятельной темой витрины. Она не является надстройкой для UniShop2 и не может быть активной одновременно с UniShop2. При выключенном статусе или выборе другой темы её storefront-логика не применяется.
+
+CodeCart PRO Theme 8.4.8
+
+Исправлено принудительное включение темы и восстановлен корректный режим OFF.
+Исправлен идентификатор OCMOD и согласована версия 8.4.8 во всех основных файлах.
+Изолированы изменения header, footer, category, product, cart и checkout только для активной темы.
+Убрано глобальное скрытие купонов, сертификатов и бонусов другой темой.
+Ограничено изменение hasShipping только активным цифровым режимом темы.
+Упрощенный checkout выключен по умолчанию и обозначен как функция только для товаров без доставки.
+Удалены девять неиспользуемых настроек и связанные мертвые языковые ключи.
+Удалена неиспользуемая таблица настроек и опасное автоматическое удаление legacy-файлов.
+Удалены изменения структуры БД из публичных AJAX-контроллеров.
+Добавлены проверки активной темы, статуса, таблиц, входных данных, лимитов и существования отзывов.
+Добавлены проверки прав доступа для экспорта блога.
+Исправлено применение настроек категорий, главной страницы, производителей, SEO-текста и Schema.org.
+Убраны глобальные MutationObserver и браузерный перебор несуществующих AVIF, WebP и JXL-файлов.
+Убрано удаление srcset и восстановлена совместимость со сторонними галереями Magnific Popup.
+Ресайзы изображений переведены на стабильные размеры кеша без getimagesize на витрине.
+Добавлены width, height, loading и decoding для основных изображений.
+Удалено 146 точных дубликатов CSS.
+Крупный контроллер верхней панели перенесен из inline HTML в кешируемый JavaScript.
+Основной JavaScript и install.xml сокращены, тяжелая логика страницы товара изолирована активной темой.
+Добавлена документация по установке, обновлению, backup, checkout, кешу и тестированию.
+
+
+8.6.1
+- Redesigned the built-in review manager around the actual review content, rating, moderation state and store reply.
+- Added editable core review text, author, rating and status fields; moved service data to a separate read-only section.
+- Added review dashboard statistics, useful filters, bulk moderation, verified-purchase control and standard OpenCart image-manager rows.
+- Redesigned the built-in blog manager with summary cards, compact filters, separate content/SEO/publication/relations tabs and safer category editing.
+- Added localized blog and review administration labels for en-gb, ru-ru and uk-ua.
+- Corrected storefront review cards and completed dark-theme styles for the product rating panel, review form and review content.
+- Updated scoped admin and storefront assets to version 8.6.1.

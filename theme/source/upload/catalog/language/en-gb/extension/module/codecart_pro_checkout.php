@@ -1,0 +1,37 @@
+<?php
+$_['heading_title'] = 'Checkout';
+$_['text_simple_checkout'] = 'Checkout';
+$_['text_customer_saved'] = 'Contact details have been saved. Select a payment method.';
+$_['text_contact_data'] = 'Contact details';
+$_['text_contact_help'] = '';
+$_['text_payment_data'] = 'Payment';
+$_['text_confirm_data'] = 'Confirmation';
+$_['text_order_summary'] = 'Your order';
+$_['text_digital_instruction'] = 'After payment confirmation, the module archive is available for immediate download, and the license key is sent separately by email or SMS.';
+$_['text_no_shipping'] = 'Delivery is not required.';
+$_['text_loading'] = 'Loading...';
+$_['text_next_payment'] = 'Continue to payment';
+$_['text_reload_payment'] = 'Reload payment methods';
+$_['text_payment_wait'] = 'Fill in contact details and continue to payment.';
+$_['text_confirm_wait'] = 'Order confirmation will appear after selecting a payment method.';
+$_['text_edit_cart'] = 'Cart';
+$_['entry_customer_name'] = 'Name and surname';
+$_['entry_email'] = 'Email';
+$_['entry_telephone'] = 'Phone';
+$_['entry_comment'] = 'Comment';
+$_['placeholder_customer_name'] = 'Example: John Smith';
+$_['placeholder_email'] = 'Example: client@example.com';
+$_['placeholder_telephone'] = 'Example: +380671234567';
+$_['placeholder_comment'] = 'Order comment if needed';
+$_['error_theme_disabled'] = 'CodeCart PRO theme is disabled. Checkout is unavailable.';
+$_['error_simple_checkout_disabled'] = 'Checkout is disabled in the theme settings.';
+$_['error_shipping_required'] = 'The cart contains products that require delivery. Delivery can be disabled only for a fully digital cart. Disable delivery in the product card or use the standard delivery checkout.';
+$_['error_customer_name'] = 'Enter a name from 2 to 128 characters.';
+$_['error_email'] = 'Enter a valid email.';
+$_['error_telephone'] = 'Phone must contain from 5 to 32 characters.';
+$_['error_comment'] = 'The comment is too long. Maximum 1000 characters.';
+$_['error_payment_load'] = 'Could not load payment methods. Check payment settings and digital checkout mode.';
+$_['error_confirm_load'] = 'Could not load order confirmation. Check the selected payment method.';
+
+$_['text_remove_from_cart'] = 'Remove from cart';
+$_['error_cart_remove'] = 'Could not remove product from cart. Refresh the page and try again.';

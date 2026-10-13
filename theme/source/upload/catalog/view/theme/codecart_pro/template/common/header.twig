@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html dir="{{ direction }}" lang="{{ lang }}"{% if ccp_information_mode|default(0) %} class="ccp-information-mode"{% endif %}>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>{{ title }}</title>
+<base href="{{ base }}" />
+{% if ccp_dark_theme_status|default(0) %}
+<script id="ccp-theme-v694-dark-preload">(function(){try{var k='ccp_dark_theme';var v=null;try{v=localStorage.getItem(k);}catch(e){}if(v===null){var m=document.cookie.match(/(?:^|; )ccp_dark_theme=([^;]*)/);v=m?decodeURIComponent(m[1]):null;}var on=(v==='1'||v==='true')||(v===null&&{{ ccp_dark_theme_default|default(0) ? 'true' : 'false' }});document.documentElement.classList.toggle('ccp-dark-theme',!!on);document.documentElement.style.colorScheme=on?'dark':'';}catch(e){}})();</script>
+{% endif %}
+{% if description %}<meta name="description" content="{{ description }}" />{% endif %}
+{% if keywords %}<meta name="keywords" content="{{ keywords }}" />{% endif %}
+<script src="{{ ccp_jquery_path|default('catalog/view/theme/codecart_pro/javascript/jquery-3.7.1.min.js') }}"></script>
+<link href="catalog/view/javascript/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen" />
+<link href="catalog/view/javascript/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+<link href="catalog/view/theme/codecart_pro/stylesheet/codecart_pro.css?v=8.7.7" rel="stylesheet" />
+{% for style in styles %}<link href="{{ style.href }}" type="text/css" rel="{{ style.rel }}" media="{{ style.media }}" />{% endfor %}
+{% for script in scripts %}<script src="{{ script }}"></script>{% endfor %}
+{% for link in links %}<link href="{{ link.href }}" rel="{{ link.rel }}" />{% endfor %}
+{% for analytic in analytics %}{{ analytic }}{% endfor %}
+{% if ccp_seo_output|default('') %}{{ ccp_seo_output }}{% endif %}
+<style>
+{% set ccp_effective_container_width = ccp_container_width|default(1500) %}
+{% if ccp_effective_container_width < 1400 or ccp_effective_container_width in [1560, 1640] %}{% set ccp_effective_container_width = 1500 %}{% endif %}
+@font-face{font-family:'FontAwesome';src:url('catalog/view/javascript/font-awesome/fonts/fontawesome-webfont.woff2?v=4.7.0') format('woff2');font-weight:normal;font-style:normal;font-display:swap;}
+body.ccp-theme{--ccp-primary:{{ ccp_primary_color|default('#0057b7') }};--ccp-accent:{{ ccp_accent_color|default('#ffd700') }};--ccp-success:{{ ccp_success_color|default('#16a34a') }};--ccp-danger:{{ ccp_danger_color|default('#dc2626') }};--ccp-bg:{{ ccp_background_color|default('#f5f7fb') }};--ccp-page-side-bg:{{ ccp_page_side_background_color|default(ccp_background_color|default('#f5f7fb')) }};--ccp-text:{{ ccp_text_color|default('#1f2937') }};--ccp-price:{{ ccp_price_color|default('#0057b7') }};--ccp-old-price:{{ ccp_old_price_color|default('#9ca3af') }};--ccp-menu-bg:{{ ccp_menu_bg_color|default('#0057b7') }};--ccp-menu-text:{{ ccp_menu_text_color|default('#ffffff') }};--ccp-footer-bg:{{ ccp_footer_bg_color|default('#0f172a') }};--ccp-footer-text:{{ ccp_footer_text_color|default('#cbd5e1') }};--ccp-sticker-sale:{{ ccp_sticker_sale_color|default('#dc2626') }};--ccp-sticker-new:{{ ccp_sticker_new_color|default('#16a34a') }};--ccp-sticker-hit:{{ ccp_sticker_hit_color|default('#f59e0b') }};--ccp-container:{{ ccp_effective_container_width }}px;--ccp-element-radius:{{ ccp_element_radius|default('14') }}px;--ccp-cols-desktop:{{ ccp_category_columns_desktop|default(5) }};--ccp-cols-tablet:{{ ccp_category_columns_tablet|default(3) }};--ccp-cols-mobile:{{ ccp_category_columns_mobile|default(2) }};--ccp-title-lines:{{ ccp_card_title_lines|default(2) }};--ccp-radius:{{ ccp_card_radius|default('16') }}px;--ccp-button-radius:{{ ccp_button_radius|default('12') }}px;--ccp-dark-bg:{{ ccp_dark_theme_background|default('#0f172a') }};--ccp-dark-surface:{{ ccp_dark_theme_surface|default('#111827') }};--ccp-dark-card:{{ ccp_dark_theme_card|default('#1e293b') }};--ccp-dark-text:{{ ccp_dark_theme_text|default('#f8fafc') }};--ccp-dark-muted:{{ ccp_dark_theme_muted|default('#cbd5e1') }};--ccp-dark-border:{{ ccp_dark_theme_border|default('#334155') }};--ccp-surface-soft:#f8fafc}
+body.ccp-theme{background-color:var(--ccp-page-side-bg,var(--ccp-bg));{% if ccp_page_side_background_image|default('') %}background-image:url('{{ ccp_page_side_background_image|e('html_attr') }}');background-repeat:no-repeat;background-position:center top;background-size:cover;{% endif %}}
+{% set ccp_mobile_banner_bp = ccp_mobile_hide_banner_breakpoint|default(767) %}
+{% if ccp_mobile_hide_home_slider_status|default(0) or ccp_mobile_hide_home_banners_status|default(0) or ccp_mobile_hide_native_slideshow_status|default(0) or ccp_mobile_hide_native_banners_status|default(0) %}
+/* CodeCart PRO mobile banner visibility */
+@media (max-width:{{ ccp_mobile_banner_bp }}px){
+{% if ccp_mobile_hide_home_slider_status|default(0) %}body.ccp-theme .ccp-home-builder .ccp-hero{display:none!important;}{% endif %}
+{% if ccp_mobile_hide_home_banners_status|default(0) %}body.ccp-theme .ccp-home-builder .ccp-home-promos{display:none!important;}{% endif %}
+{% if ccp_mobile_hide_native_slideshow_status|default(0) %}body.ccp-theme [id^="slideshow"],body.ccp-theme .swiper-viewport:has([id^="slideshow"]){display:none!important;}{% endif %}
+{% if ccp_mobile_hide_native_banners_status|default(0) %}body.ccp-theme [id^="banner"],body.ccp-theme .swiper-viewport:has([id^="banner"]){display:none!important;}{% endif %}
+}
+{% endif %}
+{% if ccp_enable_custom_css|default(0) %}
+{% if ccp_custom_css_global|default('') %}{{ ccp_custom_css_global }}{% endif %}
+{% if ccp_custom_css_header|default('') %}{{ ccp_custom_css_header }}{% endif %}
+{% if ccp_custom_css_menu|default('') %}{{ ccp_custom_css_menu }}{% endif %}
+{% if ccp_custom_css_product_card|default('') %}{{ ccp_custom_css_product_card }}{% endif %}
+{% if ccp_custom_css_category|default('') %}{{ ccp_custom_css_category }}{% endif %}
+{% if ccp_custom_css_product|default('') %}{{ ccp_custom_css_product }}{% endif %}
+{% if ccp_custom_css_mobile|default('') %}{{ ccp_custom_css_mobile }}{% endif %}
+{% if ccp_custom_css_checkout|default('') %}{{ ccp_custom_css_checkout }}{% endif %}
+{% if ccp_custom_css|default('') %}{{ ccp_custom_css }}{% endif %}
+{% endif %}
+</style>
+<script>window.CodeCartProTheme={informationMode:{{ ccp_information_mode|default(0) ? 1 : 0 }},liveSearch:{{ (ccp_enable_live_search is defined ? ccp_enable_live_search : 1) ? 1 : 0 }},liveSearchLimit:{{ ccp_live_search_limit|default(6) }},liveSearchMinChars:{{ ccp_live_search_min_chars|default(2) }},popupStatus:{{ ccp_popup_notification_status|default(0) ? 1 : 0 }},popupDelay:{{ ccp_popup_notification_delay|default(2500) }},popupText:{{ (ccp_popup_notification_text[ccp_language_id]|default(''))|json_encode }},cardFullClick:{{ (ccp_card_full_click is defined ? ccp_card_full_click : 1) ? 1 : 0 }},quantitySwitch:{{ (ccp_product_quantity_switch is defined ? ccp_product_quantity_switch : 1) ? 1 : 0 }},cartDrawer:{{ (ccp_cart_drawer_status is defined ? ccp_cart_drawer_status : 1) ? 1 : 0 }},cartToast:{{ (ccp_cart_toast_status is defined ? ccp_cart_toast_status : 1) ? 1 : 0 }},directCheckoutAfterAdd:{{ (ccp_direct_checkout_after_add_status is defined ? ccp_direct_checkout_after_add_status : 0) ? 1 : 0 }},checkoutUrl:{{ (ccp_checkout_url|default('index.php?route=checkout/checkout'))|json_encode }},notificationPosition:{{ (ccp_notification_position|default('top-right'))|json_encode }},textLiveEmpty:{{ (ccp_text_live_search_empty|default('No results found'))|json_encode }},textLiveProducts:{{ (ccp_text_live_search_products|default('Products'))|json_encode }},textLiveCategories:{{ (ccp_text_live_search_categories|default('Categories'))|json_encode }},textLoading:{{ (ccp_text_loading|default('Loading...'))|json_encode }},textProductNotFound:{{ (ccp_text_product_not_found|default('Product not found'))|json_encode }},textLoadError:{{ (ccp_text_load_error|default('Loading error'))|json_encode }},textSendError:{{ (ccp_text_send_error|default('Sending error'))|json_encode }},textSelectedOptions:{{ (ccp_text_selected_options|default('Selected options'))|json_encode }},textUploadError:{{ (ccp_text_upload_error|default('File upload error'))|json_encode }},ajaxCatalog:{{ (ccp_ajax_catalog_status is defined ? ccp_ajax_catalog_status : 1) ? 1 : 0 }},mobileBannerBreakpoint:{{ ccp_mobile_hide_banner_breakpoint|default(767) }},nativeBannerFitMode:{{ (ccp_native_banner_fit_mode|default('height'))|json_encode }},mobileHideHomeSlider:{{ ccp_mobile_hide_home_slider_status|default(0) ? 1 : 0 }},mobileHideHomeBanners:{{ ccp_mobile_hide_home_banners_status|default(0) ? 1 : 0 }},mobileHideNativeSlideshow:{{ ccp_mobile_hide_native_slideshow_status|default(0) ? 1 : 0 }},mobileHideNativeBanners:{{ ccp_mobile_hide_native_banners_status|default(0) ? 1 : 0 }},darkTheme:{{ ccp_dark_theme_status|default(0) ? 1 : 0 }},darkDefault:{{ ccp_dark_theme_default|default(0) ? 1 : 0 }},darkToggle:{{ ccp_dark_theme_show_toggle|default(1) ? 1 : 0 }},cartAddPopup:{{ (ccp_cart_add_popup_status is defined ? ccp_cart_add_popup_status : 1) ? 1 : 0 }},cartAddPopupTitle:{{ (ccp_text_cart_popup_title|default('Кошик'))|json_encode }},cartAddPopupContinue:{{ (ccp_text_cart_popup_continue|default('Продовжити покупки'))|json_encode }},cartAddPopupCheckout:{{ (ccp_text_cart_popup_checkout|default('Перейти до оформлення замовлення'))|json_encode }},cartAddPopupPriceLabel:{{ (ccp_text_cart_popup_price|default('Ціна за шт'))|json_encode }},cartAddPopupTotalLabel:{{ (ccp_text_cart_popup_total|default('Разом'))|json_encode }},cartAddPopupQtyLabel:{{ (ccp_text_cart_popup_qty|default('Кількість'))|json_encode }}};</script>
+{% if ccp_enable_custom_html|default(0) and ccp_custom_html_head|default('') %}{{ ccp_custom_html_head }}{% endif %}
+{% if ccp_enable_custom_js|default(0) and ccp_custom_js_head|default('') %}<script>{{ ccp_custom_js_head }}</script>{% endif %}
+
+</head>
+{% set notice = ccp_header_notice[ccp_language_id]|default('') %}
+{% set worktime = ccp_header_worktime[ccp_language_id]|default('') %}
+{% set ccp_header_phone_main = ccp_header_phone|default('')|trim %}
+{% set ccp_header_phone_second = '' %}
+{% set ccp_header_email_main = ccp_header_email|default('')|trim %}
+{% set ccp_has_header_phones = (ccp_header_show_phone is defined ? ccp_header_show_phone : 1) and ccp_header_phone_main %}
+{% set ccp_has_header_email = (ccp_header_show_email is defined ? ccp_header_show_email : 1) and ccp_header_email_main %}
+{% set ccp_has_header_worktime = (ccp_header_show_worktime is defined ? ccp_header_show_worktime : 1) and worktime %}
+{% set ccp_has_header_contacts = ccp_has_header_phones or ccp_has_header_email or ccp_has_header_worktime %}
+{% set ccp_body_route_class = class|default('') %}
+{% if not ccp_body_route_class %}{% set ccp_body_route_class = ccp_route_class|default('') %}{% endif %}
+<body class="{{ ccp_body_route_class }} ccp-theme ccp-bs3 {% if (ccp_checkout_style_status is defined ? ccp_checkout_style_status : 1) %}ccp-checkout-style {% endif %}{% if (ccp_checkout_compact_status is defined ? ccp_checkout_compact_status : 1) %}ccp-checkout-compact {% endif %}ccp-header-{{ ccp_header_layout|default('classic') }} ccp-menu-{{ ccp_menu_style|default('horizontal') }} ccp-menu-width-{{ ccp_menu_width|default('short') }}{% if (ccp_sticky_header is defined ? ccp_sticky_header : 1) %} ccp-sticky-header{% endif %}{% if (ccp_menu_sticky is defined ? ccp_menu_sticky : 0) %} ccp-sticky-menu{% endif %}{% if (ccp_compact_header is defined ? ccp_compact_header : 0) %} ccp-compact-header{% endif %}{% if not (ccp_card_show_description is defined ? ccp_card_show_description : 1) %} ccp-hide-card-desc{% endif %}{% if not (ccp_card_show_rating is defined ? ccp_card_show_rating : 1) %} ccp-hide-card-rating{% endif %}{% if not (ccp_card_show_stock is defined ? ccp_card_show_stock : 1) %} ccp-hide-card-stock{% endif %}{% if not (ccp_card_show_quick_actions is defined ? ccp_card_show_quick_actions : 1) %} ccp-hide-card-actions{% endif %}{% if (ccp_product_sticky_buy is defined ? ccp_product_sticky_buy : 1) %} ccp-sticky-buy{% endif %}{% if not (ccp_card_shadow is defined ? ccp_card_shadow : 1) %} ccp-no-shadow{% endif %}{% if (ccp_mobile_bottom_bar is defined ? ccp_mobile_bottom_bar : 1) %} ccp-mobile-bottom-enabled{% endif %}{% if (ccp_enable_quick_view is defined ? ccp_enable_quick_view : 0) %} ccp-enable-quick-view{% endif %}{% if (ccp_enable_quick_order is defined ? ccp_enable_quick_order : 1) %} ccp-enable-quick-order{% endif %}{% if ccp_enable_stickers|default(1) %} ccp-enable-stickers{% endif %}{% if (ccp_enable_stock_indicator is defined ? ccp_enable_stock_indicator : 1) %} ccp-enable-stock-indicator{% endif %}{% if (ccp_enable_live_price is defined ? ccp_enable_live_price : 1) %} ccp-enable-live-price{% endif %}{% if (ccp_card_full_click is defined ? ccp_card_full_click : 1) %} ccp-card-full-click-enabled{% endif %} ccp-card-ratio-{{ ccp_card_image_ratio|default('1x1')|replace({'x':'x'}) }}{% if (ccp_category_sticky_toolbar is defined ? ccp_category_sticky_toolbar : 1) %} ccp-category-sticky-toolbar-enabled{% endif %}{% if ccp_mobile_hide_home_slider_status|default(0) %} ccp-hide-home-slider-mobile{% endif %}{% if ccp_mobile_hide_home_banners_status|default(0) %} ccp-hide-home-banners-mobile{% endif %}{% if ccp_mobile_hide_native_slideshow_status|default(0) %} ccp-hide-native-slideshow-mobile{% endif %}{% if ccp_mobile_hide_native_banners_status|default(0) %} ccp-hide-native-banners-mobile{% endif %} ccp-native-banner-fit-{{ ccp_native_banner_fit_mode|default('height') }}{% if ccp_dark_theme_status|default(0) and ccp_dark_theme_default|default(0) %} ccp-dark-theme{% endif %}{% if ccp_information_mode|default(0) %} ccp-information-mode{% endif %}">
+{% if ccp_enable_custom_html|default(0) and ccp_custom_html_after_body|default('') %}{{ ccp_custom_html_after_body }}{% endif %}
+{% if ccp_enable_custom_html|default(0) and ccp_custom_html_header_top|default('') %}{{ ccp_custom_html_header_top }}{% endif %}
+{% if (ccp_show_top_bar is defined ? ccp_show_top_bar : 1) %}
+<nav id="top" class="ccp-topline ccp-header-tools">
+  <div class="container">
+    <div class="ccp-tools-strip">
+      {% if notice %}<span class="ccp-notice ccp-tools-notice"><i class="fa fa-bolt"></i> {{ notice }}</span>{% endif %}
+      <span class="ccp-tools-spacer"></span>
+      {% if not ccp_information_mode|default(0) %}<span class="ccp-tools-currency">{{ currency }}</span>{% endif %}
+      <span class="ccp-tools-language">{{ language }}</span>
+      <a class="ccp-tool-btn" href="{{ wishlist }}" id="wishlist-total" title="{{ ccp_text_wishlist|default(text_wishlist|default('Wishlist')) }}"><i class="fa fa-heart-o"></i></a>
+      <a class="ccp-tool-btn" href="{{ ccp_compare|default('index.php?route=product/compare') }}" title="{{ ccp_text_floating_compare|default('Compare') }}"><i class="fa fa-bar-chart"></i></a>
+      <div class="dropdown ccp-tool-account">
+        <a href="{{ account }}" title="{{ text_account }}" class="ccp-tool-btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-user-o"></i></a>
+        <ul class="dropdown-menu dropdown-menu-right">{% if logged %}<li><a class="ccp-dropdown-item" href="{{ account }}">{{ text_account }}</a></li><li><a class="ccp-dropdown-item" href="{{ order }}">{{ text_order }}</a></li><li><a class="ccp-dropdown-item" href="{{ transaction }}">{{ text_transaction }}</a></li><li><a class="ccp-dropdown-item" href="{{ download }}">{{ text_download }}</a></li><li><a class="ccp-dropdown-item" href="{{ logout }}">{{ text_logout }}</a></li>{% else %}<li><a class="ccp-dropdown-item" href="{{ register }}">{{ text_register }}</a></li><li><a class="ccp-dropdown-item" href="{{ login }}">{{ text_login }}</a></li>{% endif %}</ul>
+      </div>
+      <button type="button" class="ccp-tool-btn ccp-tool-menu ccp-tool-info-menu" data-ccp-info-menu-toggle aria-controls="ccp-info-menu" title="{{ ccp_text_information_menu|default('Articles') }}"><i class="fa fa-bars"></i></button>
+    </div>
+  </div>
+</nav>
+{% endif %}
+{# CodeCart PRO Theme v8.7.7 stable topbar dropdown controller #}
+
+
+<header class="ccp-header ccp-header-compact-shop">
+  <div class="container">
+    <div class="ccp-header-main-row{% if not ccp_has_header_contacts %} ccp-header-main-row-no-contacts ccp-header-main-row-no-phones{% endif %}">
+      <div class="ccp-logo-wrap"><div id="logo">{% if logo %}<a href="{{ home }}"><img src="{{ ccp_logo_cached|default('') ? ccp_logo_cached : logo }}" title="{{ name }}" alt="{{ name }}" class="img-responsive" width="260" height="80" decoding="async" /></a>{% else %}<h1><a href="{{ home }}">{{ name }}</a></h1>{% endif %}</div></div>
+      <div class="ccp-header-center">
+        <button type="button" class="ccp-catalog-toggle" data-ccp-mobile-menu-toggle aria-controls="ccp-mobile-menu"><i class="fa fa-bars"></i><span>{{ ccp_text_catalog_short|default('Catalog') }}</span></button>
+        <div class="ccp-search-wrap ccp-search-{{ ccp_header_search_mode|default('wide') }}">{{ search }}</div>
+      </div>
+      {% if ccp_has_header_contacts %}
+      <div class="ccp-header-contacts ccp-header-phones">
+        {% if ccp_has_header_email %}<a class="ccp-header-email" href="{{ ccp_contact|default(contact) }}" rel="nofollow"><i class="fa fa-envelope-o"></i><span>{{ ccp_text_write_email|default(text_contact|default('Contact')) }}</span></a>{% endif %}
+        {% if ccp_has_header_phones %}<a class="ccp-header-phone" href="tel:{{ ccp_header_phone_main|replace({' ':'','(':'',')':'','-':''}) }}"><i class="fa fa-phone"></i><span>{{ ccp_header_phone_main }}</span></a>{% endif %}
+        {% if ccp_has_header_phones and ccp_header_phone_second and ccp_header_phone_second != ccp_header_phone_main %}<a class="ccp-header-phone ccp-header-phone-second" href="tel:{{ ccp_header_phone_second|replace({' ':'','(':'',')':'','-':''}) }}"><i class="fa fa-phone"></i><span>{{ ccp_header_phone_second }}</span></a>{% endif %}
+        {% if ccp_has_header_worktime %}<span class="ccp-header-worktime"><i class="fa fa-clock-o"></i><span>{{ worktime }}</span></span>{% endif %}
+      </div>
+      {% endif %}
+      <div class="ccp-header-cart-slot">
+        {% if ccp_has_header_contacts %}
+          {% if ccp_has_header_phones %}
+            <a class="ccp-header-contact-link ccp-header-contact-link-phone" href="tel:{{ ccp_header_phone_main|replace({' ':'','(':'',')':'','-':''}) }}" aria-label="{{ ccp_header_phone_main|e('html_attr') }}" title="{{ ccp_header_phone_main|e('html_attr') }}"><i class="fa fa-phone"></i><span>{{ ccp_header_phone_main }}</span></a>
+          {% elseif ccp_has_header_email %}
+            <a class="ccp-header-contact-link ccp-header-contact-link-email" href="mailto:{{ ccp_header_email_main }}" aria-label="{{ ccp_header_email_main|e('html_attr') }}" title="{{ ccp_header_email_main|e('html_attr') }}"><i class="fa fa-envelope-o"></i><span>{{ ccp_header_email_main }}</span></a>
+          {% endif %}
+        {% endif %}
+        {% if not ccp_information_mode|default(0) %}
+        <a class="ccp-header-cart-link" href="{{ shopping_cart|default(ccp_cart|default('index.php?route=checkout/cart')) }}" aria-label="{{ ccp_text_cart_short|default(text_shopping_cart|default('Cart')) }}" title="{{ ccp_text_cart_short|default(text_shopping_cart|default('Cart')) }}" data-ccp-cart-label="{{ ccp_text_cart_short|default(text_shopping_cart|default('Cart'))|e('html_attr') }}"><i class="fa fa-shopping-cart"></i><span class="ccp-header-cart-label">{{ ccp_text_cart_short|default(text_shopping_cart|default('Cart')) }}</span><b class="ccp-header-cart-label-force" aria-hidden="true">{{ ccp_text_cart_short|default(text_shopping_cart|default('Cart')) }}</b></a>
+        <div class="ccp-cart-wrap ccp-cart-compact ccp-cart-native-hidden" aria-hidden="true" inert>{{ cart }}</div>
+        {% endif %}
+      </div>
+    </div>
+    <div class="ccp-header-action-row ccp-header-action-row-mobile">
+      <button type="button" class="ccp-catalog-toggle" data-ccp-mobile-menu-toggle aria-controls="ccp-mobile-menu"><i class="fa fa-bars"></i><span>{{ ccp_text_catalog_short|default('Catalog') }}</span></button>
+      <div class="ccp-search-wrap ccp-search-{{ ccp_header_search_mode|default('wide') }}">{{ search|replace({'id="search"':'id="search-mobile"'}) }}</div>
+    </div>
+  </div>
+</header>
+<div class="ccp-menu-wrap">
+  <div class="container ccp-menu-container">
+    <div class="ccp-menu-inner">
+      {% if ccp_mega_menu_status|default(1) and ccp_mega_menu_source|default('codecart') != 'native' and ccp_mega_menu|default('') %}
+        {{ ccp_mega_menu }}
+        {% if ccp_mega_menu_source|default('codecart') == 'both' and ccp_menu_show_categories|default(1) %}<div class="ccp-menu-native ccp-menu-native-secondary">{{ menu }}</div>{% endif %}
+      {% else %}
+        {% if ccp_menu_show_home|default(1) %}<a class="ccp-menu-home" href="{{ home }}" aria-label="{{ text_home|default('Home') }}" title="{{ text_home|default('Home') }}"><i class="fa fa-home" aria-hidden="true"></i></a>{% endif %}
+        {% if ccp_menu_show_categories|default(1) %}<div class="ccp-menu-native">{{ menu }}</div>{% endif %}
+        {% if ccp_blog_status|default(0) %}<a class="ccp-blog-menu-link hidden-xs hidden-sm hidden-md" href="{{ ccp_blog_href }}">{{ ccp_blog_menu_title[ccp_language_id]|default('Blog') }}</a>{% endif %}
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="ccp-mobile-panel" tabindex="-1" id="ccp-mobile-menu" aria-labelledby="ccp-mobile-menu-title" aria-hidden="true" inert>
+  <div class="ccp-mobile-panel-header"><h5 id="ccp-mobile-menu-title">{{ name }}</h5><button type="button" class="close" data-ccp-mobile-menu-close aria-label="{{ ccp_button_close|default('Close') }}"><span aria-hidden="true">&times;</span></button></div>
+  <div class="ccp-mobile-panel-body">
+    {% if ccp_mobile_menu_show_categories|default(1) %}
+      <div class="ccp-mobile-menu-native ccp-mobile-menu-catalog-only">{% if ccp_mega_menu_status|default(1) and ccp_mega_menu|default('') %}{{ ccp_mega_menu }}{% else %}{{ menu }}{% endif %}</div>
+    {% endif %}
+    {% if ccp_mobile_menu_show_blog|default(1) and ccp_blog_status|default(0) %}
+      <a class="ccp-mobile-menu-link ccp-mobile-menu-blog-link" href="{{ ccp_blog_href }}"><i class="fa fa-newspaper-o"></i> {{ ccp_blog_menu_title[ccp_language_id]|default('Blog') }}</a>
+    {% endif %}
+    {% if ccp_mobile_menu_show_search|default(1) %}<a class="ccp-mobile-menu-link ccp-mobile-menu-search-link" href="{{ ccp_search|default('index.php?route=product/search') }}"><i class="fa fa-search"></i> {{ ccp_text_search|default('Search') }}</a>{% endif %}
+    {% if ccp_mobile_menu_show_contacts|default(1) %}<a class="ccp-mobile-menu-link ccp-mobile-menu-contact-link" href="{{ contact }}"><i class="fa fa-phone"></i> {{ text_contact|default('Contact') }}</a>{% endif %}
+    {% if ccp_mobile_menu_show_account|default(1) %}<a class="ccp-mobile-menu-link ccp-mobile-menu-account-link" href="{{ account }}"><i class="fa fa-user-o"></i> {{ text_account|default('Account') }}</a>{% endif %}
+    {% if ccp_has_header_worktime %}<span class="ccp-mobile-menu-link ccp-mobile-menu-worktime"><i class="fa fa-clock-o"></i> {{ worktime }}</span>{% endif %}
+  </div>
+</div>
+
+<div class="ccp-mobile-panel ccp-info-panel" tabindex="-1" id="ccp-info-menu" aria-labelledby="ccp-info-menu-title" aria-hidden="true" inert>
+  <div class="ccp-mobile-panel-header"><h5 id="ccp-info-menu-title">{{ ccp_text_information_menu|default('Articles') }}</h5><button type="button" class="close" data-ccp-info-menu-close aria-label="{{ ccp_button_close|default('Close') }}"><span aria-hidden="true">&times;</span></button></div>
+  <div class="ccp-mobile-panel-body">
+    {% if ccp_information_links is defined and ccp_information_links %}
+      {% for ccp_information_link in ccp_information_links %}<a class="ccp-mobile-menu-link" href="{{ ccp_information_link.href }}"><i class="fa fa-file-text-o"></i> {{ ccp_information_link.title }}</a>{% endfor %}
+    {% endif %}
+    {% if ccp_blog_status|default(0) %}<a class="ccp-mobile-menu-link" href="{{ ccp_blog_href }}"><i class="fa fa-newspaper-o"></i> {{ ccp_blog_menu_title[ccp_language_id]|default('Blog') }}</a>{% endif %}
+    {% if not (ccp_information_links is defined and ccp_information_links) and not ccp_blog_status|default(0) %}<a class="ccp-mobile-menu-link" href="{{ contact }}"><i class="fa fa-phone"></i> {{ text_contact|default('Contact') }}</a>{% endif %}
+  </div>
+</div>
+
+{% if not ccp_information_mode|default(0) %}
+<div class="ccp-cart-popup" id="ccp-cart-popup" aria-hidden="true">
+  <div class="ccp-cart-popup__backdrop" data-ccp-cart-popup-close></div>
+  <div class="ccp-cart-popup__dialog" role="dialog" aria-modal="true" aria-labelledby="ccp-cart-popup-title">
+    <div class="ccp-cart-popup__header">
+      <h4 class="ccp-cart-popup__title" id="ccp-cart-popup-title">{{ ccp_text_cart_popup_title|default('Кошик') }}</h4>
+      <button type="button" class="ccp-cart-popup__close" data-ccp-cart-popup-close aria-label="{{ ccp_button_close|default('Close') }}">&times;</button>
+    </div>
+    <div class="ccp-cart-popup__body">
+      <div class="ccp-cart-popup__product">
+        <div class="ccp-cart-popup__image-wrap"><img src="" alt="" class="ccp-cart-popup__image" width="80" height="80" loading="lazy" decoding="async"></div>
+        <div class="ccp-cart-popup__name-wrap"><a href="#" class="ccp-cart-popup__name"></a></div>
+        <div class="ccp-cart-popup__qty-wrap">
+          <div class="ccp-cart-popup__meta-label">{{ ccp_text_cart_popup_qty|default('Кількість') }}</div>
+          <div class="ccp-cart-popup__qty"><span class="ccp-cart-popup__qty-btn">−</span><span class="ccp-cart-popup__qty-value">1</span><span class="ccp-cart-popup__qty-btn">+</span></div>
+        </div>
+        <div class="ccp-cart-popup__price-wrap">
+          <div class="ccp-cart-popup__meta-label">{{ ccp_text_cart_popup_price|default('Ціна за шт') }}</div>
+          <div class="ccp-cart-popup__price"></div>
+        </div>
+        <div class="ccp-cart-popup__total-wrap">
+          <div class="ccp-cart-popup__meta-label">{{ ccp_text_cart_popup_total|default('Разом') }}</div>
+          <div class="ccp-cart-popup__total"></div>
+        </div>
+      </div>
+      <div class="ccp-cart-popup__footer-row">
+        <div class="ccp-cart-popup__summary"><span class="ccp-cart-popup__summary-label">{{ ccp_text_cart_popup_total|default('Разом') }}:</span> <span class="ccp-cart-popup__summary-value"></span></div>
+        <div class="ccp-cart-popup__actions">
+          <button type="button" class="btn ccp-cart-popup__continue" data-ccp-cart-popup-close>{{ ccp_text_cart_popup_continue|default('Продовжити покупки') }}</button>
+          <a href="{{ ccp_checkout_url|default('index.php?route=checkout/checkout') }}" class="btn ccp-cart-popup__checkout">{{ ccp_text_cart_popup_checkout|default('Перейти до оформлення замовлення') }}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+

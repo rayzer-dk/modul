@@ -1,0 +1,307 @@
+{{ header }}
+{% set ccp_information_mode_active = ccp_information_mode|default(0) ? 1 : 0 %}
+{% set ccp_stock_indicator_active = (ccp_enable_stock_indicator is defined ? ccp_enable_stock_indicator : 1) and (ccp_card_show_stock is defined ? ccp_card_show_stock : 1) %}
+{% set ccp_live_price_active = ccp_enable_live_price is defined ? ccp_enable_live_price : 1 %}
+{% set ccp_product_show_benefits_active = ccp_product_show_benefits is defined ? ccp_product_show_benefits : 1 %}
+{% set ccp_product_show_actions_active = ccp_product_show_actions is defined ? ccp_product_show_actions : 1 %}
+{% set ccp_product_quantity_switch_active = ccp_product_quantity_switch is defined ? ccp_product_quantity_switch : 1 %}
+{% set ccp_trust_badges_value = ccp_product_trust_badges[ccp_language_id]|default('') %}
+{% set ccp_delivery_text_value = ccp_product_delivery_text[ccp_language_id]|default('') %}
+{% set ccp_return_text_value = ccp_product_return_text[ccp_language_id]|default('') %}
+{% if ccp_trust_badges_value == '' %}{% set ccp_trust_badges_value = ccp_text_trust_badges_default|default('') %}{% endif %}
+{% if ccp_delivery_text_value == '' %}{% set ccp_delivery_text_value = ccp_text_delivery_body_default|default('') %}{% endif %}
+{% if ccp_return_text_value == '' %}{% set ccp_return_text_value = ccp_text_license_body_default|default('') %}{% endif %}
+<div class="ccp-breadcrumb-wrap"><div class="container"><ul class="breadcrumb">{% for breadcrumb in breadcrumbs %}{% set ccp_breadcrumb_label = breadcrumb.text|striptags|trim %}<li><a href="{{ breadcrumb.href }}"{% if not ccp_breadcrumb_label %} aria-label="{{ ccp_text_home|default(text_home|default('Home')) }}" title="{{ ccp_text_home|default(text_home|default('Home')) }}"{% endif %}>{{ breadcrumb.text }}</a></li>{% endfor %}</ul></div></div>
+
+{% if ccp_schema_breadcrumbs_status|default(1) and breadcrumbs %}<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{% for breadcrumb in breadcrumbs %}{"@type":"ListItem","position":{{ loop.index }},"name":{{ breadcrumb.text|json_encode }},"item":{{ breadcrumb.href|json_encode }}}{% if not loop.last %},{% endif %}{% endfor %}]}</script>{% endif %}
+<div id="product-product" class="container" role="main">
+  <div class="row">{{ column_left }}{% if column_left and column_right %}{% set class = 'col-sm-6' %}{% elseif column_left or column_right %}{% set class = 'col-sm-9' %}{% else %}{% set class = 'col-sm-12' %}{% endif %}
+    <div id="content" class="{{ class }}">{{ content_top }}
+      <div class="ccp-product-page">
+        <div class="ccp-product-header">
+          <h1 class="ccp-product-title-top">{{ heading_title }}</h1>
+          {% if manufacturer or model or reward %}<div class="ccp-product-meta ccp-product-meta-top">{% if manufacturer %}<span>{{ text_manufacturer }} <a href="{{ manufacturers }}">{{ manufacturer }}</a></span>{% endif %}{% if manufacturer and (model or reward) %} · {% endif %}{% if model %}<span>{{ text_model }} {{ model }}</span>{% endif %}{% if reward %}{% if manufacturer or model %} · {% endif %}<span>{{ text_reward }} {{ reward }}</span>{% endif %}</div>{% endif %}
+        </div>
+        <div class="ccp-product-main">
+          <div class="ccp-product-gallery-column">
+            <div class="ccp-product-gallery ccp-gallery-{{ ccp_product_gallery_mode|default('clean') }} ccp-gallery-ratio-{{ ccp_product_gallery_ratio|default('4x3') }}" data-ccp-gallery data-ccp-gallery-version="8.7.7">
+            {% set ccp_thumb_count = (thumb ? 1 : 0) + (images ? images|length : 0) %}
+            {% set ccp_gallery_dynamic_urls = [] %}
+            {% if thumb %}
+              {% set ccp_product_main_large = ccp_product_main_large is defined and ccp_product_main_large ? ccp_product_main_large : (popup ? popup : thumb) %}
+              {% set ccp_product_main_thumb = ccp_product_main_thumb is defined and ccp_product_main_thumb ? ccp_product_main_thumb : thumb %}
+              {% set ccp_product_main_image_src = ccp_product_main_large %}
+              {% set ccp_gallery_dynamic_urls = ccp_gallery_dynamic_urls|merge([ccp_product_main_large]) %}
+              {% for image in images %}{% set ccp_gallery_large_url = image.popup ? image.popup : image.thumb %}{% set ccp_gallery_main_url = image.ccp_main|default(ccp_gallery_large_url) %}{% set ccp_gallery_dynamic_urls = ccp_gallery_dynamic_urls|merge([ccp_gallery_large_url, ccp_gallery_main_url]) %}{% endfor %}
+              <div class="ccp-gallery-stage-wrap" style="--ccp-image-ratio-real:{{ ccp_product_main_ratio|default(1.333333) }}">
+                <a class="thumbnail ccp-gallery-main" href="{{ ccp_product_main_large }}" data-ccp-gallery-main data-ccp-index="0" data-ccp-main="{{ ccp_product_main_large }}" data-ccp-large="{{ ccp_product_main_large }}" data-ccp-thumb="{{ ccp_product_main_thumb|default(thumb) }}" data-ccp-ratio="{{ ccp_product_main_ratio|default(1.333333) }}" data-ccp-width="{{ ccp_product_main_width|default(1100) }}" data-ccp-height="{{ ccp_product_main_height|default(825) }}" data-ccp-alt="{{ heading_title|e('html_attr') }}" aria-label="{{ heading_title|e('html_attr') }}">
+                  <img src="{{ ccp_product_main_image_src }}" data-full="{{ ccp_product_main_large }}" data-additional="{{ ccp_gallery_dynamic_urls|json_encode|e('html_attr') }}" alt="{{ heading_title }}" class="img-responsive ccp-gallery-image" width="{{ ccp_product_main_width|default(1100) }}" height="{{ ccp_product_main_height|default(825) }}" loading="eager"{% if ccp_performance_image_decoding_status|default(1) %} decoding="async"{% endif %}{% if ccp_performance_fetchpriority_status|default(1) %} fetchpriority="high"{% endif %} />
+                  <span class="ccp-gallery-zoom" aria-hidden="true"><i class="fa fa-search-plus"></i></span>
+                </a>
+              </div>
+            {% endif %}
+            {% if ccp_thumb_count > 1 %}
+              <div class="ccp-product-thumbs-wrap{% if ccp_thumb_count > 5 %} is-carousel{% endif %}" data-ccp-thumbs-wrap>
+                <button type="button" class="ccp-thumb-nav ccp-thumb-prev" data-ccp-thumb-nav="prev" aria-label="Previous photos"><i class="fa fa-angle-left"></i></button>
+                <div class="ccp-product-thumbs" data-ccp-gallery-thumbs>
+                  {% if thumb %}
+                    <button type="button" class="ccp-gallery-thumb active" data-ccp-gallery-thumb aria-pressed="true" data-ccp-index="0" data-ccp-main="{{ ccp_product_main_large }}" data-ccp-large="{{ ccp_product_main_large }}" data-ccp-thumb="{{ ccp_product_main_thumb|default(thumb) }}" data-ccp-ratio="{{ ccp_product_main_ratio|default(1.333333) }}" data-ccp-width="{{ ccp_product_main_width|default(1100) }}" data-ccp-height="{{ ccp_product_main_height|default(825) }}" data-ccp-alt="{{ heading_title|e('html_attr') }}" aria-label="{{ heading_title|e('html_attr') }}">
+                      <img src="{{ ccp_product_main_thumb|default(thumb) }}" alt="{{ heading_title }}" loading="lazy" decoding="async" width="124" height="84" />
+                    </button>
+                  {% endif %}
+                  {% for image in images %}
+                    {% set ccp_gallery_index = thumb ? loop.index : loop.index0 %}
+                    {% set ccp_image_large = image.popup ? image.popup : image.thumb %}
+                    {% set ccp_image_main = image.ccp_main|default(ccp_image_large) %}
+                    {% set ccp_image_thumb = image.thumb ? image.thumb : ccp_image_main %}
+                    <button type="button" class="ccp-gallery-thumb" data-ccp-gallery-thumb aria-pressed="false" data-ccp-index="{{ ccp_gallery_index }}" data-ccp-main="{{ ccp_image_main }}" data-ccp-large="{{ ccp_image_large }}" data-ccp-thumb="{{ ccp_image_thumb }}" data-ccp-ratio="{{ image.ccp_ratio|default(1.333333) }}" data-ccp-width="{{ image.ccp_width|default(1100) }}" data-ccp-height="{{ image.ccp_height|default(825) }}" data-ccp-alt="{{ heading_title|e('html_attr') }}" aria-label="{{ heading_title|e('html_attr') }}">
+                      <img src="{{ ccp_image_thumb }}" alt="{{ heading_title }}" loading="lazy" decoding="async" width="124" height="84" />
+                    </button>
+                  {% endfor %}
+                </div>
+                <button type="button" class="ccp-thumb-nav ccp-thumb-next" data-ccp-thumb-nav="next" aria-label="Next photos"><i class="fa fa-angle-right"></i></button>
+              </div>
+            {% endif %}
+            </div>
+          </div>
+          <div class="ccp-gallery-lightbox" data-ccp-gallery-modal aria-hidden="true" role="dialog" aria-label="{{ heading_title|e('html_attr') }}">
+            <button type="button" class="ccp-gallery-close" data-ccp-gallery-close aria-label="Close">×</button>
+            <button type="button" class="ccp-gallery-nav ccp-gallery-prev" data-ccp-gallery-prev aria-label="Previous"><i class="fa fa-angle-left"></i></button>
+            <div class="ccp-gallery-lightbox__stage" data-ccp-gallery-stage>
+              <picture data-ccp-gallery-lightbox-picture><img src="" alt="" data-ccp-gallery-image width="1800" height="1200" decoding="async" /></picture>
+            </div>
+            <button type="button" class="ccp-gallery-nav ccp-gallery-next" data-ccp-gallery-next aria-label="Next"><i class="fa fa-angle-right"></i></button>
+            <div class="ccp-gallery-lightbox__bar">
+              <div class="ccp-gallery-caption"><span data-ccp-gallery-title>{{ heading_title }}</span><small data-ccp-gallery-counter></small></div>
+              <div class="ccp-gallery-lightbox__thumbs" data-ccp-gallery-modal-thumbs></div>
+            </div>
+          </div>
+          <div class="ccp-product-info">
+                        {% if review_status %}<div class="rating">{% for i in 1..5 %}{% if rating < i %}<span class="fa fa-stack"><i class="fa fa-star-o fa-stack-1x"></i></span>{% else %}<span class="fa fa-stack"><i class="fa fa-star fa-stack-1x"></i><i class="fa fa-star-o fa-stack-1x"></i></span>{% endif %}{% endfor %} <a href="" onclick="$('a[href=\'#tab-review\']').trigger('click'); return false;">{{ reviews }}</a> / <a href="" onclick="$('a[href=\'#tab-review\']').trigger('click'); return false;">{{ text_write }}</a></div>{% endif %}
+            {% if price and not ccp_information_mode_active %}<div class="ccp-product-price" data-ccp-base-price-raw="{{ ccp_base_price_raw|default(0) }}" data-ccp-price-format="{{ ccp_price_format|default('')|e('html_attr') }}">{% if special %}<div class="ccp-product-stickers-inline"><span class="ccp-sticker ccp-sticker-sale">{% if ccp_product_sale_percent|default(0) %}-{{ ccp_product_sale_percent }}%{% else %}%{% endif %}</span></div>{% endif %}{% if not special %}<span class="price-main" data-ccp-live-price-main>{{ price }}</span>{% else %}<span class="price-main" data-ccp-live-price-main>{{ special }}</span><span class="price-old">{{ price }}</span>{% endif %}{% if tax %}<div class="price-tax">{{ text_tax }} {{ tax }}</div>{% endif %}{% if points %}<div>{{ text_points }} {{ points }}</div>{% endif %}{% if (ccp_product_sale_timer is defined ? ccp_product_sale_timer : 1) and ccp_product_special_date_end|default('') %}<div class="ccp-sale-timer" data-ccp-sale-end="{{ ccp_product_special_date_end }}"><strong>{{ ccp_text_sale_ends|default('Sale ends') }}</strong><span data-ccp-timer-days>0</span><em>{{ ccp_text_days|default('days') }}</em><span data-ccp-timer-hours>00</span><em>{{ ccp_text_hours|default('hours') }}</em><span data-ccp-timer-minutes>00</span><em>{{ ccp_text_minutes|default('min') }}</em><span data-ccp-timer-seconds>00</span><em>{{ ccp_text_seconds|default('sec') }}</em></div>{% endif %}{% if discounts %}<div class="ccp-price-discounts">{% for discount in discounts %}<div class="ccp-price-discount-item"><span class="ccp-price-discount-qty">{{ discount.quantity }}{{ text_discount }}</span><span class="ccp-price-discount-value">{{ discount.price }}</span></div>{% endfor %}</div>{% endif %}</div>{% endif %}
+            {% if ccp_stock_indicator_active %}<div class="ccp-stock-indicator"><div class="ccp-stock-indicator__head"><span>{{ stock }}</span></div><div class="ccp-stock-indicator__bar"><span></span></div></div>{% endif %}
+            {% if not ccp_information_mode_active %}
+            <div id="product" class="ccp-buy-box">
+              {% if options %}<h3>{{ text_option }}</h3>{% for option in options %}
+                {% if option.type == 'select' %}<div class="form-group{% if option.required %} required{% endif %}"><label class="control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}</label><select name="option[{{ option.product_option_id }}]" id="input-option{{ option.product_option_id }}" class="form-control"><option value="">{{ text_select }}</option>{% for option_value in option.product_option_value %}<option value="{{ option_value.product_option_value_id }}" data-ccp-option-price="{{ option_value.ccp_price_value|default(0) }}" data-ccp-option-prefix="{{ option_value.price_prefix|default('+') }}">{{ option_value.name }}{% if option_value.price %} ({{ option_value.price_prefix }}{{ option_value.price }}){% endif %}</option>{% endfor %}</select></div>{% endif %}
+                {% if option.type == 'radio' %}<div class="form-group{% if option.required %} required{% endif %}"><label class="control-label">{{ option.name }}</label><div id="input-option{{ option.product_option_id }}">{% for option_value in option.product_option_value %}<div class="radio"><label><input type="radio" name="option[{{ option.product_option_id }}]" value="{{ option_value.product_option_value_id }}" data-ccp-option-price="{{ option_value.ccp_price_value|default(0) }}" data-ccp-option-prefix="{{ option_value.price_prefix|default('+') }}" />{% if option_value.image %}<img src="{{ option_value.image }}" alt="{{ option_value.name }}{% if option_value.price %} {{ option_value.price_prefix }} {{ option_value.price }}{% endif %}" class="img-thumbnail" width="50" height="50" loading="lazy" decoding="async" />{% endif %} {{ option_value.name }}{% if option_value.price %} ({{ option_value.price_prefix }}{{ option_value.price }}){% endif %}</label></div>{% endfor %}</div></div>{% endif %}
+                {% if option.type == 'checkbox' %}<div class="form-group{% if option.required %} required{% endif %}"><label class="control-label">{{ option.name }}</label><div id="input-option{{ option.product_option_id }}">{% for option_value in option.product_option_value %}<div class="checkbox"><label><input type="checkbox" name="option[{{ option.product_option_id }}][]" value="{{ option_value.product_option_value_id }}" data-ccp-option-price="{{ option_value.ccp_price_value|default(0) }}" data-ccp-option-prefix="{{ option_value.price_prefix|default('+') }}" /> {{ option_value.name }}{% if option_value.price %} ({{ option_value.price_prefix }}{{ option_value.price }}){% endif %}</label></div>{% endfor %}</div></div>{% endif %}
+                {% if option.type == 'text' %}<div class="form-group{% if option.required %} required{% endif %}"><label class="control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}</label><input type="text" name="option[{{ option.product_option_id }}]" value="{{ option.value }}" placeholder="{{ option.name }}" id="input-option{{ option.product_option_id }}" class="form-control" /></div>{% endif %}
+                {% if option.type == 'textarea' %}<div class="form-group{% if option.required %} required{% endif %}"><label class="control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}</label><textarea name="option[{{ option.product_option_id }}]" rows="5" placeholder="{{ option.name }}" id="input-option{{ option.product_option_id }}" class="form-control">{{ option.value }}</textarea></div>{% endif %}
+                {% if option.type == 'file' %}<div class="form-group{% if option.required %} required{% endif %}"><label class="control-label">{{ option.name }}</label><button type="button" id="button-upload{{ option.product_option_id }}" data-loading-text="{{ text_loading }}" class="btn btn-default ccp-w-100"><i class="fa fa-upload"></i> {{ button_upload }}</button><input type="hidden" name="option[{{ option.product_option_id }}]" value="" id="input-option{{ option.product_option_id }}" /></div>{% endif %}
+                {% if option.type == 'date' or option.type == 'datetime' or option.type == 'time' %}<div class="form-group{% if option.required %} required{% endif %}"><label class="control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}</label><div class="input-group {{ option.type }}"><input type="text" name="option[{{ option.product_option_id }}]" value="{{ option.value }}" data-date-format="{{ option.date_format|default('YYYY-MM-DD') }}" id="input-option{{ option.product_option_id }}" class="form-control" /><span class="input-group-text ccp-input-group-button"><button class="btn btn-default" type="button" aria-label="{{ option.name|e('html_attr') }}" title="{{ option.name|e('html_attr') }}"><i class="fa fa-calendar" aria-hidden="true"></i></button></span></div></div>{% endif %}
+              {% endfor %}{% endif %}
+              {% if recurrings %}<hr><h3>{{ text_payment_recurring }}</h3><div class="form-group required"><select name="recurring_id" class="form-control"><option value="">{{ text_select }}</option>{% for recurring in recurrings %}<option value="{{ recurring.recurring_id }}">{{ recurring.name }}</option>{% endfor %}</select><div class="help-block" id="recurring-description"></div></div>{% endif %}
+              <div class="form-group ccp-qty-row">
+                <div class="ccp-buy-primary">
+                  <div class="ccp-qty-block">
+                    <label class="control-label" for="input-quantity">{{ entry_qty }}</label>
+                    {% if ccp_product_quantity_switch_active %}<div class="ccp-product-qty-switch"><button type="button" class="ccp-qty-btn" data-ccp-product-qty="minus">−</button><input type="text" name="quantity" value="{{ minimum }}" size="2" id="input-quantity" class="form-control" inputmode="numeric" min="{{ minimum }}" /><button type="button" class="ccp-qty-btn" data-ccp-product-qty="plus">+</button></div>{% else %}<input type="text" name="quantity" value="{{ minimum }}" size="2" id="input-quantity" class="form-control" />{% endif %}
+                  </div>
+                  <div class="ccp-cart-block">
+                    <input type="hidden" name="product_id" value="{{ product_id }}" />
+                    <button type="button" id="button-cart" data-loading-text="{{ text_loading }}" class="btn ccp-btn btn-lg ccp-w-100"><i class="fa fa-shopping-cart"></i> {{ button_cart }}</button>
+                  </div>
+                </div>
+                {% if ccp_product_show_actions_active %}<div class="ccp-buy-actions-row">{% if (ccp_enable_quick_order is defined ? ccp_enable_quick_order : 1) %}<button type="button" class="btn ccp-btn-outline btn-lg ccp-js-quick-order ccp-product-quick-order" data-product-id="{{ product_id }}" data-product-name="{{ heading_title|e('html_attr') }}" data-source="product"><i class="fa fa-bolt"></i> <span>{{ ccp_button_quick_order|default('Buy in 1 click') }}</span></button>{% endif %}<div class="ccp-buy-mini-actions"><button type="button" class="btn ccp-btn-outline btn-lg ccp-buy-icon-btn" onclick="wishlist.add('{{ product_id }}');" aria-label="{{ button_wishlist|default('Wishlist')|e('html_attr') }}" title="{{ button_wishlist|default('Wishlist')|e('html_attr') }}"><i class="fa fa-heart"></i></button><button type="button" class="btn ccp-btn-outline btn-lg ccp-buy-icon-btn" onclick="compare.add('{{ product_id }}');" aria-label="{{ button_compare|default('Compare')|e('html_attr') }}" title="{{ button_compare|default('Compare')|e('html_attr') }}"><i class="fa fa-exchange"></i></button><button type="button" class="btn ccp-btn-outline btn-lg ccp-buy-icon-btn ccp-share-trigger" data-ccp-share-open aria-label="{{ ccp_text_share|default('Share')|e('html_attr') }}" title="{{ ccp_text_share|default('Share')|e('html_attr') }}"><i class="fa fa-share-alt"></i></button></div></div>{% endif %}
+              </div>
+              {% if minimum > 1 %}<div class="alert alert-info"><i class="fa fa-info-circle"></i> {{ text_minimum }}</div>{% endif %}
+            </div>
+            {% elseif ccp_product_show_actions_active %}
+            <div class="ccp-information-actions" aria-label="{{ ccp_text_information_mode|default('Information')|e('html_attr') }}">
+              <button type="button" class="btn ccp-btn-outline ccp-buy-icon-btn" onclick="wishlist.add('{{ product_id }}');" aria-label="{{ button_wishlist|default('Wishlist')|e('html_attr') }}" title="{{ button_wishlist|default('Wishlist')|e('html_attr') }}"><i class="fa fa-heart"></i><span>{{ button_wishlist|default('Wishlist') }}</span></button>
+              <button type="button" class="btn ccp-btn-outline ccp-buy-icon-btn" onclick="compare.add('{{ product_id }}');" aria-label="{{ button_compare|default('Compare')|e('html_attr') }}" title="{{ button_compare|default('Compare')|e('html_attr') }}"><i class="fa fa-exchange"></i><span>{{ button_compare|default('Compare') }}</span></button>
+              <button type="button" class="btn ccp-btn-outline ccp-buy-icon-btn ccp-share-trigger" data-ccp-share-open aria-label="{{ ccp_text_share|default('Share')|e('html_attr') }}" title="{{ ccp_text_share|default('Share')|e('html_attr') }}"><i class="fa fa-share-alt"></i><span>{{ ccp_text_share|default('Share') }}</span></button>
+            </div>
+            {% endif %}
+            {% set ccp_trust_text = ccp_trust_badges_value|default('') %}
+            {% set ccp_delivery_body = ccp_delivery_text_value|default('') %}
+            {% set ccp_support_body = ccp_return_text_value|default('') %}
+            {% set ccp_product_benefits_text = ccp_product_benefits[ccp_language_id]|default('') %}
+            {% if (ccp_product_trust_panel_status is defined ? ccp_product_trust_panel_status : 1) and ccp_trust_text %}
+              <div class="ccp-product-trust-panel">
+                {% for badge in ccp_trust_text|split('|') %}
+                  {% if badge|trim %}<div class="ccp-trust-badge"><i class="fa fa-check-circle"></i><span>{{ badge|trim }}</span></div>{% endif %}
+                {% endfor %}
+              </div>
+            {% endif %}
+            {% if ccp_product_show_benefits_active and ccp_product_benefits_text %}
+              <div class="ccp-benefits ccp-product-benefits">
+                {% for benefit in ccp_product_benefits_text|split("\n") %}
+                  {% set benefit_text = benefit|trim %}
+                  {% if benefit_text %}<div class="ccp-benefit"><i class="fa fa-check-circle"></i><span>{{ benefit_text }}</span></div>{% endif %}
+                {% endfor %}
+              </div>
+            {% endif %}
+            {% if ((ccp_product_show_delivery_block is defined ? ccp_product_show_delivery_block : 1) and ccp_delivery_body|default('')) or ccp_support_body|default('') %}
+              <div class="ccp-product-commerce-grid">
+                {% if (ccp_product_show_delivery_block is defined ? ccp_product_show_delivery_block : 1) and ccp_delivery_body|default('') %}
+                  <div class="ccp-commerce-card ccp-commerce-card-delivery">
+                    <div class="ccp-commerce-card__title"><i class="fa fa-download"></i><span>{{ ccp_text_delivery|default('Digital delivery') }}</span></div>
+                    <div class="ccp-commerce-card__body">{{ ccp_delivery_body|default('') }}</div>
+                  </div>
+                {% endif %}
+                {% if ccp_support_body|default('') %}
+                  <div class="ccp-commerce-card ccp-commerce-card-support">
+                    <div class="ccp-commerce-card__title"><i class="fa fa-shield"></i><span>{{ ccp_text_warranty|default('License and support') }}</span></div>
+                    <div class="ccp-commerce-card__body">{{ ccp_support_body|default('') }}</div>
+                  </div>
+                {% endif %}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        {% if ccp_product_show_attributes|default(1) and attribute_groups %}<div class="ccp-spec-summary ccp-spec-{{ ccp_product_attributes_style|default('table') }}"><h2>{{ ccp_text_specifications|default(tab_attribute) }}</h2><div class="ccp-spec-grid">{% set ccp_attr_count = 0 %}{% for attribute_group in attribute_groups %}{% for attribute in attribute_group.attribute %}{% if ccp_attr_count < 8 %}<div class="ccp-spec-item"><span>{{ attribute.name }}</span><strong>{{ attribute.text }}</strong></div>{% set ccp_attr_count = ccp_attr_count + 1 %}{% endif %}{% endfor %}{% endfor %}</div></div>{% endif %}
+        {% set ccp_product_faq_active = (ccp_product_faq_status is defined ? ccp_product_faq_status : 1) and ccp_product_faq is defined and ccp_product_faq[ccp_language_id]|default('') %}
+{% if ccp_product_faq_active and ccp_product_faq_schema_status|default(1) %}<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{% set ccp_faq_first = true %}{% for line in ccp_product_faq[ccp_language_id]|split("\n") %}{% set parts = line|split('|') %}{% if parts[0]|trim and parts[1] is defined and parts[1]|trim %}{% if not ccp_faq_first %},{% endif %}{"@type":"Question","name":{{ parts[0]|trim|json_encode }},"acceptedAnswer":{"@type":"Answer","text":{{ parts[1]|trim|json_encode }}}}{% set ccp_faq_first = false %}{% endif %}{% endfor %}]}</script>{% endif %}
+        <div class="ccp-tabs-product">
+          <ul class="nav nav-tabs" role="tablist"><li class="active" role="presentation"><a href="#tab-description" data-toggle="tab" role="tab">{{ tab_description }}</a></li>{% if ccp_product_changelog|default('') %}<li class="" role="presentation"><a href="#tab-ccp-changelog" data-toggle="tab" role="tab">{{ ccp_text_changelog|default('Changelog') }}</a></li>{% endif %}{% if attribute_groups %}<li class="" role="presentation"><a href="#tab-specification" data-toggle="tab" role="tab">{{ tab_attribute }}</a></li>{% endif %}{% if review_status %}<li class="" role="presentation"><a href="#tab-review" data-toggle="tab" role="tab">{{ tab_review }}</a></li>{% endif %}{% if ccp_product_faq_active %}<li class="" role="presentation"><a href="#tab-faq" data-toggle="tab" role="tab">{{ ccp_text_faq|default('FAQ') }}</a></li>{% endif %}</ul>
+          <div class="tab-content"><div class="tab-pane active" id="tab-description" role="tabpanel">{{ description }}</div>{% if ccp_product_changelog|default('') %}<div class="tab-pane fade" id="tab-ccp-changelog" role="tabpanel"><div class="ccp-product-changelog">{{ ccp_product_changelog }}</div></div>{% endif %}{% if attribute_groups %}<div class="tab-pane fade" id="tab-specification" role="tabpanel"><div class="ccp-table-scroll"><table class="table table-bordered">{% for attribute_group in attribute_groups %}<thead><tr><td colspan="2"><strong>{{ attribute_group.name }}</strong></td></tr></thead><tbody>{% for attribute in attribute_group.attribute %}<tr><td>{{ attribute.name }}</td><td>{{ attribute.text }}</td></tr>{% endfor %}</tbody>{% endfor %}</table></div></div>{% endif %}{% if review_status %}<div class="tab-pane fade" id="tab-review" role="tabpanel"><form class="ccp-review-form" id="form-review"><div id="review"></div><h2>{{ text_write }}</h2>{% if review_guest %}<div class="form-group required"><label class="col-md-2 control-label" for="input-name">{{ entry_name }}</label><div class="col-md-10"><input type="text" name="name" value="{{ customer_name }}" id="input-name" class="form-control" /></div></div><div class="form-group required"><label class="col-md-2 control-label" for="input-review">{{ entry_review }}</label><div class="col-md-10"><textarea name="text" rows="5" id="input-review" class="form-control"></textarea><div class="help-block">{{ text_note }}</div>
+                  {% if ccp_reviews_plus_minus_status %}<div class="row ccp-mt-5"><div class="col-md-6"><label class="control-label">{{ ccp_entry_review_plus }}</label><textarea name="ccp_plus" rows="3" class="form-control" placeholder="{{ ccp_entry_review_plus }}"></textarea></div><div class="col-md-6"><label class="control-label">{{ ccp_entry_review_minus }}</label><textarea name="ccp_minus" rows="3" class="form-control" placeholder="{{ ccp_entry_review_minus }}"></textarea></div></div>{% endif %}
+                  {% if ccp_reviews_photos_status %}<div class="ccp-review-upload ccp-mt-15"><label class="control-label">{{ ccp_entry_review_photos }}</label><input type="file" class="form-control ccp-review-photo-input" accept="image/jpeg,image/png,image/webp" multiple /><input type="hidden" name="ccp_images" value="" /><div class="ccp-review-photo-preview"></div><div class="help-block">{{ ccp_text_review_photos_help }}</div></div>{% endif %}
+                  {% if ccp_reviews_real_buyer_status %}<div class="checkbox ccp-mt-15"><input class="" type="checkbox" name="ccp_recommend" value="1" id="ccp-review-recommend"><label class="" for="ccp-review-recommend">{{ ccp_entry_review_recommend }}</label></div>{% endif %}</div></div><div class="form-group required"><label class="col-md-2 control-label">{{ entry_rating }}</label><div class="col-md-10">{{ entry_bad }} <input type="radio" name="rating" value="1" /> <input type="radio" name="rating" value="2" /> <input type="radio" name="rating" value="3" /> <input type="radio" name="rating" value="4" /> <input type="radio" name="rating" value="5" /> {{ entry_good }}</div></div>{{ captcha }}<div class="buttons clearfix"><div class="pull-right"><button type="button" id="button-review" data-loading-text="{{ text_loading }}" class="btn btn-primary">{{ button_continue }}</button></div></div>{% else %}{{ text_login }}{% endif %}</form></div>{% endif %}{% if ccp_product_faq_active %}<div class="tab-pane fade" id="tab-faq" role="tabpanel"><div class="ccp-product-faq ccp-product-faq-tab">{% for line in ccp_product_faq[ccp_language_id]|split("\n") %}{% set parts = line|split('|') %}{% if parts[0]|trim and parts[1] is defined and parts[1]|trim %}<details><summary>{{ parts[0]|trim }}</summary><div>{{ parts[1]|trim }}</div></details>{% endif %}{% endfor %}</div></div>{% endif %}</div>
+        </div>
+      </div>
+      {% if products and not ccp_product_commercial_blocks|default('') %}<div class="ccp-related-carousel" data-ccp-product-module-key="native-related"><div class="ccp-related-carousel__head"><h3 class="ccp-section-title">{{ text_related }}</h3><div class="ccp-related-carousel__nav"><button type="button" class="ccp-carousel-nav ccp-carousel-prev" data-ccp-carousel="prev" aria-label="Previous products" title="Previous products"><i class="fa fa-angle-left"></i></button><button type="button" class="ccp-carousel-nav ccp-carousel-next" data-ccp-carousel="next" aria-label="Next products" title="Next products"><i class="fa fa-angle-right"></i></button></div></div><div class="ccp-related-carousel__viewport"><div class="ccp-product-grid ccp-product-grid--carousel">{% for product in products %}{% set ccp_card_index = loop.index %}{% set ccp_card_style = ccp_card_style is defined ? ccp_card_style : 'commerce' %}
+{% set ccp_card_title_lines = ccp_card_title_lines is defined ? ccp_card_title_lines : 2 %}
+{% set ccp_card_full_click = ccp_card_full_click is defined ? ccp_card_full_click : 1 %}
+{% set ccp_card_show_description = ccp_card_show_description is defined ? ccp_card_show_description : 1 %}
+{% set ccp_card_show_rating = ccp_card_show_rating is defined ? ccp_card_show_rating : 1 %}
+{% set ccp_card_show_stock = ccp_card_show_stock is defined ? ccp_card_show_stock : 1 %}
+{% set ccp_card_show_quick_actions = ccp_card_show_quick_actions is defined ? ccp_card_show_quick_actions : 1 %}
+{% set ccp_card_show_wishlist = ccp_card_show_wishlist is defined ? ccp_card_show_wishlist : 1 %}
+{% set ccp_card_show_compare = ccp_card_show_compare is defined ? ccp_card_show_compare : 1 %}
+{% set ccp_card_show_model = ccp_card_show_model is defined ? ccp_card_show_model : 1 %}
+{% set ccp_card_show_manufacturer = ccp_card_show_manufacturer is defined ? ccp_card_show_manufacturer : 1 %}
+{% set ccp_card_meta_position = ccp_card_meta_position is defined ? ccp_card_meta_position : 'under_title' %}
+{% set ccp_card_show_quantity = ccp_card_show_quantity is defined ? ccp_card_show_quantity : 1 %}
+{% set ccp_card_show_buy_button = ccp_card_show_buy_button is defined ? ccp_card_show_buy_button : 1 %}
+{% set ccp_card_stock_mode = ccp_card_stock_mode is defined ? ccp_card_stock_mode : 'smart' %}
+{% set ccp_card_second_image_status = ccp_card_second_image_status is defined ? ccp_card_second_image_status : 0 %}
+{% set ccp_card_sale_percent_status = ccp_card_sale_percent_status is defined ? ccp_card_sale_percent_status : 1 %}
+{% set ccp_card_hover_actions_mode = ccp_card_hover_actions_mode is defined ? ccp_card_hover_actions_mode : 'smart' %}
+{% set ccp_card_index = ccp_card_index|default(999) %}
+{% set ccp_eager_limit = ccp_performance_eager_first_images|default(0) %}
+{% set ccp_card_eager = ccp_eager_limit and ccp_card_index <= ccp_eager_limit %}
+{% set ccp_img_loading = ccp_card_eager ? 'eager' : (ccp_performance_lazy_images|default(1) ? 'lazy' : 'eager') %}
+<div class="ccp-card ccp-product-card ccp-card-style-{{ ccp_card_style }} ccp-hover-actions-{{ ccp_card_hover_actions_mode }}{% if ccp_card_full_click %} ccp-card-full-click{% endif %}" data-product-id="{{ product.product_id }}" data-href="{{ product.href }}" style="--ccp-title-lines:{{ ccp_card_title_lines }}">
+  {% if ccp_card_full_click %}<a class="ccp-card-link" href="{{ product.href }}" aria-label="{{ product.name|e('html_attr') }}"></a>{% endif %}
+  <div class="ccp-product-card__image">
+    {% if ccp_enable_stickers is not defined or ccp_enable_stickers %}<div class="ccp-stickers">
+      {% if product.special and not ccp_information_mode_active %}<span class="ccp-sticker ccp-sticker-sale">{% if ccp_card_sale_percent_status and product.ccp_sale_percent is defined and product.ccp_sale_percent %}-{{ product.ccp_sale_percent }}%{% else %}%{% endif %}</span>{% endif %}
+      {% if product.ccp_is_new is defined and product.ccp_is_new %}<span class="ccp-sticker ccp-sticker-new">{{ ccp_text_new|default('New') }}</span>{% endif %}
+      {% if product.rating and product.rating >= 4 %}<span class="ccp-sticker ccp-sticker-hit">{{ ccp_text_top|default('Top') }}</span>{% endif %}
+    </div>{% endif %}
+    <a href="{{ product.href }}" class="ccp-product-image-link{% if ccp_card_second_image_status and product.ccp_second_thumb is defined and product.ccp_second_thumb %} ccp-has-second-image{% endif %}"><img class="ccp-img-main" src="{{ product.thumb }}" alt="{{ product.name }}" loading="{{ ccp_img_loading }}"{% if ccp_performance_image_decoding_status|default(1) %} decoding="async"{% endif %}{% if ccp_card_eager and ccp_performance_fetchpriority_status|default(1) %} fetchpriority="high"{% endif %} width="640" height="407" />{% if ccp_card_second_image_status and product.ccp_second_thumb is defined and product.ccp_second_thumb %}<img class="ccp-img-second" src="{{ product.ccp_second_thumb }}" alt="{{ product.name }}" loading="lazy"{% if ccp_performance_image_decoding_status|default(1) %} decoding="async"{% endif %} width="640" height="407" />{% endif %}</a>
+  </div>
+  <div class="ccp-product-card__body">
+    <div class="ccp-product-card__name"><a href="{{ product.href }}">{{ product.name }}</a></div>
+    {% if ccp_card_meta_position == 'under_title' and ((ccp_card_show_model and product.ccp_model is defined and product.ccp_model) or (ccp_card_show_manufacturer and product.ccp_manufacturer is defined and product.ccp_manufacturer)) %}<div class="ccp-product-card__meta ccp-card-meta-{{ ccp_card_meta_position }}">{% if ccp_card_show_manufacturer and product.ccp_manufacturer is defined and product.ccp_manufacturer %}<span><i class="fa fa-industry"></i> {{ product.ccp_manufacturer }}</span>{% endif %}{% if ccp_card_show_model and product.ccp_model is defined and product.ccp_model %}<span><i class="fa fa-barcode"></i> {{ product.ccp_model }}</span>{% endif %}</div>{% endif %}
+    {% if ccp_card_show_description %}<div class="ccp-product-card__desc">{% if product.description %}{{ product.description }}{% else %}&nbsp;{% endif %}</div>{% endif %}
+    {% if ccp_card_show_rating and product.rating %}<div class="ccp-product-card__rating" aria-label="{{ product.rating }}/5">{% for i in 1..5 %}{% if product.rating < i %}<i class="fa fa-star-o"></i>{% else %}<i class="fa fa-star"></i>{% endif %}{% endfor %}</div>{% endif %}
+    {% if product.price and not ccp_information_mode_active %}<div class="ccp-product-card__price">{% if not product.special %}{{ product.price }}{% else %}<span class="price-new">{{ product.special }}</span><span class="price-old">{{ product.price }}</span>{% endif %}{% if product.tax %}<span class="price-tax">{{ text_tax }} {{ product.tax }}</span>{% endif %}</div>{% endif %}
+    {% if ccp_card_meta_position == 'under_price' and ((ccp_card_show_model and product.ccp_model is defined and product.ccp_model) or (ccp_card_show_manufacturer and product.ccp_manufacturer is defined and product.ccp_manufacturer)) %}<div class="ccp-product-card__meta ccp-card-meta-{{ ccp_card_meta_position }}">{% if ccp_card_show_manufacturer and product.ccp_manufacturer is defined and product.ccp_manufacturer %}<span><i class="fa fa-industry"></i> {{ product.ccp_manufacturer }}</span>{% endif %}{% if ccp_card_show_model and product.ccp_model is defined and product.ccp_model %}<span><i class="fa fa-barcode"></i> {{ product.ccp_model }}</span>{% endif %}</div>{% endif %}
+    {% if ccp_card_show_stock and ccp_card_stock_mode != 'hide' %}{% if product.ccp_stock_status is defined %}<div class="ccp-product-card__stock ccp-stock-{{ product.ccp_stock_class|default('in') }}"><i class="fa fa-check-circle"></i> {{ product.ccp_stock_status }}</div>{% elseif ccp_card_stock_mode == 'always' %}<div class="ccp-product-card__stock ccp-stock-soft"><i class="fa fa-check-circle"></i> {{ ccp_text_in_stock|default('In stock') }}</div>{% endif %}{% endif %}
+    <div class="ccp-product-card__actions{% if not ccp_card_show_buy_button or ccp_information_mode_active %} ccp-no-buy{% endif %}">
+      {% if ccp_card_show_quantity and not ccp_information_mode_active %}<div class="ccp-card-qty"><button type="button" class="ccp-qty-btn" data-ccp-qty="minus">−</button><input type="text" value="{{ product.minimum|default(1) }}" inputmode="numeric" min="{{ product.minimum|default(1) }}" aria-label="{{ ccp_text_quantity|default('Quantity') }}"><button type="button" class="ccp-qty-btn" data-ccp-qty="plus">+</button></div>{% endif %}
+      {% if ccp_card_show_buy_button and not ccp_information_mode_active %}<button type="button" class="btn ccp-btn ccp-card-cart" data-product-id="{{ product.product_id }}"><i class="fa fa-shopping-cart"></i> <span>{{ button_cart }}</span></button>{% endif %}
+      {% if not ccp_information_mode_active and (ccp_enable_quick_order is not defined or ccp_enable_quick_order) %}<button type="button" class="ccp-mini-btn ccp-js-quick-order" data-product-id="{{ product.product_id }}" data-product-name="{{ product.name|e('html_attr') }}" title="{{ ccp_button_quick_order|default('Buy in 1 click') }}"><i class="fa fa-bolt"></i></button>{% endif %}
+      {% if ccp_card_show_wishlist %}<button type="button" class="ccp-mini-btn" onclick="wishlist.add('{{ product.product_id }}');" title="{{ button_wishlist|default('Wishlist') }}"><i class="fa fa-heart"></i></button>{% endif %}
+      {% if ccp_card_show_compare %}<button type="button" class="ccp-mini-btn" onclick="compare.add('{{ product.product_id }}');" title="{{ button_compare|default('Compare') }}"><i class="fa fa-exchange"></i></button>{% endif %}
+    </div>
+  </div>
+</div>
+{% endfor %}</div></div></div>{% endif %}
+      <div class="ccp-share-modal" id="ccpShareModal" tabindex="-1" role="dialog" aria-hidden="true" inert>
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">{{ ccp_text_share|default('Share') }}</h4>
+              <button type="button" class="close ccp-share-close" data-ccp-share-close aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+              <div class="ccp-share-links">
+                <a class="ccp-share-link ccp-share-viber" data-ccp-share-link="viber" href="#" target="_blank" rel="noopener"><span class="ccp-share-icon">V</span><span>Viber</span></a>
+                <a class="ccp-share-link ccp-share-facebook" data-ccp-share-link="facebook" href="#" target="_blank" rel="noopener"><span class="ccp-share-icon">f</span><span>Facebook</span></a>
+                <a class="ccp-share-link ccp-share-telegram" data-ccp-share-link="telegram" href="#" target="_blank" rel="noopener"><span class="ccp-share-icon">T</span><span>Telegram</span></a>
+                <a class="ccp-share-link ccp-share-whatsapp" data-ccp-share-link="whatsapp" href="#" target="_blank" rel="noopener"><span class="ccp-share-icon">W</span><span>WhatsApp</span></a>
+                <a class="ccp-share-link ccp-share-x" data-ccp-share-link="x" href="#" target="_blank" rel="noopener"><span class="ccp-share-icon">X</span><span>X</span></a>
+              </div>
+              <button type="button" class="btn ccp-share-copy-btn" data-ccp-copy-share>{{ ccp_text_copy_link|default('Copy page link') }}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% if ccp_product_commercial_blocks is defined %}{{ ccp_product_commercial_blocks }}{% endif %}
+      {% if ccp_product_articles is defined %}{{ ccp_product_articles }}{% endif %}
+      {% if not ccp_information_mode_active and (ccp_product_bottom_sticky_buy is defined ? ccp_product_bottom_sticky_buy : 1) and (ccp_product_bottom_sticky_buy_mobile is defined ? ccp_product_bottom_sticky_buy_mobile : 1) %}
+      <div class="ccp-mobile-buy-panel ccp-sticky-mobile" data-ccp-single-sticky-buy="1" aria-hidden="true">
+        <div class="ccp-mobile-buy-inner">
+          <div class="ccp-sticky-main-nav"><a href="{{ ccp_sticky_home|default('index.php?route=common/home') }}" class="ccp-sticky-nav-link"><i class="fa fa-home"></i><span>{{ ccp_text_home|default('Home') }}</span></a><a href="#ccp-mobile-menu" class="ccp-sticky-nav-link" data-ccp-mobile-menu-toggle><i class="fa fa-th-large"></i><span>{{ ccp_text_catalog_short|default('Catalog') }}</span></a><a href="{{ ccp_sticky_cart|default('index.php?route=checkout/cart') }}" class="ccp-sticky-nav-link"><i class="fa fa-shopping-cart"></i><span>{{ ccp_text_cart_short|default('Cart') }}</span></a></div>
+          <div class="ccp-mobile-buy-price">{% if price %}{% if special %}{{ special }}{% else %}{{ price }}{% endif %}{% endif %}</div>
+          <div class="ccp-mobile-buy-qty" data-ccp-sticky-qty><button type="button" data-ccp-sticky-qty="minus" aria-label="{{ ccp_text_minus|default('Decrease quantity') }}">−</button><input type="text" value="{{ minimum }}" inputmode="numeric" min="{{ minimum }}" aria-label="{{ entry_qty|e('html_attr') }}" data-ccp-sticky-qty-input><button type="button" data-ccp-sticky-qty="plus" aria-label="{{ ccp_text_plus|default('Increase quantity') }}">+</button></div>
+          <button type="button" class="btn ccp-btn ccp-mobile-buy-cart" data-ccp-mobile-cart="1"><i class="fa fa-shopping-cart"></i> {{ button_cart }}</button>
+        </div>
+      </div>
+      {% endif %}
+      {{ content_bottom }}</div>{{ column_right }}</div>
+</div>
+<script>
+{% if not ccp_information_mode_active %}
+$('select[name=\'recurring_id\'], input[name="quantity"]').change(function(){ $.ajax({url:'index.php?route=product/product/getRecurringDescription', type:'post', data:$('input[name=\'product_id\'], input[name=\'quantity\'], select[name=\'recurring_id\']'), dataType:'json', beforeSend:function(){$('#recurring-description').html('');}, success:function(json){$('.alert-dismissible, .text-danger').remove(); if(json['success']){$('#recurring-description').html(json['success']);}}});});
+$('#button-cart').on('click', function(){
+  var $button = $('#button-cart');
+  if ($button.data('ccp-busy')) { return; }
+  var buttonHtml = $button.html();
+  var loadingText = (window.CodeCartProTheme && window.CodeCartProTheme.textLoading) ? window.CodeCartProTheme.textLoading : ($button.data('loading-text') || '{{ text_loading|e('js') }}');
+  var productData = $("#product input[type='text'], #product input[type='hidden'], #product input[type='radio']:checked, #product input[type='checkbox']:checked, #product select, #product textarea");
+  var popupPayload = {trigger: $button[0], name: $.trim($('.ccp-product-header .ccp-product-title-top').first().text()), href: window.location.href, image: ($('[data-ccp-gallery-main] img').first().attr('src') || $('.ccp-product-gallery img').first().attr('src') || ''), qty: parseInt($('#input-quantity').val() || '1',10) || 1, price: $.trim($('.ccp-product-price .price-main').first().text() || $('.ccp-product-price').first().text())};
+  if(window.CodeCartProTheme && window.CodeCartProTheme.cartAddPopup){window.CCP_PENDING_CART_POPUP = popupPayload;}
+  function resetCartButton(){
+    window.CCP_CART_SYNC_PENDING = false;
+    $button.data('ccp-busy', false).prop('disabled', false).removeClass('disabled').html(buttonHtml);
+    window.setTimeout(function(){ window.CCP_PRODUCT_ADD_ACTIVE = false; }, 900);
+  }
+  $button.data('ccp-busy', true).prop('disabled', true).addClass('disabled').html('<i class="fa fa-spinner fa-spin"></i> ' + loadingText);
+  window.CCP_CART_SYNC_PENDING = true;
+  window.CCP_PRODUCT_ADD_ACTIVE = true;
+  window.setTimeout(resetCartButton, 8000);
+  $.ajax({
+    url:'index.php?route=checkout/cart/add',
+    type:'post',
+    data: productData,
+    dataType:'json',
+    success:function(json){
+      $('.alert-dismissible, .text-danger').remove(); $('.form-group').removeClass('has-error');
+      if(json['error']){
+        resetCartButton();
+        window.CCP_PENDING_CART_POPUP = null;
+        if(json['error']['option']){for(i in json['error']['option']){var element=$('#input-option'+i.replace('_','-')); if(element.parent().hasClass('input-group')){element.parent().after('<div class="text-danger">'+json['error']['option'][i]+'</div>');}else{element.after('<div class="text-danger">'+json['error']['option'][i]+'</div>');}}}
+        if(json['error']['recurring']){$("select[name='recurring_id']").after('<div class="text-danger">'+json['error']['recurring']+'</div>');}
+        $('.text-danger').parent().addClass('has-error');
+      }
+      if(json['success']){
+        var ccpCfg = window.CodeCartProTheme || {};
+        var popupShown = false;
+        if(ccpCfg.cartAddPopup && window.CodeCartProShowCartAddPopup){
+          popupShown = window.CodeCartProShowCartAddPopup(popupPayload, json['total'], json.ccp_cart_item);
+          window.CCP_PENDING_CART_POPUP = null;
+        }
+        resetCartButton();
+        $('#cart > button').html('<span id="cart-total">'+json['total']+'</span>');
+        $.ajax({url:'index.php?route=extension/module/codecart_pro_interaction/cartSyncQuantity', type:'post', data:productData, dataType:'json', complete:function(){
+          $('#cart > ul').load('index.php?route=common/cart/info ul li');
+          if(ccpCfg.directCheckoutAfterAdd && ccpCfg.checkoutUrl && !ccpCfg.cartAddPopup){window.location.href = ccpCfg.checkoutUrl; return;}
+          if(!popupShown && window.CodeCartProRefreshCartDrawer){window.CodeCartProRefreshCartDrawer(true);}
+          if(window.CodeCartProSyncProductQty){window.CodeCartProSyncProductQty();}
+        }});
+      }
+    },
+    error:function(){resetCartButton(); window.CCP_PENDING_CART_POPUP = null;}
+  });
+});
+{% endif %}
+{% if review_status %}var ccpReviewLoaded=false;function ccpLoadProductReviews(){if(ccpReviewLoaded){return;}ccpReviewLoaded=true;$('#review').load('index.php?route=product/product/review&product_id={{ product_id }}');}$('#review').delegate('.pagination a','click',function(e){e.preventDefault();$('#review').fadeOut('slow');$('#review').load(this.href);$('#review').fadeIn('slow');});$(document).on('click','a[href="#tab-review"]',function(){ccpLoadProductReviews();});if(window.location.hash==='#tab-review'){ccpLoadProductReviews();}$('#button-review').on('click',function(){ $.ajax({url:'index.php?route=product/product/write&product_id={{ product_id }}', type:'post', dataType:'json', data:$('#form-review').serialize(), beforeSend:function(){$('#button-review').button('loading');}, complete:function(){$('#button-review').button('reset');}, success:function(json){$('.alert-dismissible').remove(); if(json['error']){$('#review').after('<div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> '+json['error']+'</div>');} if(json['success']){$('#review').after('<div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> '+json['success']+'</div>');$('input[name=\'name\']').val('');$('textarea[name=\'text\']').val('');$('input[name=\'rating\']:checked').prop('checked',false);ccpReviewLoaded=false;ccpLoadProductReviews();}}});});{% endif %}
+</script>
+{{ footer }}

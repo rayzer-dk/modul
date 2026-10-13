@@ -1,0 +1,121 @@
+<div class="ccp-home-builder">
+  {% if slider_status and slides %}
+    <section class="ccp-hero" style="--ccp-hero-height:{{ slider_height }}px">
+      <div id="ccp-home-hero" class="carousel slide" {% if slider_autoplay %}data-ride="carousel"{% endif %}>
+        <div class="carousel-inner">
+          {% for slide in slides %}
+            <div class="item{% if loop.first %} active{% endif %}">
+              <div class="ccp-hero-slide"{% if slide.image %} style="background-image:linear-gradient(90deg,rgba(15,23,42,.82),rgba(15,23,42,.34)),url('{{ slide.image }}')"{% endif %}>
+                <div class="container ccp-hero-inner">
+                  {% if slide.title %}<h2>{{ slide.title }}</h2>{% endif %}
+                  {% if slide.subtitle %}<p>{{ slide.subtitle }}</p>{% endif %}
+                  {% if slide.link and slide.button %}<a href="{{ slide.link }}" class="btn ccp-btn ccp-hero-btn">{{ slide.button }}</a>{% endif %}
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+        {% if slides|length > 1 %}
+          <a class="left carousel-control" href="#ccp-home-hero" role="button" data-slide="prev"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></a>
+          <a class="right carousel-control" href="#ccp-home-hero" role="button" data-slide="next"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></a>
+        {% endif %}
+      </div>
+    </section>
+  {% endif %}
+
+  {% if category_wall_status and categories %}
+    <section class="ccp-home-section ccp-home-category-wall-section"><div class="container">
+      <div class="ccp-section-head"><h2>{{ text_categories }}</h2></div>
+      <div class="ccp-category-wall ccp-category-wall--{{ home_category_wall_style|default('cards') }} ccp-category-wall--{{ home_category_wall_display_mode|default('grid') }}" style="--ccp-home-wall-cols-desktop:5;--ccp-home-wall-cols-tablet:3;--ccp-home-wall-cols-mobile:2;">
+        {% for category in categories %}
+          <a class="ccp-category-tile" href="{{ category.href }}">
+            <span class="ccp-category-media">
+              {% if home_category_wall_show_image|default(1) and category.image %}
+                <img src="{{ category.image }}" alt="{{ category.name }}" loading="lazy" decoding="async" width="{{ home_category_wall_image_width|default(420) }}" height="{{ home_category_wall_image_height|default(260) }}" />
+              {% else %}
+                <span class="ccp-category-placeholder"><i class="fa fa-folder-open"></i></span>
+              {% endif %}
+            </span>
+            <span class="ccp-category-caption">
+              <span class="ccp-category-name">{{ category.name }}</span>
+              {% if home_category_wall_show_description|default(0) and category.description %}<span class="ccp-category-description-short">{{ category.description }}</span>{% endif %}
+              {% if home_category_wall_show_count and category.count %}<span class="ccp-category-count">{{ category.count }} {{ text_products }}</span>{% endif %}
+            </span>
+          </a>
+        {% endfor %}
+      </div>
+    </div></section>
+  {% endif %}
+
+  {% if benefits_status and benefits %}
+    <section class="ccp-home-section ccp-home-benefits">
+      <div class="container">
+        <div class="ccp-benefits-grid">
+          {% for benefit in benefits %}
+            <div class="ccp-benefit ccp-benefit-card">
+              <span class="ccp-benefit-icon"><i class="fa {{ benefit.icon|default('fa-check') }}"></i></span>
+              <span class="ccp-benefit-text">{{ benefit.text|default(benefit) }}</span>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+  {% endif %}
+
+  {% if banners_status and banners %}
+    <section class="ccp-home-section ccp-home-promos">
+      <div class="container">
+        <div class="ccp-promo-grid ccp-promo-count-{{ banners|length }}">
+          {% for banner in banners %}
+            <a class="ccp-promo-card ccp-promo-card-pro" href="{{ banner.link ? banner.link : 'javascript:void(0)' }}"{% if banner.image %} style="background-image:linear-gradient(90deg,rgba(15,23,42,.82),rgba(15,23,42,.28)),url('{{ banner.image }}')"{% endif %}>
+              <span class="ccp-promo-icon"><i class="fa {{ banner.icon|default('fa-star') }}"></i></span>
+              <span class="ccp-promo-copy">
+                <span class="ccp-promo-title">{{ banner.title }}</span>
+                {% if banner.text %}<span class="ccp-promo-text">{{ banner.text }}</span>{% endif %}
+              </span>
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+  {% endif %}
+
+  {% macro product_card(product, button_cart, button_quick_view, button_quick_order, ccp_enable_quick_view, ccp_enable_quick_order) %}
+    <div class="ccp-card ccp-product-card ccp-home-product-card" data-product-id="{{ product.product_id }}" data-href="{{ product.href }}">
+      <a class="ccp-product-card__image ccp-product-image-link" href="{{ product.href }}"><img class="ccp-img-main" src="{{ product.thumb }}" alt="{{ product.name }}" loading="lazy" decoding="async" width="640" height="407" /></a>
+      <div class="ccp-product-card__body">
+        <div class="ccp-product-card__name"><a href="{{ product.href }}">{{ product.name }}</a></div>
+        {% if product.rating %}<div class="ccp-product-card__rating">{% for i in 1..5 %}<i class="fa fa-star{% if i > product.rating %}-o{% endif %}"></i>{% endfor %}</div>{% endif %}
+        {% if product.description %}<div class="ccp-product-card__desc">{{ product.description }}</div>{% endif %}
+        {% if product.price %}<div class="ccp-product-card__price">{% if product.special %}<span class="price-new">{{ product.special }}</span><span class="price-old">{{ product.price }}</span>{% else %}{{ product.price }}{% endif %}</div>{% endif %}
+        <div class="ccp-product-card__actions ccp-home-product-actions">
+          <button type="button" class="btn ccp-btn ccp-card-cart" data-product-id="{{ product.product_id }}"><i class="fa fa-shopping-cart"></i> <span>{{ button_cart }}</span></button>
+          {% if ccp_enable_quick_order %}<button type="button" class="ccp-mini-btn ccp-js-quick-order" data-product-id="{{ product.product_id }}" data-product-name="{{ product.name|e('html_attr') }}" title="{{ button_quick_order }}"><i class="fa fa-bolt"></i></button>{% endif %}
+        </div>
+      </div>
+    </div>
+  {% endmacro %}
+  {% import _self as home %}
+
+  {% if product_sections_status and latest_products %}
+    <section class="ccp-home-section"><div class="container"><div class="ccp-section-head"><h2>{{ text_latest }}</h2></div><div class="ccp-home-products-grid ccp-scroll-row ccp-home-products-carousel">{% for product in latest_products %}{{ home.product_card(product, button_cart, button_quick_view, button_quick_order, ccp_enable_quick_view, ccp_enable_quick_order) }}{% endfor %}</div></div></section>
+  {% endif %}
+
+  {% if product_sections_status and special_products %}
+    <section class="ccp-home-section"><div class="container"><div class="ccp-section-head"><h2>{{ text_special }}</h2></div><div class="ccp-home-products-grid ccp-scroll-row ccp-home-products-carousel">{% for product in special_products %}{{ home.product_card(product, button_cart, button_quick_view, button_quick_order, ccp_enable_quick_view, ccp_enable_quick_order) }}{% endfor %}</div></div></section>
+  {% endif %}
+
+  {% if product_sections_status and bestseller_products %}
+    <section class="ccp-home-section"><div class="container"><div class="ccp-section-head"><h2>{{ text_bestseller }}</h2></div><div class="ccp-home-products-grid ccp-scroll-row ccp-home-products-carousel">{% for product in bestseller_products %}{{ home.product_card(product, button_cart, button_quick_view, button_quick_order, ccp_enable_quick_view, ccp_enable_quick_order) }}{% endfor %}</div></div></section>
+  {% endif %}
+
+  {% if manufacturer_status and manufacturers %}
+    <section class="ccp-home-section"><div class="container"><div class="ccp-section-head"><h2>{{ text_manufacturers }}</h2></div><div class="ccp-manufacturer-strip">
+      {% for manufacturer in manufacturers %}<a href="{{ manufacturer.href }}" class="ccp-manufacturer-card">{% if manufacturer.image %}<img src="{{ manufacturer.image }}" alt="{{ manufacturer.name }}" loading="lazy" decoding="async" width="180" height="90" />{% else %}<span>{{ manufacturer.name }}</span>{% endif %}</a>{% endfor %}
+    </div></div></section>
+  {% endif %}
+</div>
+
+{% if ccp_product_module_blocks|default('') %}{{ ccp_product_module_blocks }}{% endif %}
+{% if ccp_home_blog|default('') %}{{ ccp_home_blog }}{% endif %}
+{% if ccp_latest_reviews|default('') %}{{ ccp_latest_reviews }}{% endif %}

@@ -1,0 +1,35 @@
+{
+  "static_only": true,
+  "checks": [
+    {
+      "check": "syntax-php-8.1",
+      "passed": true
+    },
+    {
+      "check": "syntax-php-8.2",
+      "passed": true
+    },
+    {
+      "check": "syntax-php-8.3",
+      "passed": true
+    },
+    {
+      "check": "syntax-js-0",
+      "passed": true
+    },
+    {
+      "check": "syntax-js-1",
+      "passed": true
+    },
+    {
+      "check": "syntax-js-2",
+      "passed": true
+    },
+    {
+      "check": "xml-utf8-languages",
+      "passed": true,
+      "errors": []
+    }
+  ],
+  "passed": true
+}

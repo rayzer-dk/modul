@@ -1,0 +1,506 @@
+CodeCart PRO Theme v8.7.7 — аварийный CSS/JS для информационной витрины
+
+Основной архив уже содержит эти исправления. Ручная вставка нужна только для диагностики, если на сервере не обновился OCMOD или продолжает отдаваться старый кеш.
+
+Перед вставкой удалите все прежние CSS/JS-фрагменты информационного режима.
+Включите кастомный CSS и вставьте CSS в поле «CSS: общий стиль сайта» без тегов style.
+Включите кастомный JS и вставьте JavaScript в поле «JS после полной загрузки страницы» без тегов script.
+
+CSS
+
+/* CodeCart PRO: information storefront emergency layer */
+html.ccp-information-mode body.ccp-theme .ccp-tools-currency,
+html.ccp-information-mode body.ccp-theme .ccp-header-cart-link,
+html.ccp-information-mode body.ccp-theme .ccp-cart-wrap,
+html.ccp-information-mode body.ccp-theme #cart,
+html.ccp-information-mode body.ccp-theme #ccp-cart-popup,
+html.ccp-information-mode body.ccp-theme #ccp-cart-drawer,
+html.ccp-information-mode body.ccp-theme .ccp-float-cart,
+html.ccp-information-mode body.ccp-theme .ccp-floating-cart,
+html.ccp-information-mode body.ccp-theme .ccp-product-card__price,
+html.ccp-information-mode body.ccp-theme .ccp-card-qty,
+html.ccp-information-mode body.ccp-theme .ccp-card-cart,
+html.ccp-information-mode body.ccp-theme .ccp-js-quick-order,
+html.ccp-information-mode body.ccp-theme .ccp-sticker-sale,
+html.ccp-information-mode body.ccp-theme .product-thumb .price,
+html.ccp-information-mode body.ccp-theme .product-thumb button[onclick*="cart.add"],
+html.ccp-information-mode body.ccp-theme #product-product .ccp-product-price,
+html.ccp-information-mode body.ccp-theme #product-product #product.ccp-buy-box,
+html.ccp-information-mode body.ccp-theme #product-product .ccp-mobile-buy-panel,
+html.ccp-information-mode body.ccp-theme .ccp-mobile-bar a[href*="checkout/cart"],
+html.ccp-information-mode body.ccp-theme .ccp-mobile-bar a[href$="/cart/"],
+html.ccp-information-mode body.ccp-theme .ccp-sticky-main-nav a[href*="checkout/cart"],
+html.ccp-information-mode body.ccp-theme .ccp-sticky-main-nav a[href$="/cart/"] {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+html.ccp-information-mode body.ccp-theme .ccp-product-card__actions {
+    display: flex !important;
+    grid-template-columns: none !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+    min-height: 0 !important;
+    height: auto !important;
+    margin-top: 10px !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+html.ccp-information-mode body.ccp-theme .ccp-product-card__actions .ccp-mini-btn {
+    flex: 0 0 40px !important;
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    border-radius: 12px !important;
+}
+
+body.ccp-theme .ccp-information-actions {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 10px !important;
+    margin: 14px 0 0 !important;
+    padding: 14px !important;
+    border: 1px solid #dbe6f3 !important;
+    border-radius: 16px !important;
+    background: #f8fafc !important;
+}
+
+body.ccp-theme .ccp-information-actions .ccp-buy-icon-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    width: auto !important;
+    min-width: 0 !important;
+    height: 44px !important;
+    padding: 0 15px !important;
+    border-radius: 12px !important;
+}
+
+body.ccp-theme.ccp-mobile-menu-open,
+body.ccp-theme.ccp-info-menu-open {
+    overflow: hidden !important;
+}
+
+body.ccp-theme .ccp-mobile-menu-backdrop {
+    position: fixed !important;
+    inset: 0 !important;
+    display: block !important;
+    z-index: 100040 !important;
+    background: rgba(15, 23, 42, .52) !important;
+    backdrop-filter: blur(2px) !important;
+    cursor: pointer !important;
+}
+
+body.ccp-theme .ccp-mobile-panel {
+    position: fixed !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    width: min(410px, 92vw) !important;
+    max-width: 92vw !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    transform: translate3d(-105%, 0, 0) !important;
+    transition: transform .24s ease, opacity .2s ease, visibility 0s linear .24s !important;
+    z-index: 100050 !important;
+    background: #fff !important;
+    border: 0 !important;
+    border-radius: 0 20px 20px 0 !important;
+    box-shadow: 26px 0 70px rgba(15, 23, 42, .28) !important;
+    pointer-events: none !important;
+}
+
+body.ccp-theme .ccp-mobile-panel.show {
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: translate3d(0, 0, 0) !important;
+    transition-delay: 0s !important;
+    pointer-events: auto !important;
+}
+
+body.ccp-theme .ccp-mobile-panel-header {
+    display: flex !important;
+    flex: 0 0 auto !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+    min-height: 68px !important;
+    padding: 13px 16px !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    background: linear-gradient(135deg, #f8fbff, #eef5ff) !important;
+}
+
+body.ccp-theme .ccp-mobile-panel-header h5 {
+    margin: 0 !important;
+    color: #0f2d55 !important;
+    font-size: 19px !important;
+    font-weight: 900 !important;
+}
+
+body.ccp-theme .ccp-mobile-panel-header .close {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 42px !important;
+    height: 42px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    opacity: 1 !important;
+    border: 1px solid #dbe6f3 !important;
+    border-radius: 12px !important;
+    background: #fff !important;
+    color: #0057b7 !important;
+    font-size: 25px !important;
+}
+
+body.ccp-theme .ccp-mobile-panel-body {
+    display: block !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    padding: 13px !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+    -webkit-overflow-scrolling: touch !important;
+}
+
+body.ccp-theme #ccp-mobile-menu .ccp-mega-menu {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 7px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+body.ccp-theme #ccp-mobile-menu .ccp-mega-home,
+body.ccp-theme #ccp-mobile-menu .ccp-mega-custom-link,
+body.ccp-theme #ccp-mobile-menu .ccp-mega-link,
+body.ccp-theme .ccp-mobile-panel .ccp-mobile-menu-link {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    width: 100% !important;
+    min-height: 46px !important;
+    margin: 0 !important;
+    padding: 10px 12px !important;
+    border: 1px solid #dbe6f3 !important;
+    border-radius: 13px !important;
+    background: #fff !important;
+    color: #0f3e7f !important;
+    font-weight: 800 !important;
+    line-height: 1.25 !important;
+    text-decoration: none !important;
+}
+
+body.ccp-theme #ccp-mobile-menu .ccp-mega-item {
+    display: block !important;
+    width: 100% !important;
+}
+
+body.ccp-theme #ccp-mobile-menu .ccp-mega-dropdown {
+    position: static !important;
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 5px 0 2px !important;
+    padding: 9px !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    border: 1px solid #e5edf7 !important;
+    border-radius: 13px !important;
+    background: #eef4fb !important;
+    box-shadow: none !important;
+}
+
+body.ccp-theme #ccp-mobile-menu .ccp-mega-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 7px !important;
+}
+
+html body.ccp-theme #product-product .ccp-product-page {
+    width: 100% !important;
+    max-width: none !important;
+    overflow: visible !important;
+}
+
+html body.ccp-theme #product-product .ccp-product-main {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.12fr) minmax(360px, .88fr) !important;
+    gap: 28px !important;
+    align-items: start !important;
+    width: 100% !important;
+}
+
+html body.ccp-theme #product-product .ccp-product-gallery-column,
+html body.ccp-theme #product-product .ccp-product-gallery,
+html body.ccp-theme #product-product .ccp-gallery-main,
+html body.ccp-theme #product-product .thumbnail.ccp-gallery-main {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+}
+
+html body.ccp-theme #product-product .ccp-gallery-main,
+html body.ccp-theme #product-product .thumbnail.ccp-gallery-main {
+    display: block !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    aspect-ratio: auto !important;
+    margin: 0 0 14px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border: 1px solid #dbe3ee !important;
+    border-radius: 18px !important;
+    background: #fff !important;
+}
+
+html body.ccp-theme #product-product .ccp-gallery-main > img,
+html body.ccp-theme #product-product .thumbnail.ccp-gallery-main > img {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    max-width: 100% !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    object-fit: contain !important;
+    object-position: center !important;
+}
+
+html body.ccp-theme .ccp-blog-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 22px !important;
+}
+
+html body.ccp-theme .ccp-blog-card {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    overflow: hidden !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 18px !important;
+    background: #fff !important;
+}
+
+html body.ccp-theme .ccp-blog-card .ccp-blog-thumb,
+html body.ccp-theme .ccp-blog-card .ccp-article-card__image {
+    display: block !important;
+    width: 100% !important;
+    aspect-ratio: 16 / 9 !important;
+    overflow: hidden !important;
+}
+
+html body.ccp-theme .ccp-blog-card .ccp-blog-thumb img,
+html body.ccp-theme .ccp-blog-card .ccp-article-card__image img {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+}
+
+html body.ccp-theme .ccp-blog-article-image img,
+html body.ccp-theme .ccp-blog-article-body img {
+    display: block !important;
+    max-width: 100% !important;
+    height: auto !important;
+}
+
+@media (max-width: 991px) {
+    body.ccp-theme .ccp-mobile-panel {
+        bottom: 68px !important;
+        height: calc(100dvh - 68px) !important;
+        max-height: calc(100dvh - 68px) !important;
+        width: min(390px, 92vw) !important;
+    }
+
+    html body.ccp-theme #product-product .ccp-product-main {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+    }
+
+    html body.ccp-theme .ccp-blog-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 767px) {
+    html body.ccp-theme .ccp-blog-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+JavaScript
+
+(function () {
+    'use strict';
+
+    var body = document.body;
+    var lastTrigger = null;
+
+    function activeInformationMode() {
+        return document.documentElement.classList.contains('ccp-information-mode') ||
+            (body && body.classList.contains('ccp-information-mode'));
+    }
+
+    function removeBackdrop() {
+        var backdrop = document.querySelector('.ccp-mobile-menu-backdrop');
+        if (backdrop && backdrop.parentNode) {
+            backdrop.parentNode.removeChild(backdrop);
+        }
+    }
+
+    function closePanels(restoreFocus) {
+        var panels = document.querySelectorAll('#ccp-mobile-menu, #ccp-info-menu');
+        var i;
+
+        for (i = 0; i < panels.length; i++) {
+            panels[i].classList.remove('show');
+            panels[i].setAttribute('aria-hidden', 'true');
+            panels[i].setAttribute('inert', '');
+        }
+
+        var toggles = document.querySelectorAll('[data-ccp-mobile-menu-toggle], [data-ccp-info-menu-toggle]');
+        for (i = 0; i < toggles.length; i++) {
+            toggles[i].setAttribute('aria-expanded', 'false');
+        }
+
+        removeBackdrop();
+
+        if (body) {
+            body.classList.remove('ccp-mobile-menu-open', 'ccp-info-menu-open');
+        }
+
+        if (restoreFocus !== false && lastTrigger && document.documentElement.contains(lastTrigger)) {
+            lastTrigger.focus();
+        }
+
+        lastTrigger = null;
+    }
+
+    function openPanel(selector, type, trigger) {
+        var panel = document.querySelector(selector);
+        if (!panel || !body) {
+            return;
+        }
+
+        closePanels(false);
+        lastTrigger = trigger || null;
+
+        var backdrop = document.createElement('div');
+        backdrop.className = 'ccp-mobile-menu-backdrop';
+        backdrop.setAttribute('aria-hidden', 'true');
+        backdrop.addEventListener('click', function () {
+            closePanels(true);
+        });
+        body.appendChild(backdrop);
+
+        panel.removeAttribute('inert');
+        panel.setAttribute('aria-hidden', 'false');
+
+        if (lastTrigger) {
+            lastTrigger.setAttribute('aria-expanded', 'true');
+        }
+
+        body.classList.add('ccp-mobile-menu-open');
+        if (type === 'info') {
+            body.classList.add('ccp-info-menu-open');
+        }
+
+        window.requestAnimationFrame(function () {
+            panel.classList.add('show');
+            var focus = panel.querySelector('[data-ccp-mobile-menu-close], [data-ccp-info-menu-close], a, button');
+            if (focus) {
+                focus.focus();
+            }
+        });
+    }
+
+    if (body) {
+        document.documentElement.classList.add('ccp-information-mode');
+        body.classList.add('ccp-information-mode');
+    }
+
+    window.CodeCartProTheme = window.CodeCartProTheme || {};
+    window.CodeCartProTheme.informationMode = 1;
+    window.CodeCartProTheme.quantitySwitch = 0;
+    window.CodeCartProTheme.cartDrawer = 0;
+    window.CodeCartProTheme.cartToast = 0;
+    window.CodeCartProTheme.cartAddPopup = 0;
+    window.CodeCartProTheme.directCheckoutAfterAdd = 0;
+
+    document.addEventListener('click', function (event) {
+        var target = event.target;
+        if (!target || !target.closest) {
+            return;
+        }
+
+        var catalogToggle = target.closest('[data-ccp-mobile-menu-toggle]');
+        if (catalogToggle) {
+            event.preventDefault();
+            openPanel('#ccp-mobile-menu', 'catalog', catalogToggle);
+            return;
+        }
+
+        var infoToggle = target.closest('[data-ccp-info-menu-toggle]');
+        if (infoToggle) {
+            event.preventDefault();
+            openPanel('#ccp-info-menu', 'info', infoToggle);
+            return;
+        }
+
+        if (target.closest('[data-ccp-mobile-menu-close], [data-ccp-info-menu-close]')) {
+            event.preventDefault();
+            closePanels(true);
+            return;
+        }
+
+        if (!activeInformationMode()) {
+            return;
+        }
+
+        var blocked = target.closest(
+            '#button-cart, .ccp-card-cart, .ccp-js-quick-order, [data-ccp-mobile-cart], ' +
+            'a[href*="route=checkout/cart"], a[href*="route=checkout/checkout"], ' +
+            'a[href$="/cart/"], a[href$="/checkout/"]'
+        );
+
+        if (blocked) {
+            event.preventDefault();
+            event.stopPropagation();
+            if (event.stopImmediatePropagation) {
+                event.stopImmediatePropagation();
+            }
+        }
+    }, true);
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' || event.keyCode === 27) {
+            closePanels(true);
+        }
+    });
+})();
