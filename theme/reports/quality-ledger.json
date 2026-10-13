@@ -1,31 +1,69 @@
 {
   "status": "not ready for unconditional production deployment",
-  "change": {
-    "status": "PASS",
-    "evidence": "static syntax plus UI root measurements"
-  },
-  "regression": {
-    "status": "PARTIAL",
-    "evidence": "8 historical foundation lifecycle,7 storefront HTTP,7 admin tests"
-  },
-  "security": {
-    "status": "PASS_LIMITED",
-    "evidence": "readable PHP dangerous-function scan; anonymous login-price red/green test; no full penetration test"
-  },
-  "integration": {
-    "status": "NOT RUN",
-    "evidence": "71 static module contracts only; active licensed integration not certified"
-  },
-  "e2e": {
-    "status": "NOT RUN",
-    "evidence": "completed order database proof absent"
-  },
-  "rollback": {
-    "status": "NOT RUN",
-    "evidence": "no current full backup restore"
-  },
-  "performance": {
-    "status": "NOT RUN",
-    "evidence": "no measured final load/performance matrix"
-  }
+  "profile": "DEEP",
+  "scenarios": [
+    {
+      "id": "release-static",
+      "category": "change",
+      "mandatory": true,
+      "status": "PASS",
+      "expected": "PHP8.1–8.3/Twig/JS/XML/UTF8/languages and package contract pass",
+      "observed": "60 PHP,35 Twig,3 JS;118 files including all117 baseline files; CRC and archive hashes verified",
+      "evidence": "evidence/validation/check-theme.json; evidence/release/package-integrity.json"
+    },
+    {
+      "id": "store-admin-public-seams",
+      "category": "regression",
+      "mandatory": true,
+      "status": "PASS",
+      "expected": "Public storefront and theme-admin forms preserve native workflows",
+      "observed": "Recorded7 storefront and7 admin tests PASS;8 foundation lifecycle tests previously PASS, not a final full-suite rerun",
+      "evidence": "evidence/storefront-browser.json; evidence/validation/admin-test-final.log; evidence/validation/regression-lifecycle.log"
+    },
+    {
+      "id": "anonymous-price-privacy",
+      "category": "security",
+      "mandatory": true,
+      "status": "PASS",
+      "expected": "Login-only prices are absent from anonymous popup pricing fields",
+      "observed": "Native config_customer_price/customer login gate added; failing anonymous HTTP test became passing; dangerous PHP call scan found none",
+      "evidence": "tests/storefront/test_rendered.py; source/install.xml"
+    },
+    {
+      "id": "licensed-module-runtime",
+      "category": "integration",
+      "mandatory": true,
+      "status": "NOT RUN",
+      "expected": "Applicable licensed module ON flows tested with final theme",
+      "observed": "71 module archive static contracts only; active licensed runtime not certified",
+      "evidence": "evidence/module-contracts.json"
+    },
+    {
+      "id": "completed-order",
+      "category": "e2e",
+      "mandatory": true,
+      "status": "NOT RUN",
+      "expected": "Test order completes and database order is verified",
+      "observed": "Completed order database proof absent",
+      "evidence": "source/VALIDATION.txt"
+    },
+    {
+      "id": "full-restore",
+      "category": "rollback",
+      "mandatory": true,
+      "status": "NOT RUN",
+      "expected": "Restore matching full files/database backup and revalidate store",
+      "observed": "Current full backup/restore not executed",
+      "evidence": "source/VALIDATION.txt"
+    },
+    {
+      "id": "performance-matrix",
+      "category": "performance",
+      "mandatory": true,
+      "status": "NOT RUN",
+      "expected": "Measure final performance/requests under representative store load",
+      "observed": "Final measured load/performance matrix absent",
+      "evidence": "source/VALIDATION.txt"
+    }
+  ]
 }
