@@ -1,0 +1,12 @@
+includes:
+    - vendor/phpstan/phpstan/conf/bleedingEdge.neon
+
+parameters:
+    level: 5
+    phpVersion: 80400
+    paths:
+        - ../../modules
+        - ../../theme/source/upload
+    tmpDir: ../../build/phpstan-modules-cache
+    treatPhpDocTypesAsCertain: false
+    reportUnmatchedIgnoredErrors: true

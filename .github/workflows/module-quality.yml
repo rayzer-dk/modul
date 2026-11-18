@@ -1,0 +1,94 @@
+name: All OpenCart modules PHPStan and Twig QA
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: module-quality-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  php-compatibility:
+    name: PHP source syntax ${{ matrix.php }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['7.4', '8.0', '8.1', '8.2', '8.3', '8.4', '8.5']
+    steps:
+      - uses: actions/checkout@v5
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring,dom,xml,zip
+          coverage: none
+      - name: Lint all module/theme PHP and tests (blocking)
+        shell: bash
+        run: |
+          set -euo pipefail
+          find modules theme/source tests -type f -name '*.php' -print0 |
+            xargs -0 -r -n 1 php -l > /tmp/php-lint.txt
+          tail -n 5 /tmp/php-lint.txt
+          printf 'Checked %s PHP files on PHP %s\n' "$(wc -l < /tmp/php-lint.txt)" "${{ matrix.php }}"
+  source-and-twig:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v5
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring,dom,xml,zip
+          coverage: none
+          tools: composer:v2
+      - name: Validate UTF-8, BOM and module XML
+        run: |
+          python3 -c "import pathlib,xml.etree.ElementTree as E; roots=[pathlib.Path('modules'),pathlib.Path('theme/source')]; files=[p for r in roots for p in r.rglob('*') if p.is_file() and p.suffix.lower() in ('.php','.twig','.xml','.js','.css','.json','.md','.txt')]; assert all(not p.read_bytes().startswith(bytes.fromhex('efbbbf')) for p in files), 'BOM found'; [p.read_text(encoding='utf-8') for p in files]; [E.parse(p) for p in files if p.suffix.lower()=='.xml']; print('Checked',len(files),'text sources')"
+      - name: Isolated PHPStan and Twig dependencies
+        run: composer install --working-dir=tools/quality --prefer-dist --no-interaction --no-progress
+      - name: Twig context regression fixture (blocking)
+        run: python3 tools/quality/twig_context_audit.py --self-test
+      - name: Twig controller context and unused-local report (advisory)
+        run: python3 tools/quality/twig_context_audit.py --mode modules --report build/module-twig-context.txt
+      - name: Parse all module and theme Twig templates (blocking)
+        run: php tools/quality/twig_syntax_check.php
+      - name: PHPStan unused-code detection fixture (blocking)
+        shell: bash
+        run: |
+          set -euo pipefail
+          tools/quality/vendor/bin/phpstan analyse -c tools/quality/phpstan-modules.neon.dist tools/quality/fixtures/dead_code_valid.php --no-progress --error-format=raw
+          if tools/quality/vendor/bin/phpstan analyse -c tools/quality/phpstan-modules.neon.dist tools/quality/fixtures/dead_code_invalid.php --no-progress --error-format=raw > build/dead-code-fixture.txt 2>&1; then
+            cat build/dead-code-fixture.txt
+            exit 1
+          fi
+          for symbol in forgotten unusedProperty unusedMethod; do
+            grep -Fq "$symbol" build/dead-code-fixture.txt || { cat build/dead-code-fixture.txt; exit 1; }
+          done
+      - name: Full first-party module and theme PHPStan (advisory)
+        shell: bash
+        run: |
+          mkdir -p build
+          set +e
+          tools/quality/vendor/bin/phpstan analyse -c tools/quality/phpstan-modules.neon.dist --no-progress --memory-limit=2G --error-format=raw > build/module-phpstan.txt 2>&1
+          status=$?
+          set -e
+          echo "PHPStan module inventory exit status: $status; see report artifact" >> "$GITHUB_STEP_SUMMARY"
+          sed -n '1,60p' build/module-phpstan.txt
+      - name: Upload quality reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: module-quality-reports
+          path: |
+            build/module-twig-context.txt
+            build/module-twig-syntax-report.txt
+            build/module-phpstan.txt
+            build/dead-code-fixture.txt
+          if-no-files-found: ignore
+          retention-days: 14
