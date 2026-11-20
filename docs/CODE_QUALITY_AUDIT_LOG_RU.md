@@ -9,3 +9,7 @@
 GitHub Actions: https://github.com/rayzer-dk/modul/actions/workflows/source-quality-deep.yml
 
 Отчёты сохраняются в artifacts, запуск — push, pull_request и workflow_dispatch. Дублирование и кандидаты на неиспользуемый код пока advisory. Проверка OCMOD install.xml, загрузчиков, динамических имен моделей, тем, Events и тесты на чистой установке обязательны до удаления любого кода, вызываемого косвенно.
+
+## Подтверждённый результат CI
+
+Запуск 2026-11-20: https://github.com/rayzer-dk/modul/actions/runs/44708463166 — SUCCESS для обоих заданий. Просканировано 149 файлов; 200 кандидатов на неиспользуемые CSS-классы; jscpd: 107 дублирующихся блоков. Все находки остаются advisory до проверки Twig, OCMOD, событий и внешних вызовов.
